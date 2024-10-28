@@ -1,0 +1,3 @@
+{
+  "extends": ["@ecs-pcl/tsconfig/dom.json"]
+}
