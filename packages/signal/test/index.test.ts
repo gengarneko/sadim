@@ -1,15 +1,15 @@
-import {Signal} from '../src/signal';
+import {Signal} from '../src';
 import { describe, it, expect } from "vitest"
 
 describe('Signals', function () {
-  it('Connecting increases amount of handlers', () => {
+  it('连接 handler 可以正确增加', () => {
     const signal = new Signal<(value: number) => void>();
     signal.connect((value: number) => {});
     expect(signal.hasHandlers).toBeTruthy();
     expect(signal.handlersAmount).toEqual(1);
   });
 
-  it('Connecting same handler twice add it only once', () => {
+  it('重复的连接只会添加一次', () => {
     const signal = new Signal<(value: number) => void>();
     const handler = (value: number) => {};
     signal.connect(handler);
@@ -17,7 +17,7 @@ describe('Signals', function () {
     expect(signal.handlersAmount).toBe(1);
   });
 
-  it('Disconnecting decreases amount of handlers', () => {
+  it('断开 handler 可以正确减少', () => {
     const signal = new Signal<(value: number) => void>();
     const handler = (value: number) => {};
     signal.connect(handler);
@@ -25,7 +25,7 @@ describe('Signals', function () {
     expect(signal.hasHandlers).toBeFalsy();
   });
 
-  it('Disconnecting not connected handler don\'t remove any existing handler', () => {
+  it('点开未添加的 handler 不会增加 handler 数量', () => {
     const signal = new Signal<(value: number) => void>();
     const addedHandler = (value: number) => {};
     const wrongHandler = (value: number) => {};
@@ -34,7 +34,7 @@ describe('Signals', function () {
     expect(signal.handlersAmount).toEqual(1);
   });
 
-  it('Disconnecting all handlers clears them from signal', () => {
+  it('清空所有的 handler', () => {
     const signal = new Signal<(value: number) => void>();
     signal.connect(() => {});
     signal.connect(() => {});
