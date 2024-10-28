@@ -1,4 +1,4 @@
-# @orbitkit/eslint
+# @ecs-pcl/eslint
 
 ## 0.4.3
 
