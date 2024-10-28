@@ -1,0 +1,61 @@
+{
+  "name": "@ecs-pcl/storybook",
+  "version": "0.4.3",
+  "private": true,
+  "description": "A package to share Storybook configuration preset for the workspace",
+  "license": "MIT",
+  "author": "OrbitKit",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    "./configs/react-vite": {
+      "types": "./dist/configs/react-vite.d.ts",
+      "default": "./dist/configs/react-vite.js"
+    },
+    "./manager": {
+      "types": "./dist/manager.d.ts",
+      "default": "./dist/manager.js"
+    },
+    "./theme": {
+      "types": "./dist/theme.d.ts",
+      "default": "./dist/theme.js"
+    },
+    "./preview": {
+      "types": "./dist/preview.d.ts",
+      "default": "./dist/preview.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "bun run rm -rf dist *.tsbuildinfo",
+    "dev": "tsc -w -p tsconfig.build.json",
+    "lint": "eslint .  --max-warnings 0",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@ecs-pcl/assets": "workspace:^",
+    "@ecs-pcl/utils": "workspace:^",
+    "@radix-ui/colors": "^3.0.0",
+    "@storybook/addon-a11y": "^8.2.9",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/addon-links": "^8.2.9",
+    "@storybook/addon-onboarding": "^8.2.9",
+    "@storybook/addon-themes": "^8.2.9",
+    "@storybook/addon-viewport": "^8.2.9",
+    "@storybook/manager-api": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
+    "@storybook/theming": "^8.2.9",
+    "@storybook/types": "^8.2.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "storybook": "^8.2.9"
+  },
+  "devDependencies": {
+    "@ecs-pcl/eslint": "workspace:^",
+    "@ecs-pcl/tsconfig": "workspace:^",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0"
+  }
+}

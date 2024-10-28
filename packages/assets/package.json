@@ -1,0 +1,11 @@
+{
+  "name": "@ecs-pcl/assets",
+  "version": "0.0.0",
+  "private": true,
+  "description": "repo's assets package",
+  "license": "MIT",
+  "author": "theo",
+  "files": [
+    "**/*"
+  ]
+}
