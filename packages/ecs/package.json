@@ -1,0 +1,26 @@
+{
+  "name": "@ecs-pcl/signal",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build-fast": "tsup src/index.ts --format cjs,esm",
+    "build": "bun run build-fast -- --dts-resolve",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "prepublishOnly": "bun run build"
+  },
+  "devDependencies": {
+    "@ecs-pcl/eslint": "workspace:^",
+    "@ecs-pcl/tsconfig": "workspace:^",
+    "tsup": "^8.3.5",
+    "typescript": "5.5.4",
+    "vitest": "^2.1.3"
+  }
+}
