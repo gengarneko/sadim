@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/signal",
+  "name": "@ecs-pcl/ecs",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@ecs-pcl/eslint": "workspace:^",
     "@ecs-pcl/tsconfig": "workspace:^",
+    "@ecs-pcl/signal": "workspace:^",
     "tsup": "^8.3.5",
     "typescript": "5.5.4",
     "vitest": "^2.1.3"
