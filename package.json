@@ -5,19 +5,22 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "update:workspace": "bun run ./scripts/update-workspace"
   },
   "devDependencies": {
+    "@types/bun": "^1.1.12",
+    "@types/yargs": "^17.0.33",
+    "pkg-types": "^1.2.1",
     "prettier": "^3.3.3",
     "turbo": "^2.2.3",
-    "typescript": "5.5.4"
-  },
-  "engines": {
-    "node": ">=18"
+    "typescript": "5.5.4",
+    "yargs": "^17.7.2"
   },
   "packageManager": "bun@1.1.26",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "packages/config/*"
   ]
 }
