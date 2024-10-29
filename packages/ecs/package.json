@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/ecs",
+  "name": "@ecs-pcl/core",
   "version": "0.0.0",
   "private": true,
   "type": "module",

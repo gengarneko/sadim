@@ -1,84 +1,107 @@
+type Handler = (...args: any[]) => any;
+type Priority = number;
+
+type SignalHandler<T extends Handler> = {
+  handler: T;
+  priority: Priority;
+};
+
 /**
- * Lightweight implementation of Signal
+ * 创建 handler
  */
-export class Signal<Handler extends (...args: any[]) => any> {
-  private readonly handlers: SignalHandler<Handler>[] = [];
+const createHandler = <T extends Handler>(
+  handler: T,
+  priority: Priority = 0,
+): SignalHandler<T> => ({
+  handler,
+  priority,
+});
 
-  /**
-   * Gets a value that indicates whether signal has handlers
-   * @return {boolean}
-   */
-  public get hasHandlers(): boolean {
-    return this.handlers.length > 0;
-  }
+/**
+ * 创建 signal
+ */
+export const createSignal = <T extends Handler>() => {
+  const handlers = new Set<SignalHandler<T>>();
 
-  /**
-   * Gets an amount of connected handlers
-   * @return {number}
-   */
-  public get handlersAmount(): number {
-    return this.handlers.length;
-  }
+  const getSortedHandlers = () =>
+    Array.from(handlers).sort(handlerOptions.comparePriority);
 
-  /**
-   * Connects signal handler, that will be invoked on signal emit.
-   * @param {Handler} handler
-   * @param priority Handler invocation priority (handler with higher priority will be called later than with lower one)
-   */
-  public connect(handler: Handler, priority: number = 0): void {
-    const existingHandler = this.handlers.find((it) => it.equals(handler));
-    let needResort: boolean;
-    if (existingHandler !== undefined) {
-      needResort = existingHandler.priority !== priority;
-      existingHandler.priority = priority;
-    } else {
-      const lastHandler = this.handlers[this.handlers.length - 1];
-      this.handlers.push(new SignalHandler(handler, priority));
-      needResort = (lastHandler !== undefined && lastHandler.priority > priority);
-    }
-    if (needResort) {
-      this.handlers.sort((a, b) => a.priority - b.priority);
-    }
-  }
+  return {
+    /**
+     * 是否存在 handlers
+     */
+    hasHandlers: (): boolean => handlers.size > 0,
 
-  /**
-   * Disconnects signal handler
-   * @param {Handler} handler
-   */
-  public disconnect(handler: Handler): void {
-    const existingHandlerIndex = this.handlers.findIndex((it) => it.equals(handler));
-    if (existingHandlerIndex >= 0) {
-      this.handlers.splice(existingHandlerIndex, 1);
-    }
-  }
+    /**
+     * handlers 数量
+     */
+    handlersAmount: (): number => handlers.size,
 
-  /**
-   * Disconnects all signal handlers
-   * @param {Handler} handler
-   */
-  public disconnectAll(): void {
-    this.handlers.length = 0;
-  }
+    /**
+     * 连接 handler
+     */
+    connect: (handler: T, priority: Priority = 0) => {
+      const existingHandler = Array.from(handlers).find((it) =>
+        handlerOptions.equals(it, handler),
+      );
 
-  /**
-   * Invokes connected handlers with passed parameters.
-   * @param {any} args
-   */
-  public emit(...args: Parameters<Handler>): void {
-    for (const handler of this.handlers) {
-      handler.handle(...args);
-    }
-  }
-}
+      let needSort = false;
+      if (existingHandler !== undefined) {
+        needSort = existingHandler.priority !== priority;
+        existingHandler.priority = priority;
+      } else {
+        const lastHandler = Array.from(handlers)[handlers.size - 1];
+        const newHandler = createHandler(handler, priority);
+        handlers.add(newHandler);
+        needSort = lastHandler !== undefined && lastHandler.priority > priority;
+      }
+      if (needSort) {
+        getSortedHandlers();
+      }
+    },
 
-class SignalHandler<Handler extends (...args: any[]) => any> {
-  public constructor(public readonly handler: Handler, public priority: number) {}
+    /**
+     * 移除 handler
+     */
+    disconnect: (handler: T) => {
+      const existingHandler = Array.from(handlers).find((it) =>
+        handlerOptions.equals(it, handler),
+      );
+      if (existingHandler) {
+        handlers.delete(existingHandler);
+      }
+    },
 
-  public equals(handler: Handler): boolean {
-    return this.handler === handler;
-  }
+    /**
+     * 清空 handlers
+     */
+    clear: () => handlers.clear(),
 
-  public handle(...args: any[]) {
-    this.handler(...args);
-  }
-}
+    /**
+     * 触发
+     */
+    emit: (...args: Parameters<T>) => {
+      getSortedHandlers().forEach((handler) =>
+        handlerOptions.handle(handler, ...args),
+      );
+    },
+  };
+};
+
+const handlerOptions = {
+  // 比较 handler 和 listener
+  equals: <T extends Handler>(a: SignalHandler<T>, b: Handler): boolean =>
+    a.handler === b,
+
+  // 执行 handlers
+  handle: <T extends Handler>(
+    signalHandler: SignalHandler<T>,
+    ...args: any[]
+  ): void => signalHandler.handler(...args),
+
+  // 比较 handlers 优先级
+  comparePriority: <T extends Handler>(
+    a: SignalHandler<T>,
+    b: SignalHandler<T>,
+  ): number => a.priority - b.priority,
+};
