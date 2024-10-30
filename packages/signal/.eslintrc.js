@@ -1,3 +1,3 @@
-import { configs, defineConfig } from '@ecs-pcl/eslint'
+const { configs, defineConfig } = require('@ecs-pcl/eslint');
 
-export default defineConfig(...configs.base)
+module.exports = defineConfig(...configs.base);
