@@ -2,7 +2,7 @@ import { signal } from "../src";
 import { describe, it, expect } from "vitest";
 
 describe("Signals", () => {
-  it("should create a signal", () => {
+  it("成功创建 signal", () => {
     const test = signal();
     expect(test).toBeDefined();
   });
@@ -29,7 +29,7 @@ describe("Signals", () => {
     expect(test.handlersAmount).toEqual(0);
   });
 
-  it("点开未添加的 handler 不会增加 handler 数量", () => {
+  it("断开未添加的 handler 不会影响数量", () => {
     const test = signal();
     const addedHandler = (value: number) => {};
     const wrongHandler = (value: number) => {};

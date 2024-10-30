@@ -8,3 +8,4 @@ export * from './ecs/system';
 export * from './ecs/system-iterative';
 export * from './ecs/system-reaction';
 export * from './ecs/tag';
+export * from './utils/class';

@@ -14,6 +14,7 @@
     "build": "bun run build-fast -- --dts-resolve",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
+    "test:watch": "vitest dev",
     "prepublishOnly": "bun run build"
   },
   "devDependencies": {

@@ -1,0 +1,9 @@
+{
+  "extends": "@ecs-pcl/tsconfig/react.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "lib": ["dom", "dom.iterable", "esnext"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
