@@ -2,133 +2,120 @@ import { Engine } from "./engine";
 import { Entity } from "./entity";
 
 /**
- * Systems are logic bricks in your application.
- * If you want to manipulate entities and their components - it is the right place for that.
+ * System 是应用的基础，用以处理实体和组件。
  */
-export abstract class System {
-  private _priority: number = 0;
-  private _engine?: Engine;
-  private _isRemovalRequested: boolean = false;
+declare class System {
+  /** @internal */
+  _priority: number;
 
-  /**
-   * Gets an {@link Engine} instance that system attached to
-   * @returns {Engine}
-   * @throws An error if system is not attached to the engine
-   */
-  public get engine(): Engine {
-    if (this._engine === undefined)
+  /** @internal */
+  _engine?: Engine | undefined;
+
+  /** @internal */
+  _isRemovalRequested: boolean;
+
+  /** 获取引擎实例 */
+  get engine(): Engine;
+
+  /** 指示系统是否应在当前更新周期结束时从引擎中删除 */
+  get isRemovalRequested(): boolean;
+
+  /** 获取共享配置实体 */
+  get sharedConfig(): Entity;
+
+  /** 获取系统优先级 */
+  get priority(): number;
+
+  /** 更新系统 */
+  update(dt: number): void;
+
+  /** 添加到引擎时调用 */
+  onAddedToEngine(): void;
+
+  /** 从引擎中移除时调用 */
+  onRemovedFromEngine(): void;
+
+  /** message dispatcher */
+  dispatch<T>(message: T): void;
+
+  /** @internal */
+  setEngine(engine: Engine | undefined): void;
+
+  /** @internal */
+  setPriority(priority: number): void
+
+  /** @internal */
+  requestRemoval(): void;
+}
+
+function System(this: System) {
+  this._priority = 0;
+  this._engine = undefined;
+  this._isRemovalRequested = false;
+}
+
+Object.defineProperty(System.prototype, 'engine', {
+    get() {
+      if (this._engine === undefined)
       throw new Error(
         `Property "engine" can't be accessed when system is not added to the engine`,
-      );
+    );
     return this._engine;
-  }
+  },
+});
 
-  /**
-   * Indicates that system should be removed from engine at the end of the current update cycle
-   * @internal
-   * @returns {boolean}
-   */
-  public get isRemovalRequested(): boolean {
+Object.defineProperty(System.prototype, 'isRemovalRequested', {
+  get() {
     return this._isRemovalRequested;
-  }
+  },
+});
 
-  /**
-   * Gets an {@link Entity} instance that is shared across all systems and can be used as a config.
-   * @return {Entity}
-   */
-  protected get sharedConfig(): Entity {
+Object.defineProperty(System.prototype, 'sharedConfig', {
+  get() {
     if (this._engine === undefined)
       throw new Error(
         `Property "sharedConfig" can't be accessed when system is not added to the engine`,
       );
     return this._engine.sharedConfig;
-  }
+  },
+});
 
-  /**
-   * Gets a priority of the system
-   */
-  public get priority(): number {
+Object.defineProperty(System.prototype, 'priority', {
+  get() {
     return this._priority;
+  },
+});
+
+// @ts-ignore
+System.prototype.update = function (dt: number) {};
+
+System.prototype.onAddedToEngine = function () {};
+
+System.prototype.onRemovedFromEngine = function () {};
+
+System.prototype.dispatch = function <T>(message: T) {
+  if (this._engine === undefined) {
+    throw new Error(
+      "Dispatching a message can't be done while system is not attached to the engine",
+    );
   }
+  this.engine.dispatch(message);
+};
 
-  /**
-   * All logic aimed at making changes in entities and their components must be placed in this method.
-   * @param dt - The time in seconds it took from previous update call.
-   */
-  // @ts-ignore
-  public update(dt: number) {}
+System.prototype.setEngine = function (engine: Engine | undefined) {
+  this._engine = engine;
+};
 
-  /**
-   * This method will be called after the system will be added to the Engine.
-   */
-  public onAddedToEngine() {}
+System.prototype.setPriority = function (priority: number) {
+  this._priority = priority;
+};
 
-  /**
-   * Callback that will be invoked after removing system from engine
-   */
-  public onRemovedFromEngine() {}
+System.prototype.requestRemoval = function () {
+  this._isRemovalRequested = true;
+};
 
-  /**
-   * Dispatches a message, that can be caught via {@link Engine#subscribe}.
-   * It's the best way to send a message outside. This mechanism allows you not to invent the signals/dispatchers
-   * mechanism for your systems, to report an event. For example, you can dispatch that the game round has been
-   * completed.
-   *
-   * @param {T} message
-   * @throws An error if system is not attached to the engine
-   * @example
-   * ```ts
-   * class RoundCompleted {
-   *   public constructor(
-   *      public readonly win:boolean
-   *   ) {}
-   * }
-   *
-   * const engine = new Engine();
-   * engine.subscribe(RoundCompleted, (message:RoundCompleted) => {
-   *   if (message.win) {
-   *     this.showWinDialog();
-   *   } else {
-   *     this.showLoseDialog();
-   *   }
-   * })
-   *
-   * class RoundCompletionSystem extends System {
-   *   public update(dt:number) {
-   *     if (heroesQuery.isEmpty) {
-   *       this.dispatch(new RoundCompleted(false));
-   *     } else if (enemiesQuery.isEmpty) {
-   *       this.dispatch(new RoundCompleted(true));
-   *     }
-   *   }
-   * }
-   * ```
-   */
-  public dispatch<T>(message: T): void {
-    if (this._engine === undefined) {
-      throw new Error(
-        "Dispatching a message can't be done while system is not attached to the engine",
-      );
-    }
-    this.engine.dispatch(message);
-  }
-
-  /**
-   * @internal
-   */
-  public setEngine(engine: Engine | undefined): void {
-    // @ts-ignore
-    this._engine = engine;
-  }
-
-  /**
-   * @internal
-   */
-  public setPriority(priority: number): void {
-    this._priority = priority;
-  }
-
-  protected requestRemoval(): void {
-    this._isRemovalRequested = true;
-  }
+export function system() {
+  return new System();
 }
+
+export { System };

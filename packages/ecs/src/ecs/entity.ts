@@ -205,13 +205,13 @@ function Entity(this: Entity) {
 }
 
 Object.defineProperty(Entity.prototype, 'components', {
-  get: function() {
+  get: function () {
     return this._components;
   }
 });
 
 Object.defineProperty(Entity.prototype, 'tags', {
-  get: function() {
+  get: function () {
     return new Set(this._tags);
   }
 });
@@ -402,7 +402,7 @@ Entity.prototype.iterate = function <T>(componentClass: Class<T>, action: (compo
   this.getLinkedComponentList(componentClass)?.iterate(action);
 }
 
-Entity.prototype.getAll = function * <T>(componentClass: Class<T>) {
+Entity.prototype.getAll = function* <T>(componentClass: Class<T>) {
   if (!this.hasComponent(componentClass)) return;
   const list = this.getLinkedComponentList(componentClass, false);
   if (list === undefined) return undefined;
@@ -420,6 +420,7 @@ Entity.prototype.find = function <T>(componentClass: Class<T>, predicate: (compo
       if (predicate(linkedComponent as T)) return linkedComponent as T;
       linkedComponent = linkedComponent.next;
     }
+    return undefined;
   } else return predicate(component as T) ? component as T : undefined;
 }
 

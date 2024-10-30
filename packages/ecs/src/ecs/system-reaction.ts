@@ -66,7 +66,7 @@ export abstract class ReactionSystem extends System {
     this.query.clear();
   }
 
-  protected prepare() {}
+  protected prepare() { }
 
   /**
    * Method will be called for every new entity that matches system query.
@@ -79,7 +79,7 @@ export abstract class ReactionSystem extends System {
    *   before adding, and component that will be added
    */
   // @ts-ignore
-  protected entityAdded = (entity: EntitySnapshot) => {};
+  protected entityAdded = (entity: EntitySnapshot) => { };
 
   /**
    * Method will be called for every entity matches system query, that is going to be removed from engine, or it stops
@@ -90,5 +90,5 @@ export abstract class ReactionSystem extends System {
    *   before removing
    */
   // @ts-ignore
-  protected entityRemoved = (entity: EntitySnapshot) => {};
+  protected entityRemoved = (entity: EntitySnapshot) => { };
 }

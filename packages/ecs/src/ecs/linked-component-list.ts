@@ -33,13 +33,13 @@ function LinkedComponentList<T extends LinkedComponent>(this: LinkedComponentLis
 }
 
 Object.defineProperty(LinkedComponentList.prototype, 'head', {
-  get: function() {
+  get: function () {
     return this._head;
   }
 });
 
 Object.defineProperty(LinkedComponentList.prototype, 'isEmpty', {
-  get: function() {
+  get: function () {
     return this._head === undefined;
   }
 });
