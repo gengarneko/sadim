@@ -240,6 +240,7 @@ export class Engine {
    */
   public addSystem(system: System, priority: number = 0): Engine {
     system.setPriority(priority);
+
     if (this._systems.length === 0) {
       this._systems[0] = system;
     } else {

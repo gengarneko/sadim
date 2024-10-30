@@ -1,28 +1,23 @@
-/**
- * 链表组件的接口定义
- * @see {@link Entity.append} 可以通过 Entity.append 方法将多个组件串联
- */
+/** 链表组件 可以通过 Entity.append 方法将多个组件串联 */
+declare class LinkedComponent {
+  id: string | undefined;
+  next: LinkedComponent | undefined;
 
-export interface ILinkedComponent {
-  id?: string;
-  next?: ILinkedComponent;
+  constructor(id?: string);
 }
 
-/**
- * ILinkedComponent 接口的简单实现
- * @see {@link Entity.append}
- */
-export class LinkedComponent implements ILinkedComponent {
-  // @ts-ignore
-  public next?: this = undefined;
-
-  public constructor(public id?: string) {
-  }
+function LinkedComponent(this: LinkedComponent, id?: string) {
+  this.id = id;
+  this.next = undefined;
 }
 
-/**
- * @internal
- */
-export function isLinkedComponent(component: any): component is ILinkedComponent {
+/** 检查是否为链表组件 */
+const isLinkedComponent = (component: any): component is LinkedComponent => {
   return component !== undefined && component.hasOwnProperty('next');
 }
+
+function linkedComponent(id?: string) {
+  return new LinkedComponent(id);
+}
+
+export { linkedComponent, LinkedComponent, isLinkedComponent };

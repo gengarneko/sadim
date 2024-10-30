@@ -1,5 +1,17 @@
 import {Class} from '../utils/class';
 
+
+const COMPONENT_CLASS_ID = '__componentClassId__' as const; 
+let componentClassId: number = 1;
+
+type Component<T> = {
+  [K in keyof T]: T[K];
+}
+
+type ComponentId<T> = Component<T> & {
+  [COMPONENT_CLASS_ID]: number;
+};
+
 /**
  * 获取组件类的ID
  *
@@ -8,7 +20,7 @@ import {Class} from '../utils/class';
  *  将为其创建一个唯一的ID
  */
 export function getComponentId<T>(
-  component: Class<T>,
+  component: Component<T>,
   createIfNotExists: boolean = false,
 ): number | undefined {
   if (component.hasOwnProperty(COMPONENT_CLASS_ID)) {
@@ -34,10 +46,3 @@ export function getComponentClass<T extends K, K>(component: NonNullable<T>, res
   componentClass = resolveClass as Class<T>;
   return componentClass;
 }
-
-let COMPONENT_CLASS_ID = '__componentClassId__';
-let componentClassId: number = 1;
-
-type ComponentId<T> = Class<T> & {
-  [key: string]: number;
-};

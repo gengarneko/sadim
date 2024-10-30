@@ -1,86 +1,120 @@
-import {ILinkedComponent} from './linked-component';
+import { LinkedComponent } from './linked-component';
 
-/**
- * 组件链表
- *
- * 作用:
- *  管理一组相关联的组件
- *  维护组件之间的顺序关系
- *  提供便捷的遍历和操作方法
- *  确保组件链表的完整性（防止重复添加、正确删除等）
- */
+declare class LinkedComponentList<T extends LinkedComponent> {
+  /** @internal */
+  _head: T | undefined;
 
-export class LinkedComponentList<T extends ILinkedComponent> {
-  private _head: T | undefined;
+  constructor();
 
-  public get head(): T | undefined {
+  /** @internal */
+  _findNode: (component: T) => [prev: T | undefined, current: T | undefined];
+
+  get head(): T | undefined;
+
+  get isEmpty(): boolean;
+
+  add: (linkedComponent: T) => this;
+
+  remove: (linkedComponent: T) => this;
+
+  iterate: (action: (value: T) => void) => void;
+
+  nodes: () => Generator<T>;
+
+  clear: () => void;
+
+  find: (linkedComponent: T) => [prev: T | undefined, current: T | undefined];
+}
+
+/** @internal */
+// This enables better control of the transpiled output size.
+function LinkedComponentList<T extends LinkedComponent>(this: LinkedComponentList<T>) {
+  this._head = undefined;
+}
+
+Object.defineProperty(LinkedComponentList.prototype, 'head', {
+  get: function() {
     return this._head;
   }
+});
 
-  public get isEmpty(): boolean {
+Object.defineProperty(LinkedComponentList.prototype, 'isEmpty', {
+  get: function() {
     return this._head === undefined;
   }
+});
 
-  public add(linkedComponent: T): void {
-    let prev: T | undefined = undefined;
-    let current: T | undefined = this._head;
-    while (current !== undefined) {
-      if (current === linkedComponent) {
-        throw new Error('Component is already appended, appending it once again will break linked items order');
-      }
-      prev = current;
-      current = current.next as (T | undefined);
+/** 添加 component 到链表 */
+LinkedComponentList.prototype.add = function (linkedComponent: LinkedComponent) {
+  let prev: LinkedComponent | undefined = undefined;
+  let current: LinkedComponent | undefined = this._head;
+  while (current !== undefined) {
+    if (current === linkedComponent) {
+      throw new Error('Component is already appended, appending it once again will break linked items order');
     }
-    if (this._head === undefined) {
-      this._head = linkedComponent;
-    } else {
-      prev!.next = linkedComponent;
-    }
+    prev = current;
+    current = current.next as (LinkedComponent | undefined);
   }
-
-  public remove(linkedComponent: T): boolean {
-    const [prev, current] = this.find(linkedComponent);
-    if (current === undefined) {
-      return false;
-    }
-    if (prev === undefined) {
-      this._head = current.next as (T | undefined);
-    } else {
-      // @ts-ignore
-      prev.next = current.next
-    }
-    return true;
+  if (this._head === undefined) {
+    this._head = linkedComponent;
+  } else {
+    prev!.next = linkedComponent;
   }
+  return this;
+};
 
-  public* nodes() {
-    let node = this.head;
-    while (node !== undefined) {
-      yield node;
-      node = node.next as (T | undefined);
+/** 从链表中移除 component */
+LinkedComponentList.prototype.remove = function (linkedComponent: LinkedComponent) {
+  const [prev, current] = this.find(linkedComponent);
+  if (current === undefined) {
+    return this;
+  }
+  if (prev === undefined) {
+    this._head = current.next as (LinkedComponent | undefined);
+  } else {
+    prev.next = current.next;
+  }
+  return this;
+};
+
+/** 遍历链表 */
+LinkedComponentList.prototype.nodes = function* () {
+  let node = this._head;
+  while (node !== undefined) {
+    yield node;
+    node = node.next as (LinkedComponent | undefined);
+  }
+};
+
+/** 迭代链表 */
+LinkedComponentList.prototype.iterate = function (action: (value: LinkedComponent) => void) {
+  for (const node of this.nodes()) {
+    action(node);
+  }
+};
+
+/** 清空链表 */
+LinkedComponentList.prototype.clear = function () {
+  this._head = undefined;
+};
+
+/** 查找链表中的 component */
+LinkedComponentList.prototype.find = function (linkedComponent: LinkedComponent) {
+  let prev: LinkedComponent | undefined;
+  let current: LinkedComponent | undefined = this._head;
+  while (current !== undefined) {
+    if (current === linkedComponent) {
+      return [prev, current];
     }
+    prev = current;
+    current = current.next as (LinkedComponent | undefined);
   }
+  return [undefined, undefined];
+};
 
-  public iterate(action: (value: T) => void): void {
-    for (const node of this.nodes()) {
-      action(node);
-    }
-  }
-
-  public clear(): void {
-    this._head = undefined;
-  }
-
-  private find(linkedComponent: T): [prev: T | undefined, current: T | undefined] {
-    let prev: T | undefined;
-    let current: T | undefined = this._head;
-
-    while (current !== undefined) {
-      if (current === linkedComponent) {
-        return [prev, current];
-      }
-      prev = current;
-      current = current.next as (T | undefined);
-    }
-    return [undefined, undefined];
-  }
+/** 创建空组件链表 */
+function linkedComponentList<T extends LinkedComponent>() {
+  return new LinkedComponentList<T>();
 }
+
+export { linkedComponentList, LinkedComponentList };

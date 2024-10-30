@@ -31,7 +31,7 @@ describe("Shared config", () => {
 
   it(`Shared config can't be removed from engine`, () => {
     expect(() => {
-      class Component {}
+      class Component { }
 
       const engine = new Engine();
       engine.sharedConfig.add(new Component());

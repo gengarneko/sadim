@@ -47,16 +47,13 @@ class MovementSystem extends IterativeSystem {
 describe("Iterative system", () => {
   it("Updating entities", () => {
     const engine = new Engine();
-    const pos = createPosition(0, 0);
-    // const entity = new Entity().add(new Position(0, 0));
-    const entity = new Entity().add(pos);
+    const entity = new Entity().add(new Position(0, 0));
 
     engine.addSystem(new MovementSystem());
     engine.addEntity(entity);
     engine.update(1);
 
     const position = entity.get(Position);
-    console.log("position", position);
     expect(position).toBeDefined();
     expect(position!.x).toBe(110);
     expect(position!.y).toBe(10);
@@ -74,7 +71,7 @@ describe("Iterative system", () => {
         entities = this.entities;
       }
 
-      protected updateEntity(entity: Entity, dt: number): void {}
+      protected updateEntity(entity: Entity, dt: number): void { }
     }
 
     const engine = new Engine();
@@ -103,7 +100,7 @@ describe("Iterative system", () => {
         super(new QueryBuilder().contains(Position).build());
       }
 
-      protected updateEntity(entity: Entity, dt: number): void {}
+      protected updateEntity(entity: Entity, dt: number): void { }
 
       protected entityAdded = ({ current, previous }: EntitySnapshot) => {
         onAdded = {
@@ -137,7 +134,7 @@ describe("Iterative system", () => {
 
   it("Entities safe removal during iteration should not break the iteration ordering", () => {
     class Health {
-      public constructor(public value: number) {}
+      public constructor(public value: number) { }
     }
 
     class HealthTickSystem extends IterativeSystem {
@@ -189,7 +186,7 @@ describe("Iterative system", () => {
 
 describe("Failure on accessing engine if not attached to it", () => {
   it(`Expected that engine can't be accessed if system is not attached to it`, () => {
-    class Message {}
+    class Message { }
 
     class TestSystem extends System {
       public update(dt: number) {
@@ -202,7 +199,7 @@ describe("Failure on accessing engine if not attached to it", () => {
   });
 
   it(`Expected that message can't be sent if system is not attached to the engine`, () => {
-    class Message {}
+    class Message { }
 
     class TestSystem extends System {
       public update(dt: number) {
@@ -215,7 +212,7 @@ describe("Failure on accessing engine if not attached to it", () => {
   });
 
   it(`Expected that removing system from engine breaking the iteration`, () => {
-    class Component {}
+    class Component { }
 
     let amountOfIterations = 0;
 
@@ -244,7 +241,7 @@ describe("Failure on accessing engine if not attached to it", () => {
   });
 
   it(`Iterative system should iterate over entities after removing and subsequent adding it to the engine`, () => {
-    class Component {}
+    class Component { }
 
     const engine = new Engine();
     const entity = new Entity().add(new Component());
@@ -262,13 +259,12 @@ describe("Failure on accessing engine if not attached to it", () => {
 
     engine.addSystem(system);
     engine.update(1);
-
+    
     engine.removeSystem(system);
     engine.update(1);
 
     engine.addSystem(system);
     engine.update(1);
-
     expect(iterationsCount).toBe(2);
   });
 

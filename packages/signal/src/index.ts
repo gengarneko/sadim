@@ -1,27 +1,27 @@
 type Handler = (...args: any[]) => any;
 type Priority = number;
 
-type SignalHandler = {
-  handler: Handler;
+type SignalHandler<T extends Handler> = {
+  handler: T;
   priority: Priority;
 };
 
-declare class Signal {
+declare class Signal<T extends Handler> {
   /** @internal */
-  _handlers: SignalHandler[];
+  _handlers: SignalHandler<T>[];
 
   constructor();
 
   /** @internal */
   _sort: () => void;
 
-  hasHandlers(): boolean;
+  get hasHandlers(): boolean;
 
-  handlersAmount(): number;
+  get handlersAmount(): number;
 
-  connect(handler: Handler, priority?: number): this;
+  connect(handler: Handler, priority?: number): Signal<T>;
 
-  disconnect(handler: Handler): this;
+  disconnect(handler: Handler): Signal<T>;
 
   clear(): void;
 
@@ -30,7 +30,7 @@ declare class Signal {
 
 /** @internal */
 // This enables better control of the transpiled output size.
-function Signal(this: Signal) {
+function Signal<T extends Handler>(this: Signal<T>) {
   this._handlers = [];
 }
 
@@ -40,14 +40,18 @@ Signal.prototype._sort = function () {
 };
 
 /** 是否存在 handlers */
-Signal.prototype.hasHandlers = function () {
-  return this._handlers.length > 0;
-};
+Object.defineProperty(Signal.prototype, 'hasHandlers', {
+  get(): boolean {
+    return this._handlers.length > 0;
+  },
+});
 
 /** handlers 数量 */
-Signal.prototype.handlersAmount = function () {
-  return this._handlers.length;
-};
+Object.defineProperty(Signal.prototype, 'handlersAmount', {
+  get(): number {
+    return this._handlers.length;
+  },
+});
 
 /** 连接 handler */
 Signal.prototype.connect = function (handler: Handler, priority: number = 0) {
@@ -92,6 +96,8 @@ Signal.prototype.emit = function (...args: Parameters<Handler>) {
 };
 
 /** 创建空 signal */
-export function signal() {
+function signal() {
   return new Signal();
 }
+
+export { Signal, signal };

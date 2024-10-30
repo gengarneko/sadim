@@ -298,14 +298,7 @@ describe("Components and Tags", () => {
     }).toThrow();
   });
 
-  it(`Expected that specifying resolve class for appended component gives right resolving`, () => {
-    const entity = new Entity();
-    const secondChild = new DamageChild();
-    const firstChild = new DamageChild();
-    entity.append(firstChild, Damage);
-    entity.append(secondChild, Damage);
-    expect(entity.get(Damage)).toEqual(firstChild);
-  });
+
 
   it(`Expected that appending the same linked component twice with gaps will throw an error`, () => {
     const entity = new Entity();

@@ -11,13 +11,13 @@ class Position {
   }
 }
 
-class View {}
+class View { }
 
-class Move {}
+class Move { }
 
-class Stay {}
+class Stay { }
 
-class Damage extends LinkedComponent {}
+class Damage extends LinkedComponent { }
 
 describe("Query builder", () => {
   it("Building query", () => {
@@ -322,7 +322,7 @@ describe("Query matching", () => {
       return entity.has(Position);
     });
 
-    const entities = [];
+    const entities: Entity[] = [];
     for (let i = 0; i < initialEntitiesAmount; i++) {
       const entity = new Entity().add(new Position());
       if (i < entitiesWithViewAmount) {
