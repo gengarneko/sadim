@@ -1,14 +1,14 @@
 type Handler = (...args: any[]) => any;
 type Priority = number;
 
-type SignalHandler<T extends Handler> = {
-  handler: T;
+type SignalHandler = {
+  handler: Handler;
   priority: Priority;
 };
 
-declare class Signal<T extends Handler> {
+declare class Signal {
   /** @internal */
-  _handlers: SignalHandler<T>[];
+  _handlers: SignalHandler[];
 
   constructor();
 
@@ -19,18 +19,18 @@ declare class Signal<T extends Handler> {
 
   handlersAmount(): number;
 
-  connect(handler: T, priority?: number): this;
+  connect(handler: Handler, priority?: number): this;
 
-  disconnect(handler: T): this;
+  disconnect(handler: Handler): this;
 
   clear(): void;
 
-  emit(...args: Parameters<T>): void;
+  emit(...args: Parameters<Handler>): void;
 }
 
 /** @internal */
 // This enables better control of the transpiled output size.
-function Signal<T extends Handler>(this: Signal<T>) {
+function Signal(this: Signal) {
   this._handlers = [];
 }
 
@@ -50,12 +50,8 @@ Signal.prototype.handlersAmount = function () {
 };
 
 /** 连接 handler */
-Signal.prototype.connect = function <T>(handler: T, priority: number = 0) {
-  const existingHandler = this._handlers.find((it) =>
-    it.handler === handler
-  );
-
-  console.log('existingHandler', existingHandler)
+Signal.prototype.connect = function (handler: Handler, priority: number = 0) {
+  const existingHandler = this._handlers.find((it) => it.handler === handler);
 
   let needSort = false;
 
@@ -75,7 +71,7 @@ Signal.prototype.connect = function <T>(handler: T, priority: number = 0) {
 };
 
 /** 移除 handler */
-Signal.prototype.disconnect = function <T>(handler: T) {
+Signal.prototype.disconnect = function (handler: Handler) {
   const existingHandlerIndex = this._handlers.findIndex((it) => it.handler === handler);
   if (existingHandlerIndex >= 0) {
     this._handlers.splice(existingHandlerIndex, 1);
