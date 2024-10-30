@@ -6,102 +6,96 @@ type SignalHandler<T extends Handler> = {
   priority: Priority;
 };
 
-/**
- * 创建 handler
- */
-const createHandler = <T extends Handler>(
-  handler: T,
-  priority: Priority = 0,
-): SignalHandler<T> => ({
-  handler,
-  priority,
-});
+declare class Signal<T extends Handler> {
+  /** @internal */
+  _handlers: SignalHandler<T>[];
 
-/**
- * 创建 signal
- */
-export const createSignal = <T extends Handler>() => {
-  const handlers = new Set<SignalHandler<T>>();
+  constructor();
 
-  const getSortedHandlers = () =>
-    Array.from(handlers).sort(handlerOptions.comparePriority);
+  /** @internal */
+  _sort: () => void;
 
-  return {
-    /**
-     * 是否存在 handlers
-     */
-    hasHandlers: (): boolean => handlers.size > 0,
+  hasHandlers(): boolean;
 
-    /**
-     * handlers 数量
-     */
-    handlersAmount: (): number => handlers.size,
+  handlersAmount(): number;
 
-    /**
-     * 连接 handler
-     */
-    connect: (handler: T, priority: Priority = 0) => {
-      const existingHandler = Array.from(handlers).find((it) =>
-        handlerOptions.equals(it, handler),
-      );
+  connect(handler: T, priority?: number): this;
 
-      let needSort = false;
-      if (existingHandler !== undefined) {
-        needSort = existingHandler.priority !== priority;
-        existingHandler.priority = priority;
-      } else {
-        const lastHandler = Array.from(handlers)[handlers.size - 1];
-        const newHandler = createHandler(handler, priority);
-        handlers.add(newHandler);
-        needSort = lastHandler !== undefined && lastHandler.priority > priority;
-      }
-      if (needSort) {
-        getSortedHandlers();
-      }
-    },
+  disconnect(handler: T): this;
 
-    /**
-     * 移除 handler
-     */
-    disconnect: (handler: T) => {
-      const existingHandler = Array.from(handlers).find((it) =>
-        handlerOptions.equals(it, handler),
-      );
-      if (existingHandler) {
-        handlers.delete(existingHandler);
-      }
-    },
+  clear(): void;
 
-    /**
-     * 清空 handlers
-     */
-    clear: () => handlers.clear(),
+  emit(...args: Parameters<T>): void;
+}
 
-    /**
-     * 触发
-     */
-    emit: (...args: Parameters<T>) => {
-      getSortedHandlers().forEach((handler) =>
-        handlerOptions.handle(handler, ...args),
-      );
-    },
-  };
+/** @internal */
+// This enables better control of the transpiled output size.
+function Signal<T extends Handler>(this: Signal<T>) {
+  this._handlers = [];
+}
+
+/** 优先级高的靠后, 更晚执行 */
+Signal.prototype._sort = function () {
+  this._handlers.sort((a, b) => a.priority - b.priority);
 };
 
-const handlerOptions = {
-  // 比较 handler 和 listener
-  equals: <T extends Handler>(a: SignalHandler<T>, b: Handler): boolean =>
-    a.handler === b,
-
-  // 执行 handlers
-  handle: <T extends Handler>(
-    signalHandler: SignalHandler<T>,
-    ...args: any[]
-  ): void => signalHandler.handler(...args),
-
-  // 比较 handlers 优先级
-  comparePriority: <T extends Handler>(
-    a: SignalHandler<T>,
-    b: SignalHandler<T>,
-  ): number => a.priority - b.priority,
+/** 是否存在 handlers */
+Signal.prototype.hasHandlers = function () {
+  return this._handlers.length > 0;
 };
+
+/** handlers 数量 */
+Signal.prototype.handlersAmount = function () {
+  return this._handlers.length;
+};
+
+/** 连接 handler */
+Signal.prototype.connect = function <T>(handler: T, priority: number = 0) {
+  const existingHandler = this._handlers.find((it) =>
+    it.handler === handler
+  );
+
+  console.log('existingHandler', existingHandler)
+
+  let needSort = false;
+
+  if (existingHandler !== undefined) {
+    needSort = existingHandler.priority !== priority;
+    existingHandler.priority = priority;
+  } else {
+    const lastHandler = this._handlers[this._handlers.length - 1];
+    this._handlers.push({ handler, priority });
+    needSort = (lastHandler !== undefined && lastHandler.priority > priority);
+  }
+  if (needSort) {
+    this._sort();
+  }
+
+  return this;
+};
+
+/** 移除 handler */
+Signal.prototype.disconnect = function <T>(handler: T) {
+  const existingHandlerIndex = this._handlers.findIndex((it) => it.handler === handler);
+  if (existingHandlerIndex >= 0) {
+    this._handlers.splice(existingHandlerIndex, 1);
+  }
+  return this;
+};
+
+/** 清空 handlers */
+Signal.prototype.clear = function () {
+  this._handlers.length = 0;
+  return this;
+};
+
+/** 触发 handlers */
+Signal.prototype.emit = function (...args: Parameters<Handler>) {
+  this._handlers.forEach((it) => it.handler(...args));
+  return this;
+};
+
+/** 创建空 signal */
+export function signal() {
+  return new Signal();
+}
