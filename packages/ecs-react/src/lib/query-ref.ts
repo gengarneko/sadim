@@ -34,24 +34,28 @@ export class QueryRef {
     if (this.current) {
       return this.current.entities;
     }
+    return [];
   }
 
   get first() {
     if (this.current) {
       return this.current.first;
     }
+    return null;
   }
 
   get last() {
     if (this.current) {
       return this.current.last;
     }
+    return null;
   }
 
   get length() {
     if (this.current) {
       return this.current.length;
     }
+    return 0;
   }
 
   countBy(predicate: QueryPredicate) {

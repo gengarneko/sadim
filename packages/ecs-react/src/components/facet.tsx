@@ -17,7 +17,7 @@ export class Facet<T extends {}> extends Component<
   NonFunctionProperties<Omit<T, ''>>
 > {
   static override contextType = EntityContext;
-  override context!: ContextType<typeof EntityContext>;
+  declare context: ContextType<typeof EntityContext>;
 
   createFake() {
     const ctor = Object.getPrototypeOf(this).constructor;
