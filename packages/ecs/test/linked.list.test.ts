@@ -1,10 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { linkedComponentList } from "../src/ecs/linked-component-list";
-import { linkedComponent } from "../src/ecs/linked-component";
+import { describe, expect, it } from 'vitest';
+
+import { linkedComponent } from '../src/ecs/linked-component';
+import { linkedComponentList } from '../src/ecs/linked-component-list';
 
 const component = linkedComponent();
 
-describe("Linked list", () => {
+describe('Linked list', () => {
   it(`添加组件到空链表, head 指向组件`, () => {
     const list = linkedComponentList();
     list.add(component);
@@ -45,7 +46,11 @@ describe("Linked list", () => {
 
   it(`遍历链表`, () => {
     const list = linkedComponentList();
-    const components = [linkedComponent(), linkedComponent(), linkedComponent()];
+    const components = [
+      linkedComponent(),
+      linkedComponent(),
+      linkedComponent(),
+    ];
     components.forEach((component) => list.add(component));
     list.iterate((component) => {
       const index = components.indexOf(component);
@@ -55,9 +60,13 @@ describe("Linked list", () => {
     expect(components.length).toBe(0);
   });
 
-  it("在遍历过程中移除当前组件不会破坏遍历", () => {
+  it('在遍历过程中移除当前组件不会破坏遍历', () => {
     const list = linkedComponentList();
-    const components = [linkedComponent(), linkedComponent(), linkedComponent()];
+    const components = [
+      linkedComponent(),
+      linkedComponent(),
+      linkedComponent(),
+    ];
     components.forEach((component) => list.add(component));
     list.iterate((component) => {
       list.remove(component);
@@ -68,7 +77,7 @@ describe("Linked list", () => {
     expect(components.length).toBe(0);
   });
 
-  it("从链表中移除所有组件", () => {
+  it('从链表中移除所有组件', () => {
     const list = linkedComponentList();
     list.add(linkedComponent());
     list.add(linkedComponent());

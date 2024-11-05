@@ -10,12 +10,12 @@
     }
   },
   "scripts": {
-    "build-fast": "tsup",
     "build": "bun run build-fast -- --dts-resolve",
+    "build-fast": "tsup",
     "lint": "eslint . --max-warnings 0",
+    "prepublishOnly": "bun run build",
     "test": "vitest run",
-    "test:watch": "vitest dev",
-    "prepublishOnly": "bun run build"
+    "test:watch": "vitest dev"
   },
   "devDependencies": {
     "@ecs-pcl/eslint": "workspace:^",

@@ -4,7 +4,7 @@
   "private": true,
   "description": "repo's assets package",
   "license": "MIT",
-  "author": "theo",
+  "author": "gengarneko",
   "files": [
     "**/*"
   ]

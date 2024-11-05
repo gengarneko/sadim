@@ -1,13 +1,14 @@
-import { signal } from "@ecs-pcl/signal";
-import { getComponentClass, getComponentId } from "./component-id";
-import { Class } from "../utils/class";
-import { isTag, Tag } from "./tag";
-import { isLinkedComponent } from "./linked-component";
-import { linkedComponentList } from "./linked-component-list";
+import type { Signal } from '@ecs-pcl/signal';
+import type { LinkedComponent } from './linked-component';
+import type { LinkedComponentList } from './linked-component-list';
 
-import type { Signal } from "@ecs-pcl/signal";
-import type { LinkedComponent } from "./linked-component";
-import type { LinkedComponentList } from "./linked-component-list";
+import { signal } from '@ecs-pcl/signal';
+
+import { Class } from '../utils/class';
+import { getComponentClass, getComponentId } from './component-id';
+import { isLinkedComponent } from './linked-component';
+import { linkedComponentList } from './linked-component-list';
+import { isTag, Tag } from './tag';
 
 export interface ReadonlyEntity {
   /** 当 component 或者 tag 被添加到 entity 时触发 */
@@ -59,7 +60,10 @@ export interface ReadonlyEntity {
   iterate<T>(componentClass: Class<T>, action: (component: T) => void): void;
 
   /** 查找 entity 中指定 class 的 components 中第一个满足条件的 component */
-  find<T>(componentClass: Class<T>, predicate: (component: T) => boolean): T | undefined;
+  find<T>(
+    componentClass: Class<T>,
+    predicate: (component: T) => boolean,
+  ): T | undefined;
 
   /** 获取 entity 中指定 class 的 components 数量 */
   lengthOf<T>(componentClass: Class<T>): number;
@@ -96,34 +100,55 @@ declare class Entity implements ReadonlyEntity {
   get tags(): ReadonlySet<Tag>;
 
   /** 添加 component 或者 tag */
-  add<T extends K, K extends unknown>(componentOrTag: NonNullable<T> | Tag, resolveClass?: Class<K>): Entity;
+  add<T extends K, K extends unknown>(
+    componentOrTag: NonNullable<T> | Tag,
+    resolveClass?: Class<K>,
+  ): Entity;
 
   /** 添加 linked component */
-  append<T extends K, K extends LinkedComponent>(component: NonNullable<T>, resolveClass?: Class<K>): Entity;
+  append<T extends K, K extends LinkedComponent>(
+    component: NonNullable<T>,
+    resolveClass?: Class<K>,
+  ): Entity;
 
   /** 移除第一个添加的 component */
   withdraw<T>(componentClass: Class<T>): T | undefined;
 
   /** 移除指定 id 的 linked component */
-  pick<T extends LinkedComponent>(resolveClass: Class<T>, id: string): T | undefined;
+  pick<T extends LinkedComponent>(
+    resolveClass: Class<T>,
+    id: string,
+  ): T | undefined;
   /** 移除指定 component */
   pick<T>(component: NonNullable<T>, resolveClass?: Class<T>): T | undefined;
-  pick<T>(componentOrResolveClass: NonNullable<T> | Class<T>, resolveClassOrId?: Class<T> | string): T | undefined
+  pick<T>(
+    componentOrResolveClass: NonNullable<T> | Class<T>,
+    resolveClassOrId?: Class<T> | string,
+  ): T | undefined;
 
   /** 添加 component */
-  addComponent<T extends K, K extends unknown>(component: NonNullable<T>, resolveClass?: Class<K>): Entity;
+  addComponent<T extends K, K extends unknown>(
+    component: NonNullable<T>,
+    resolveClass?: Class<K>,
+  ): Entity;
 
   /** 添加 linked component */
-  appendComponent<T extends K, K extends LinkedComponent>(component: NonNullable<T>, resolveClass?: Class<K>): Entity;
+  appendComponent<T extends K, K extends LinkedComponent>(
+    component: NonNullable<T>,
+    resolveClass?: Class<K>,
+  ): Entity;
 
   /** 添加 tag */
   addTag(tag: Tag): Entity;
 
   /** 检查 entity 是否包含某个 component 或者 tag */
-  has<T>(componentClassOrTag: Class<T> | Tag, id?: string): boolean
+  has<T>(componentClassOrTag: Class<T> | Tag, id?: string): boolean;
 
   /** 检查 entity 是否包含某个 component */
-  contains<T extends K, K>(component: NonNullable<T>, resolveClass?: Class<K>): boolean
+  contains<T extends K, K>(
+    component: NonNullable<T>,
+    resolveClass?: Class<K>,
+  ): boolean;
 
   /** 检查 entity 是否包含某个 component */
   hasComponent<T>(component: Class<T>, id?: string): boolean;
@@ -168,22 +193,35 @@ declare class Entity implements ReadonlyEntity {
   getAll<T>(componentClass: Class<T>): Generator<T, void, T | undefined>;
 
   /** 查找 entity 中指定 class 的 components 中第一个满足条件的 component */
-  find<T>(componentClass: Class<T>, predicate: (component: T) => boolean): T | undefined
+  find<T>(
+    componentClass: Class<T>,
+    predicate: (component: T) => boolean,
+  ): T | undefined;
 
   /** 获取 entity 中指定 class 的 components 数量 */
-  lengthOf<T>(componentClass: Class<T>): number
+  lengthOf<T>(componentClass: Class<T>): number;
 
   /** 使用此方法来通知 entity 的 component 属性已更改 */
   invalidate(): void;
 
   /** 获取 entity 的快照 */
-  takeSnapshot<T>(result: EntitySnapshot, changedComponentOrTag?: T, resolveClass?: Class<T>): void
+  takeSnapshot<T>(
+    result: EntitySnapshot,
+    changedComponentOrTag?: T,
+    resolveClass?: Class<T>,
+  ): void;
 
   /** 获取 entity 中指定 class 的 linked component 链表 */
-  getLinkedComponentList(componentClassOrId: number | Class<any>, createIfNotExists?: boolean): LinkedComponentList<any> | undefined;
+  getLinkedComponentList(
+    componentClassOrId: number | Class<any>,
+    createIfNotExists?: boolean,
+  ): LinkedComponentList<any> | undefined;
 
   /** 移除 entity 中指定 class 的 linked component */
-  withdrawComponent<T extends K, K extends LinkedComponent>(component: NonNullable<T>, resolveClass?: Class<K>): T | undefined;
+  withdrawComponent<T extends K, K extends LinkedComponent>(
+    component: NonNullable<T>,
+    resolveClass?: Class<K>,
+  ): T | undefined;
 
   /** 通知 entity 的 component 属性已添加 */
   dispatchOnComponentAdded<T>(component: NonNullable<T>): void;
@@ -207,27 +245,33 @@ function Entity(this: Entity) {
 Object.defineProperty(Entity.prototype, 'components', {
   get: function () {
     return this._components;
-  }
+  },
 });
 
 Object.defineProperty(Entity.prototype, 'tags', {
   get: function () {
     return new Set(this._tags);
-  }
+  },
 });
 
-Entity.prototype.add = function <T extends K, K extends unknown>(componentOrTag: NonNullable<T> | Tag, resolveClass?: Class<K>) {
+Entity.prototype.add = function <T extends K, K extends unknown>(
+  componentOrTag: NonNullable<T> | Tag,
+  resolveClass?: Class<K>,
+) {
   if (isTag(componentOrTag)) {
     this.addTag(componentOrTag);
   } else {
     this.addComponent(componentOrTag, resolveClass);
   }
   return this;
-}
+};
 
-Entity.prototype.append = function <T extends K, K extends LinkedComponent>(component: NonNullable<T>, resolveClass?: Class<K>): Entity {
+Entity.prototype.append = function <T extends K, K extends LinkedComponent>(
+  component: NonNullable<T>,
+  resolveClass?: Class<K>,
+): Entity {
   return this.appendComponent(component, resolveClass);
-}
+};
 
 Entity.prototype.withdraw = function <T>(componentClass: Class<T>) {
   const component = this.get(componentClass);
@@ -235,27 +279,49 @@ Entity.prototype.withdraw = function <T>(componentClass: Class<T>) {
     return;
   }
   if (isLinkedComponent(component)) {
-    return this.withdrawComponent(component, componentClass as Class<LinkedComponent>);
+    return this.withdrawComponent(
+      component,
+      componentClass as Class<LinkedComponent>,
+    );
   } else {
     return this.remove(componentClass);
   }
-}
+};
 
-Entity.prototype.pick = function <T>(componentOrResolveClass: NonNullable<T> | Class<T>, resolveClassOrId?: Class<T> | string): T | undefined {
+Entity.prototype.pick = function <T>(
+  componentOrResolveClass: NonNullable<T> | Class<T>,
+  resolveClassOrId?: Class<T> | string,
+): T | undefined {
   if (typeof resolveClassOrId === 'string') {
-    const component = this.find<T>(componentOrResolveClass as Class<T>, (component) => isLinkedComponent(component) && component.id === resolveClassOrId);
+    const component = this.find<T>(
+      componentOrResolveClass as Class<T>,
+      (component) =>
+        isLinkedComponent(component) && component.id === resolveClassOrId,
+    );
     if (isLinkedComponent(component)) {
-      return this.withdrawComponent(component, componentOrResolveClass as Class<LinkedComponent>);
+      return this.withdrawComponent(
+        component,
+        componentOrResolveClass as Class<LinkedComponent>,
+      );
     }
     return undefined;
   }
   if (isLinkedComponent(componentOrResolveClass)) {
-    return this.withdrawComponent(componentOrResolveClass, resolveClassOrId as Class<LinkedComponent>);
+    return this.withdrawComponent(
+      componentOrResolveClass,
+      resolveClassOrId as Class<LinkedComponent>,
+    );
   }
-  return this.remove(resolveClassOrId ?? getComponentClass(componentOrResolveClass as NonNullable<T>));
-}
+  return this.remove(
+    resolveClassOrId ??
+      getComponentClass(componentOrResolveClass as NonNullable<T>),
+  );
+};
 
-Entity.prototype.addComponent = function <T extends K, K extends unknown>(component: NonNullable<T>, resolveClass?: Class<K>) {
+Entity.prototype.addComponent = function <T extends K, K extends unknown>(
+  component: NonNullable<T>,
+  resolveClass?: Class<K>,
+) {
   const componentClass = getComponentClass(component, resolveClass);
   const id = getComponentId(componentClass, true)!;
   const linkedComponent = isLinkedComponent(component);
@@ -266,15 +332,21 @@ Entity.prototype.addComponent = function <T extends K, K extends unknown>(compon
     this.remove(componentClass);
   }
   if (linkedComponent) {
-    this.append(component as LinkedComponent, resolveClass as Class<LinkedComponent>);
+    this.append(
+      component as LinkedComponent,
+      resolveClass as Class<LinkedComponent>,
+    );
   } else {
     this._components[id] = component;
     this.dispatchOnComponentAdded(component);
   }
   return this;
-}
+};
 
-Entity.prototype.appendComponent = function <T extends K, K extends LinkedComponent>(component: NonNullable<T>, resolveClass?: Class<K>): Entity {
+Entity.prototype.appendComponent = function <
+  T extends K,
+  K extends LinkedComponent,
+>(component: NonNullable<T>, resolveClass?: Class<K>): Entity {
   const componentClass = getComponentClass(component, resolveClass);
   const componentId = getComponentId(componentClass, true)!;
   const componentList = this.getLinkedComponentList(componentId)!;
@@ -284,7 +356,7 @@ Entity.prototype.appendComponent = function <T extends K, K extends LinkedCompon
   }
   this.dispatchOnComponentAdded(component);
   return this;
-}
+};
 
 Entity.prototype.addTag = function (tag: Tag) {
   if (!this._tags.has(tag)) {
@@ -292,40 +364,58 @@ Entity.prototype.addTag = function (tag: Tag) {
     this.dispatchOnComponentAdded(tag);
   }
   return this;
-}
+};
 
-Entity.prototype.has = function <T>(componentClassOrTag: Class<T> | Tag, id?: string): boolean {
+Entity.prototype.has = function <T>(
+  componentClassOrTag: Class<T> | Tag,
+  id?: string,
+): boolean {
   if (isTag(componentClassOrTag)) {
     return this.hasTag(componentClassOrTag);
   }
   return this.hasComponent(componentClassOrTag, id);
-}
+};
 
-Entity.prototype.contains = function <T extends K, K>(component: NonNullable<T>, resolveClass?: Class<K>): boolean {
+Entity.prototype.contains = function <T extends K, K>(
+  component: NonNullable<T>,
+  resolveClass?: Class<K>,
+): boolean {
   const componentClass = getComponentClass(component, resolveClass);
   if (isLinkedComponent(component)) {
-    return this.find(componentClass, (value) => value === component) !== undefined;
+    return (
+      this.find(componentClass, (value) => value === component) !== undefined
+    );
   }
   return this.get(componentClass) === component;
-}
+};
 
-Entity.prototype.hasComponent = function <T>(component: Class<T>, id?: string): boolean {
+Entity.prototype.hasComponent = function <T>(
+  component: Class<T>,
+  id?: string,
+): boolean {
   return this.get(component, id) !== undefined;
-}
+};
 
 Entity.prototype.hasTag = function (tag: Tag): boolean {
   return this._tags.has(tag);
-}
+};
 
-Entity.prototype.hasAny = function (...componentClassOrTag: Array<Class<unknown> | Tag>): boolean {
-  return componentClassOrTag.some(value => this.has(value));
-}
+Entity.prototype.hasAny = function (
+  ...componentClassOrTag: Array<Class<unknown> | Tag>
+): boolean {
+  return componentClassOrTag.some((value) => this.has(value));
+};
 
-Entity.prototype.hasAll = function (...componentClassOrTag: Array<Class<unknown> | Tag>): boolean {
-  return componentClassOrTag.every(value => this.has(value));
-}
+Entity.prototype.hasAll = function (
+  ...componentClassOrTag: Array<Class<unknown> | Tag>
+): boolean {
+  return componentClassOrTag.every((value) => this.has(value));
+};
 
-Entity.prototype.get = function <T>(componentClass: Class<T>, id?: string): T | undefined {
+Entity.prototype.get = function <T>(
+  componentClass: Class<T>,
+  id?: string,
+): T | undefined {
   const cid = getComponentId(componentClass);
   if (cid === undefined) return undefined;
   let component = this._components[cid];
@@ -339,25 +429,29 @@ Entity.prototype.get = function <T>(componentClass: Class<T>, id?: string): T | 
     return undefined;
   }
   return this._components[cid] as T;
-}
+};
 
 Entity.prototype.getComponents = function () {
   return Array.from(Object.values(this._components));
-}
+};
 
 Entity.prototype.getTags = function () {
   return Array.from(this._tags);
-}
+};
 
-Entity.prototype.remove = function <T>(componentClassOrTag: Class<T> | Tag): T | undefined {
+Entity.prototype.remove = function <T>(
+  componentClassOrTag: Class<T> | Tag,
+): T | undefined {
   if (isTag(componentClassOrTag)) {
     this.removeTag(componentClassOrTag);
     return undefined;
   }
   return this.removeComponent(componentClassOrTag);
-}
+};
 
-Entity.prototype.removeComponent = function <T>(componentClassOrTag: Class<T>): T | undefined {
+Entity.prototype.removeComponent = function <T>(
+  componentClassOrTag: Class<T>,
+): T | undefined {
   const id = getComponentId(componentClassOrTag);
   if (id === undefined || this._components[id] === undefined) {
     return undefined;
@@ -375,41 +469,47 @@ Entity.prototype.removeComponent = function <T>(componentClassOrTag: Class<T>): 
   }
 
   return value as T;
-}
+};
 
 Entity.prototype.removeTag = function (tag: Tag) {
   if (this._tags.has(tag)) {
     this._tags.delete(tag);
     this.dispatchOnComponentRemoved(tag);
   }
-}
+};
 
 Entity.prototype.clear = function () {
   this._components = {};
   this._linkedComponents = {};
   this._tags.clear();
-}
+};
 
 Entity.prototype.copyFrom = function (entity: Entity) {
   this._components = Object.assign({}, entity._components);
   this._linkedComponents = Object.assign({}, entity._linkedComponents);
   this._tags = new Set(entity._tags);
   return this;
-}
+};
 
-Entity.prototype.iterate = function <T>(componentClass: Class<T>, action: (component: T) => void) {
+Entity.prototype.iterate = function <T>(
+  componentClass: Class<T>,
+  action: (component: T) => void,
+) {
   if (!this.hasComponent(componentClass)) return;
   this.getLinkedComponentList(componentClass)?.iterate(action);
-}
+};
 
 Entity.prototype.getAll = function* <T>(componentClass: Class<T>) {
   if (!this.hasComponent(componentClass)) return;
   const list = this.getLinkedComponentList(componentClass, false);
   if (list === undefined) return undefined;
   yield* list.nodes();
-}
+};
 
-Entity.prototype.find = function <T>(componentClass: Class<T>, predicate: (component: T) => boolean): T | undefined {
+Entity.prototype.find = function <T>(
+  componentClass: Class<T>,
+  predicate: (component: T) => boolean,
+): T | undefined {
   const componentIdToFind = getComponentId(componentClass, false);
   if (componentIdToFind === undefined) return undefined;
   const component = this._components[componentIdToFind];
@@ -421,8 +521,8 @@ Entity.prototype.find = function <T>(componentClass: Class<T>, predicate: (compo
       linkedComponent = linkedComponent.next;
     }
     return undefined;
-  } else return predicate(component as T) ? component as T : undefined;
-}
+  } else return predicate(component as T) ? (component as T) : undefined;
+};
 
 Entity.prototype.lengthOf = function <T>(componentClass: Class<T>) {
   let result = 0;
@@ -430,13 +530,17 @@ Entity.prototype.lengthOf = function <T>(componentClass: Class<T>) {
     result++;
   });
   return result;
-}
+};
 
 Entity.prototype.invalidate = function () {
   this.onInvalidationRequested.emit(this);
-}
+};
 
-Entity.prototype.takeSnapshot = function <T>(result: EntitySnapshot, changedComponentOrTag?: T, resolveClass?: Class<T>) {
+Entity.prototype.takeSnapshot = function <T>(
+  result: EntitySnapshot,
+  changedComponentOrTag?: T,
+  resolveClass?: Class<T>,
+) {
   const previousState = result.previous as Entity;
   if (result.current !== this) {
     result.current = this;
@@ -455,7 +559,8 @@ Entity.prototype.takeSnapshot = function <T>(result: EntitySnapshot, changedComp
       previousTags.add(changedComponentOrTag);
     }
   } else {
-    const componentClass = resolveClass ?? Object.getPrototypeOf(changedComponentOrTag).constructor;
+    const componentClass =
+      resolveClass ?? Object.getPrototypeOf(changedComponentOrTag).constructor;
     const componentId = getComponentId(componentClass!, true)!;
     const previousComponents = previousState._components;
     if (this.has(componentClass)) {
@@ -464,23 +569,34 @@ Entity.prototype.takeSnapshot = function <T>(result: EntitySnapshot, changedComp
       previousComponents[componentId] = changedComponentOrTag;
     }
   }
-}
+};
 
-Entity.prototype.getLinkedComponentList = function (componentClassOrId: number | Class<any>, createIfNotExists = true) {
+Entity.prototype.getLinkedComponentList = function (
+  componentClassOrId: number | Class<any>,
+  createIfNotExists = true,
+) {
   if (typeof componentClassOrId !== 'number') {
     componentClassOrId = getComponentId(componentClassOrId)!;
   }
-  if (this._linkedComponents[componentClassOrId] !== undefined || !createIfNotExists) {
+  if (
+    this._linkedComponents[componentClassOrId] !== undefined ||
+    !createIfNotExists
+  ) {
     return this._linkedComponents[componentClassOrId];
   } else {
-    return this._linkedComponents[componentClassOrId] = linkedComponentList<LinkedComponent>();
+    return (this._linkedComponents[componentClassOrId] =
+      linkedComponentList<LinkedComponent>());
   }
-}
+};
 
-Entity.prototype.withdrawComponent = function <T extends K, K extends LinkedComponent>(component: NonNullable<T>, resolveClass?: Class<K>) {
+Entity.prototype.withdrawComponent = function <
+  T extends K,
+  K extends LinkedComponent,
+>(component: NonNullable<T>, resolveClass?: Class<K>) {
   const componentClass = getComponentClass(component, resolveClass);
   const componentList = this.getLinkedComponentList(componentClass, false);
-  if (!this.hasComponent(componentClass) || componentList === undefined) return undefined;
+  if (!this.hasComponent(componentClass) || componentList === undefined)
+    return undefined;
   const result = componentList.remove(component) ? component : undefined;
   const componentId = getComponentId(componentClass, true)!;
   if (componentList.isEmpty) {
@@ -493,19 +609,23 @@ Entity.prototype.withdrawComponent = function <T extends K, K extends LinkedComp
     this.dispatchOnComponentRemoved(result);
   }
   return result;
-}
+};
 
-Entity.prototype.dispatchOnComponentAdded = function <T>(component: NonNullable<T>) {
+Entity.prototype.dispatchOnComponentAdded = function <T>(
+  component: NonNullable<T>,
+) {
   if (this.onComponentAdded.hasHandlers) {
     this.onComponentAdded.emit(this, component);
   }
-}
+};
 
-Entity.prototype.dispatchOnComponentRemoved = function <T>(value: NonNullable<T>) {
+Entity.prototype.dispatchOnComponentRemoved = function <T>(
+  value: NonNullable<T>,
+) {
   if (this.onComponentRemoved.hasHandlers) {
     this.onComponentRemoved.emit(this, value);
   }
-}
+};
 
 export function entity() {
   return new Entity();
@@ -543,7 +663,11 @@ export class EntitySnapshot {
  * @see {@link Entity.onComponentAdded}
  * @see {@link Entity.onComponentRemoved}
  */
-export type ComponentUpdateHandler = <T>(entity: Entity, component: NonNullable<T>, componentClass?: Class<NonNullable<T>>) => void;
+export type ComponentUpdateHandler = <T>(
+  entity: Entity,
+  component: NonNullable<T>,
+  componentClass?: Class<NonNullable<T>>,
+) => void;
 
 /**
  * Entity ids enumerator

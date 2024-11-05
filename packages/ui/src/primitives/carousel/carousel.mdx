@@ -6,8 +6,8 @@ import * as CarouselStories from './carousel.stories';
 <Meta of={CarouselStories} />
 
 <PrimitiveDocsButton
-  docsUrl="https://www.embla-carousel.com/get-started/react"
-  apiReferenceUrl="https://www.embla-carousel.com/api"
+  docsUrl='https://www.embla-carousel.com/get-started/react'
+  apiReferenceUrl='https://www.embla-carousel.com/api'
 />
 
 # Carousel
@@ -42,8 +42,8 @@ export const usageCode = `<Carousel>
   <CarouselNext />
 </Carousel>`;
 
-<Source code={importCode} language="ts" dark />
-<Source code={usageCode} language="tsx" dark />
+<Source code={importCode} language='ts' dark />
+<Source code={usageCode} language='tsx' dark />
 
 ## Examples
 
@@ -64,7 +64,7 @@ export const sizesExampleCode = `// 33% of the carousel width.
   </CarouselContent>
 </Carousel>`;
 
-<Source code={sizesExampleCode} language="tsx" dark />
+<Source code={sizesExampleCode} language='tsx' dark />
 
 #### Responsive
 
@@ -77,7 +77,7 @@ export const sizesResponsiveExampleCode = `// 50% on small screens and 33% on la
   </CarouselContent>
 </Carousel>`;
 
-<Source code={sizesResponsiveExampleCode} language="tsx" dark />
+<Source code={sizesResponsiveExampleCode} language='tsx' dark />
 
 ### Spacing
 
@@ -95,7 +95,7 @@ export const spacingExampleCode = `<Carousel>
   </CarouselContent>
 </Carousel>`;
 
-<Source code={spacingExampleCode} language="tsx" dark />
+<Source code={spacingExampleCode} language='tsx' dark />
 
 #### Responsive
 
@@ -121,7 +121,7 @@ export const orientationExampleCode = `<Carousel orientation="vertical | horizon
   </CarouselContent>
 </Carousel>`;
 
-<Source code={orientationExampleCode} language="tsx" dark />
+<Source code={orientationExampleCode} language='tsx' dark />
 
 ## Options
 
@@ -141,7 +141,7 @@ export const optionsExampleCode = `<Carousel
 </Carousel>
 `;
 
-<Source code={optionsExampleCode} language="tsx" dark />
+<Source code={optionsExampleCode} language='tsx' dark />
 
 ## API
 
@@ -156,10 +156,10 @@ export function Example() {
   const [current, setCurrent] = React.useState(0)
   const [count, setCount] = React.useState(0)
 
-  React.useEffect(() => {
-    if (!api) {
-      return
-    }
+React.useEffect(() => {
+if (!api) {
+return
+}
 
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
@@ -167,17 +167,18 @@ export function Example() {
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
-  }, [api])
 
-  return (
-    <Carousel setApi={setApi}>
-      <CarouselContent>
-        <CarouselItem>...</CarouselItem>
-        <CarouselItem>...</CarouselItem>
-        <CarouselItem>...</CarouselItem>
-      </CarouselContent>
-    </Carousel>
-  )
+}, [api])
+
+return (
+<Carousel setApi={setApi}>
+<CarouselContent>
+<CarouselItem>...</CarouselItem>
+<CarouselItem>...</CarouselItem>
+<CarouselItem>...</CarouselItem>
+</CarouselContent>
+</Carousel>
+)
 }`;
 
 ## Events
@@ -190,28 +191,29 @@ import { type CarouselApi } from "@ecs-pcl/ui/carousel";
 export function Example() {
   const [api, setApi] = React.useState<CarouselApi>()
 
-  React.useEffect(() => {
-    if (!api) {
-      return
-    }
+React.useEffect(() => {
+if (!api) {
+return
+}
 
     api.on("select", () => {
       // Do something on select.
     })
-  }, [api])
 
-  return (
-    <Carousel setApi={setApi}>
-      <CarouselContent>
-        <CarouselItem>...</CarouselItem>
-        <CarouselItem>...</CarouselItem>
-        <CarouselItem>...</CarouselItem>
-      </CarouselContent>
-    </Carousel>
-  )
+}, [api])
+
+return (
+<Carousel setApi={setApi}>
+<CarouselContent>
+<CarouselItem>...</CarouselItem>
+<CarouselItem>...</CarouselItem>
+<CarouselItem>...</CarouselItem>
+</CarouselContent>
+</Carousel>
+)
 };`;
 
-<Source code={eventsCode} language="tsx" dark />
+<Source code={eventsCode} language='tsx' dark />
 
 See the [Embla Carousel docs](https://www.embla-carousel.com/api/events/) for more information on using events.
 
@@ -236,7 +238,7 @@ export function Example() {
 }
 `;
 
-<Source code={pluginsExampleCode} language="tsx" dark />
+<Source code={pluginsExampleCode} language='tsx' dark />
 
 <Canvas of={CarouselStories.Autoplay} />
 

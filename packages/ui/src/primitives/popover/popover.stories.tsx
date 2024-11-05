@@ -1,10 +1,10 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from '@/primitives/button'
-import { Input } from '@/primitives/input'
-import { Label } from '@/primitives/label'
+import { Button } from '@/primitives/button';
+import { Input } from '@/primitives/input';
+import { Label } from '@/primitives/label';
 
-import { Popover, PopoverContent, PopoverTrigger } from '.'
+import { Popover, PopoverContent, PopoverTrigger } from '.';
 
 const meta: Meta<typeof PopoverContent> = {
   component: PopoverContent,
@@ -24,13 +24,13 @@ const meta: Meta<typeof PopoverContent> = {
       <PopoverContent {...args} />
     </Popover>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Popover>
+type Story = StoryObj<typeof Popover>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 
 export const Example: Story = {
   argTypes: {
@@ -89,4 +89,4 @@ export const Example: Story = {
       </PopoverContent>
     </Popover>
   ),
-}
+};

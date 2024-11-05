@@ -1,6 +1,6 @@
-import { Canvas, Controls, Meta, Source } from '@storybook/blocks'
+import { Canvas, Controls, Meta, Source } from '@storybook/blocks';
 
-import * as ButtonStories from './button.stories'
+import * as ButtonStories from './button.stories';
 
 <Meta of={ButtonStories} />
 
@@ -16,9 +16,9 @@ Displays a button or a component that looks like a button.
 
 ## Usage
 
-export const importCode = `import { Button } from "@ecs-pcl/ui/button";`
+export const importCode = `import { Button } from "@ecs-pcl/ui/button";`;
 
-export const usageCode = `<Button variant="outline">Button</Button>`
+export const usageCode = `<Button variant="outline">Button</Button>`;
 
 <Source code={importCode} language='ts' dark />
 <Source code={usageCode} language='tsx' dark />
@@ -27,11 +27,11 @@ export const usageCode = `<Button variant="outline">Button</Button>`
 
 You can use the `buttonVariants` helper to create a link that looks like a button.
 
-export const linkImportCode = `import { buttonVariants } from "@ecs-pcl/ui/button";`
+export const linkImportCode = `import { buttonVariants } from "@ecs-pcl/ui/button";`;
 
 <Source code={linkImportCode} language='ts' dark />
 
-export const linkUsageCode = `<Link className={buttonVariants({ variant: "outline" })}>Click here</Link>`
+export const linkUsageCode = `<Link className={buttonVariants({ variant: "outline" })}>Click here</Link>`;
 
 <Source code={linkUsageCode} language='tsx' dark />
 
@@ -39,7 +39,7 @@ Alternatively, you can set the `asChild` parameter and nest the link component.
 
 export const asChildCode = `<Button asChild>
   <Link href="/login">Login</Link>
-</Button>`
+</Button>`;
 
 <Source code={asChildCode} language='tsx' dark />
 

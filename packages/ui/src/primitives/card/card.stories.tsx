@@ -1,7 +1,7 @@
-import { BellIcon, CheckIcon } from '@radix-ui/react-icons'
-import { type Meta, type StoryObj } from '@storybook/react'
+import { BellIcon, CheckIcon } from '@radix-ui/react-icons';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from '@/primitives/button'
+import { Button } from '@/primitives/button';
 import {
   Card,
   CardContent,
@@ -9,17 +9,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/primitives/card'
-import { Switch } from '@/primitives/switch'
-import { cn } from '@/utils/cn'
+} from '@/primitives/card';
+import { Switch } from '@/primitives/switch';
+import { cn } from '@/utils/cn';
 
 const meta: Meta<typeof Card> = {
   component: Card,
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Card>
+type Story = StoryObj<typeof Card>;
 
 const notifications = [
   {
@@ -34,7 +34,7 @@ const notifications = [
     title: 'Your subscription is expiring soon!',
     description: '2 hours ago',
   },
-]
+];
 
 export const Default: Story = {
   render: (args) => (
@@ -82,4 +82,4 @@ export const Default: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};

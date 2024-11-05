@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from '../button'
+import { Button } from '../button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from './'
+} from './';
 
 const meta: Meta<typeof AlertDialog> = {
   component: AlertDialog,
@@ -35,10 +35,10 @@ const meta: Meta<typeof AlertDialog> = {
       </AlertDialogContent>
     </AlertDialog>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof AlertDialog>
+type Story = StoryObj<typeof AlertDialog>;
 
-export const Default: Story = {}
+export const Default: Story = {};

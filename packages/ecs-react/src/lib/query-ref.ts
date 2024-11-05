@@ -1,15 +1,9 @@
 import { MutableRefObject } from 'react';
-import {
-  Entity,
-  QueryPredicate
-} from '@ecs-pcl/ecs';
+
+import { Entity, QueryPredicate } from '@ecs-pcl/ecs';
 
 import { Query } from './query';
-import {
-  Constructor,
-  Constructors,
-  Instances
-} from './utils';
+import { Constructor, Constructors, Instances } from './utils';
 
 export class QueryRef {
   ref: MutableRefObject<Query>;
@@ -57,21 +51,21 @@ export class QueryRef {
 
   countBy(predicate: QueryPredicate) {
     if (this.current) {
-      return this.current.countBy(predicate)
+      return this.current.countBy(predicate);
     }
     return 0;
   }
 
   filter(predicate: QueryPredicate): Entity[] {
     if (this.current) {
-      return this.current.filter(predicate)
+      return this.current.filter(predicate);
     }
     return [];
   }
 
   has(entity: Entity) {
     if (this.current) {
-      return this.current.has(entity)
+      return this.current.has(entity);
     }
     return false;
   }
@@ -85,8 +79,7 @@ export class QueryRef {
 
   clear() {
     if (this.current) {
-      return this.current.clear()
+      return this.current.clear();
     }
   }
-
 }

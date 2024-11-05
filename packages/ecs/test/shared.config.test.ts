@@ -1,8 +1,9 @@
-import { describe, it, expect } from "vitest";
-import { Engine, Query, System } from "../src";
+import { describe, expect, it } from 'vitest';
 
-describe("Shared config", () => {
-  it("Shared config is accessible when system added to engine", () => {
+import { Engine, Query, System } from '../src';
+
+describe('Shared config', () => {
+  it('Shared config is accessible when system added to engine', () => {
     let sharedConfigAccessible = false;
 
     const engine = new Engine();
@@ -18,7 +19,7 @@ describe("Shared config", () => {
     expect(sharedConfigAccessible).toBeTruthy();
   });
 
-  it("Accessing shared config throws an error, when system is not added to engine", () => {
+  it('Accessing shared config throws an error, when system is not added to engine', () => {
     expect(() => {
       new (class extends System {
         public constructor() {
@@ -31,7 +32,7 @@ describe("Shared config", () => {
 
   it(`Shared config can't be removed from engine`, () => {
     expect(() => {
-      class Component { }
+      class Component {}
 
       const engine = new Engine();
       engine.sharedConfig.add(new Component());
@@ -51,7 +52,7 @@ describe("Shared config", () => {
 
   it(`Shared config is presented in the queries`, () => {
     expect(() => {
-      const TAG = "tag";
+      const TAG = 'tag';
       const engine = new Engine();
       const query = new Query((entity) => entity.has(TAG));
       engine.sharedConfig.add(TAG);

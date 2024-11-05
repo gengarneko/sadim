@@ -1,11 +1,8 @@
-import {
-  useEffect,
-  useRef,
-} from "react";
+import { useEffect, useRef } from 'react';
 
 export const useAnimationFrame = (callback: (dt: number) => void) => {
-  const requestRef = useRef<number>((null as unknown) as number);
-  const previousTimeRef = useRef<number>((null as unknown) as number);
+  const requestRef = useRef<number>(null as unknown as number);
+  const previousTimeRef = useRef<number>(null as unknown as number);
 
   const animate = (time: number) => {
     if (previousTimeRef.current != undefined) {

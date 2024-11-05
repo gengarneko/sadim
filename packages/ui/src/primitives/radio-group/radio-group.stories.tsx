@@ -1,16 +1,16 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Label } from '@/primitives/label'
+import { Label } from '@/primitives/label';
 
-import { RadioGroup, RadioGroupItem } from '.'
+import { RadioGroup, RadioGroupItem } from '.';
 
 const meta: Meta<typeof RadioGroup> = {
   component: RadioGroup,
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof RadioGroup>
+type Story = StoryObj<typeof RadioGroup>;
 
 export const Default: Story = {
   args: {
@@ -28,4 +28,4 @@ export const Default: Story = {
       </div>
     </RadioGroup>
   ),
-}
+};

@@ -4,7 +4,7 @@
   "private": true,
   "description": "ecs-pcl UI Design System Components Library",
   "license": "MIT",
-  "author": "ecs-pcl",
+  "author": "gengarneko",
   "sideEffects": false,
   "type": "module",
   "exports": {
@@ -27,7 +27,7 @@
     "build-storybook": "storybook build",
     "clean": "bun run rm -rf dist storybook-static *.tsbuildinfo",
     "dev": "vite build -w",
-    "lint": "eslint .  --max-warnings 0",
+    "lint": "oxlint .  --max-warnings 0",
     "storybook": "storybook dev -p 6006 --no-open",
     "test-storybook": "test-storybook",
     "typecheck": "tsc"

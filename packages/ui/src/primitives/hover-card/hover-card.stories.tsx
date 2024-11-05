@@ -1,18 +1,18 @@
-import { CalendarIcon } from '@radix-ui/react-icons'
-import { type Meta, type StoryObj } from '@storybook/react'
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/primitives/avatar'
-import { Button } from '@/primitives/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/primitives/avatar';
+import { Button } from '@/primitives/button';
 
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '.'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '.';
 
 const meta: Meta<typeof HoverCard> = {
   component: HoverCard,
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof HoverCard>
+type Story = StoryObj<typeof HoverCard>;
 
 export const Default: Story = {
   render: (args) => (
@@ -42,4 +42,4 @@ export const Default: Story = {
       </HoverCardContent>
     </HoverCard>
   ),
-}
+};

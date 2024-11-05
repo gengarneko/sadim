@@ -1,23 +1,23 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Separator } from '@/primitives/separator'
+import { Separator } from '@/primitives/separator';
 
-import { ScrollArea, ScrollBar } from '.'
+import { ScrollArea, ScrollBar } from '.';
 
 const meta: Meta<typeof ScrollArea> = {
   component: ScrollArea,
   argTypes: {
     asChild: { control: { disable: true } },
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof ScrollArea>
+type Story = StoryObj<typeof ScrollArea>;
 
 const tags = Array.from({ length: 50 }).map(
   (_, i, a) => `v1.2.0-beta.${String(a.length - i)}`,
-)
+);
 
 export const Default: Story = {
   render: (args) => (
@@ -35,11 +35,11 @@ export const Default: Story = {
       </div>
     </ScrollArea>
   ),
-}
+};
 
 interface Artwork {
-  artist: string
-  art: string
+  artist: string;
+  art: string;
 }
 
 const works: Artwork[] = [
@@ -55,7 +55,7 @@ const works: Artwork[] = [
     artist: 'Vladimir Malyavko',
     art: 'https://images.unsplash.com/photo-1494337480532-3725c85fd2ab?auto=format&fit=crop&w=300&q=80',
   },
-]
+];
 
 export const HorizontalScrolling: Story = {
   render: (args) => (
@@ -84,4 +84,4 @@ export const HorizontalScrolling: Story = {
       <ScrollBar orientation='horizontal' />
     </ScrollArea>
   ),
-}
+};

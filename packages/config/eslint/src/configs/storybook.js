@@ -1,6 +1,6 @@
-import { fixupConfigRules } from '@eslint/compat'
+import { fixupConfigRules } from '@eslint/compat';
 
-import { compat, defineConfig } from '../utils.js'
+import { compat, defineConfig } from '../utils.js';
 
 export const storybook = defineConfig(
   {
@@ -13,4 +13,4 @@ export const storybook = defineConfig(
     files: ['*.stories.@(ts|tsx|js|jsx|mjs|cjs)'],
     rules: {},
   },
-)
+);

@@ -65,7 +65,7 @@ Signal.prototype.connect = function (handler: Handler, priority: number = 0) {
   } else {
     const lastHandler = this._handlers[this._handlers.length - 1];
     this._handlers.push({ handler, priority });
-    needSort = (lastHandler !== undefined && lastHandler.priority > priority);
+    needSort = lastHandler !== undefined && lastHandler.priority > priority;
   }
   if (needSort) {
     this._sort();
@@ -76,7 +76,9 @@ Signal.prototype.connect = function (handler: Handler, priority: number = 0) {
 
 /** 移除 handler */
 Signal.prototype.disconnect = function (handler: Handler) {
-  const existingHandlerIndex = this._handlers.findIndex((it) => it.handler === handler);
+  const existingHandlerIndex = this._handlers.findIndex(
+    (it) => it.handler === handler,
+  );
   if (existingHandlerIndex >= 0) {
     this._handlers.splice(existingHandlerIndex, 1);
   }

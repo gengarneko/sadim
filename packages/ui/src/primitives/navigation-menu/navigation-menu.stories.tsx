@@ -1,8 +1,8 @@
-import * as React from 'react'
+import * as React from 'react';
 
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { cn } from '@/utils/cn'
+import { cn } from '@/utils/cn';
 
 import {
   NavigationMenu,
@@ -12,7 +12,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '.'
+} from '.';
 
 const ListItem = React.forwardRef<
   React.ElementRef<'a'>,
@@ -36,9 +36,9 @@ const ListItem = React.forwardRef<
         </a>
       </NavigationMenuLink>
     </li>
-  )
-})
-ListItem.displayName = 'ListItem'
+  );
+});
+ListItem.displayName = 'ListItem';
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -76,7 +76,7 @@ const components: { title: string; href: string; description: string }[] = [
     description:
       'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
   },
-]
+];
 
 const meta: Meta<typeof NavigationMenu> = {
   component: NavigationMenu,
@@ -143,10 +143,10 @@ const meta: Meta<typeof NavigationMenu> = {
       </NavigationMenu>
     </div>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof NavigationMenu>
+type Story = StoryObj<typeof NavigationMenu>;
 
-export const Default: Story = {}
+export const Default: Story = {};

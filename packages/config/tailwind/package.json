@@ -2,16 +2,16 @@
   "name": "@ecs-pcl/tailwind",
   "version": "0.4.3",
   "private": true,
-  "description": "Tailwindcss preset for OrbitKit workspace",
+  "description": "Tailwindcss preset",
   "license": "MIT",
-  "author": "OrbitKit",
+  "author": "gengarneko",
   "type": "module",
   "exports": {
     ".": "./src/preset.ts"
   },
   "scripts": {
     "clean": "bun run rm -rf *.tsbuildinfo",
-    "lint": "eslint .  --max-warnings 0",
+    "lint": "oxlint .  --max-warnings 0",
     "typecheck": "tsc"
   },
   "dependencies": {

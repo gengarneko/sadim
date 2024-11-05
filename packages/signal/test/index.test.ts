@@ -1,19 +1,20 @@
-import { signal } from "../src";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from 'vitest';
 
-describe("Signals", () => {
-  it("成功创建 signal", () => {
+import { signal } from '../src';
+
+describe('Signals', () => {
+  it('成功创建 signal', () => {
     const test = signal();
     expect(test).toBeDefined();
   });
 
-  it("连接 handler 可以正确增加", () => {
+  it('连接 handler 可以正确增加', () => {
     const test = signal().connect(() => {});
     expect(test.hasHandlers).toBeTruthy();
     expect(test.handlersAmount).toEqual(1);
   });
 
-  it("重复的连接只会添加一次", () => {
+  it('重复的连接只会添加一次', () => {
     const test = signal();
     const handler = () => {};
     test.connect(handler);
@@ -21,7 +22,7 @@ describe("Signals", () => {
     expect(test.handlersAmount).toEqual(1);
   });
 
-  it("断开 handler 可以正确减少", () => {
+  it('断开 handler 可以正确减少', () => {
     const test = signal();
     const handler = () => {};
     test.connect(handler);
@@ -29,7 +30,7 @@ describe("Signals", () => {
     expect(test.handlersAmount).toEqual(0);
   });
 
-  it("断开未添加的 handler 不会影响数量", () => {
+  it('断开未添加的 handler 不会影响数量', () => {
     const test = signal();
     const addedHandler = (value: number) => {};
     const wrongHandler = (value: number) => {};
@@ -38,7 +39,7 @@ describe("Signals", () => {
     expect(test.handlersAmount).toEqual(1);
   });
 
-  it("清空所有的 handler", () => {
+  it('清空所有的 handler', () => {
     const test = signal()
       .connect(() => {})
       .connect(() => {});

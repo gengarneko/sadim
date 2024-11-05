@@ -10,12 +10,15 @@
     }
   },
   "scripts": {
-    "build-fast": "tsup src/index.ts --format cjs,esm",
     "build": "bun run build-fast -- --dts-resolve",
+    "build-fast": "tsup src/index.ts --format cjs,esm",
     "lint": "eslint . --max-warnings 0",
+    "prepublishOnly": "bun run build",
     "test": "vitest run",
-    "test:watch": "vitest dev",
-    "prepublishOnly": "bun run build"
+    "test:watch": "vitest dev"
+  },
+  "dependencies": {
+    "ahooks": "^3.8.1"
   },
   "devDependencies": {
     "@ecs-pcl/ecs": "workspace:^",
@@ -30,8 +33,5 @@
   "peerDependencies": {
     "@preact/signals-core": "^1.8.0",
     "react": "^18.3.1"
-  },
-  "dependencies": {
-    "ahooks": "^3.8.1"
   }
 }

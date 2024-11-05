@@ -1,8 +1,9 @@
-import { Entity } from "./entity";
-import { System } from "./system";
-import { Class } from "../utils/class";
-import { Query } from "./query";
-import { Signal } from "@ecs-pcl/signal";
+import { Signal } from '@ecs-pcl/signal';
+
+import { Class } from '../utils/class';
+import { Entity } from './entity';
+import { Query } from './query';
+import { System } from './system';
 
 /**
  * Engine represents game state, and provides entities update loop on top of systems.
@@ -346,7 +347,7 @@ export class Engine {
   public dispatch<T>(message: T) {
     for (const subscription of this._subscriptions) {
       if (
-        (typeof subscription.messageType === "function" &&
+        (typeof subscription.messageType === 'function' &&
           message instanceof subscription.messageType) ||
         message === subscription.messageType
       ) {
@@ -430,7 +431,7 @@ export class Subscription<T> {
   public constructor(
     public readonly messageType: Class<T> | T,
     public readonly handler: (message: T) => void,
-  ) { }
+  ) {}
 
   public equals(messageType: Class<T> | T, handler?: (message: T) => void) {
     return (

@@ -1,8 +1,8 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from '@/primitives/button'
-import { Input } from '@/primitives/input'
-import { Label } from '@/primitives/label'
+import { Button } from '@/primitives/button';
+import { Input } from '@/primitives/input';
+import { Label } from '@/primitives/label';
 
 import {
   Sheet,
@@ -13,7 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '.'
+} from '.';
 
 const meta: Meta<typeof SheetContent> = {
   component: SheetContent,
@@ -26,11 +26,11 @@ const meta: Meta<typeof SheetContent> = {
       control: { type: 'select' },
     },
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof SheetContent>
+type Story = StoryObj<typeof SheetContent>;
 
 export const Default: Story = {
   render: (args) => (
@@ -67,4 +67,4 @@ export const Default: Story = {
       </SheetContent>
     </Sheet>
   ),
-}
+};

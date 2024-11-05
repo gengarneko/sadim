@@ -1,19 +1,19 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Label } from '@/primitives/label'
+import { Label } from '@/primitives/label';
 
-import { Switch } from '.'
+import { Switch } from '.';
 
 const meta: Meta<typeof Switch> = {
   component: Switch,
   args: {
     id: 'switch',
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Switch>
+type Story = StoryObj<typeof Switch>;
 
 export const Default: Story = {
   render: (args) => (
@@ -22,4 +22,4 @@ export const Default: Story = {
       <Label htmlFor='airplane-mode'>Airplane Mode</Label>
     </div>
   ),
-}
+};

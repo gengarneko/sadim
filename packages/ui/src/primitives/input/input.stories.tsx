@@ -1,8 +1,8 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from '../button'
-import { Label } from '../label'
-import { Input } from './'
+import { Button } from '../button';
+import { Label } from '../label';
+import { Input } from './';
 
 const meta: Meta<typeof Input> = {
   component: Input,
@@ -10,13 +10,13 @@ const meta: Meta<typeof Input> = {
     type: 'email',
     placeholder: 'Email',
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Input>
+type Story = StoryObj<typeof Input>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 export const File: Story = {
   args: {
     id: 'picture',
@@ -28,13 +28,13 @@ export const File: Story = {
       <Input {...args} />
     </div>
   ),
-}
+};
 
 export const Disabled: Story = {
   args: {
     disabled: true,
   },
-}
+};
 
 export const WithLabel: Story = {
   args: {
@@ -47,7 +47,7 @@ export const WithLabel: Story = {
       <Input {...args} />
     </div>
   ),
-}
+};
 
 export const WithButton: Story = {
   render: (args) => (
@@ -56,4 +56,4 @@ export const WithButton: Story = {
       <Button type='submit'>Subscribe</Button>
     </div>
   ),
-}
+};

@@ -1,7 +1,7 @@
-import { Canvas, Meta, Source } from '@storybook/blocks'
+import { Canvas, Meta, Source } from '@storybook/blocks';
 
-import { PrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button'
-import * as CommandStories from './command.stories'
+import { PrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
+import * as CommandStories from './command.stories';
 
 <Meta of={CommandStories} />
 
@@ -31,7 +31,7 @@ export const importCode = `import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@ecs-pcl/ui/command";`
+} from "@ecs-pcl/ui/command";`;
 
 export const usageCode = `<Command>
   <CommandInput placeholder="Type a command or search..." />
@@ -49,7 +49,7 @@ export const usageCode = `<Command>
       <CommandItem>Settings</CommandItem>
     </CommandGroup>
   </CommandList>
-</Command>`
+</Command>`;
 
 <Source code={importCode} language='ts' dark />
 <Source code={usageCode} language='tsx' dark />

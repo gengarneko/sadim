@@ -1,6 +1,6 @@
-import { fixupConfigRules } from '@eslint/compat'
+import { fixupConfigRules } from '@eslint/compat';
 
-import { compat, defineConfig } from '../utils.js'
+import { compat, defineConfig } from '../utils.js';
 
 export const react = defineConfig(
   ...fixupConfigRules(compat.extends('plugin:react/recommended')),
@@ -18,4 +18,4 @@ export const react = defineConfig(
       'react/prop-types': 'off',
     },
   },
-)
+);

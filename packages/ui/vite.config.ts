@@ -1,6 +1,6 @@
-import { buildConfig, mergeConfig, reactConfig } from '@ecs-pcl/vite'
+import { buildConfig, mergeConfig, reactConfig } from '@ecs-pcl/vite';
 
-import pkg from './package.json'
+import pkg from './package.json';
 
 export default mergeConfig(
   // Vite config to support React.
@@ -19,4 +19,4 @@ export default mergeConfig(
       exclude: ['src/storybook-utils', '**/*.stories.tsx'],
     },
   }),
-)
+);

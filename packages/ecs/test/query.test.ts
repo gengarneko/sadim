@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { Engine, Entity, LinkedComponent, Query, QueryBuilder } from "../src";
+import { describe, expect, it } from 'vitest';
+
+import { Engine, Entity, LinkedComponent, Query, QueryBuilder } from '../src';
 
 class Position {
   public x: number = 0;
@@ -11,23 +12,23 @@ class Position {
   }
 }
 
-class View { }
+class View {}
 
-class Move { }
+class Move {}
 
-class Stay { }
+class Stay {}
 
-class Damage extends LinkedComponent { }
+class Damage extends LinkedComponent {}
 
-describe("Query builder", () => {
-  it("Building query", () => {
+describe('Query builder', () => {
+  it('Building query', () => {
     const query = new QueryBuilder().contains(Position).contains(View).build();
     expect(query).toBeDefined();
     expect(query.entities).toBeDefined();
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Expected that built query matches defined pattern", () => {
+  it('Expected that built query matches defined pattern', () => {
     const query = new QueryBuilder().contains(Position).contains(View).build();
     const entities = [
       new Entity().add(new Position()).add(new View()),
@@ -88,7 +89,7 @@ describe("Query builder", () => {
   });
 });
 
-describe("Query matching", () => {
+describe('Query matching', () => {
   const position = new Position();
   const view = new View();
   const move = new Move();
@@ -98,7 +99,7 @@ describe("Query matching", () => {
     return new QueryBuilder().contains(Position, View).build();
   }
 
-  it("Query not matching entity with only position component", () => {
+  it('Query not matching entity with only position component', () => {
     const engine = new Engine();
     const entity = new Entity().add(position);
     const query = getQuery();
@@ -108,7 +109,7 @@ describe("Query matching", () => {
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Query not matching entity with only view component", () => {
+  it('Query not matching entity with only view component', () => {
     const engine = new Engine();
     const entity = new Entity().add(view);
     const query = getQuery();
@@ -119,7 +120,7 @@ describe("Query matching", () => {
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Query matching entity with view and position components", () => {
+  it('Query matching entity with view and position components', () => {
     const engine = new Engine();
     const entity = new Entity().add(position).add(view);
     const query = getQuery();
@@ -143,7 +144,7 @@ describe("Query matching", () => {
     expect(query.has(targetEntity)).toBeTruthy();
   });
 
-  it("Adding component to entity adding it to query", () => {
+  it('Adding component to entity adding it to query', () => {
     const engine = new Engine();
     const entity = new Entity().add(position);
     const query = getQuery();
@@ -158,7 +159,7 @@ describe("Query matching", () => {
     expect(query.entities.length).toBe(1);
   });
 
-  it("Removing component removes entity from query", () => {
+  it('Removing component removes entity from query', () => {
     const engine = new Engine();
     const entity = new Entity().add(position).add(view);
     const query = getQuery();
@@ -174,7 +175,7 @@ describe("Query matching", () => {
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Removing not matching with query components not removes entity from query", () => {
+  it('Removing not matching with query components not removes entity from query', () => {
     const engine = new Engine();
     const entity = new Entity().add(position).add(view).add(move);
 
@@ -201,7 +202,7 @@ describe("Query matching", () => {
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Removing entity from engine removes entity from query", () => {
+  it('Removing entity from engine removes entity from query', () => {
     const engine = new Engine();
     const entity = new Entity().add(position).add(view);
     const query = getQuery();
@@ -217,7 +218,7 @@ describe("Query matching", () => {
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Removing query from engine clears query and not updating it anymore", () => {
+  it('Removing query from engine clears query and not updating it anymore', () => {
     const engine = new Engine();
     const entity = new Entity().add(position).add(view);
     const query = getQuery();
@@ -237,7 +238,7 @@ describe("Query matching", () => {
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Entity invalidation should add entity to query with custom predicate", () => {
+  it('Entity invalidation should add entity to query with custom predicate', () => {
     const engine = new Engine();
     const entity = new Entity().add(new Position(0, 0));
     const query = new Query((entity: Entity) => {
@@ -252,7 +253,7 @@ describe("Query matching", () => {
     expect(query.entities.length).toBe(1);
   });
 
-  it("Entity invalidation should remove entity from query with custom predicate", () => {
+  it('Entity invalidation should remove entity from query with custom predicate', () => {
     const engine = new Engine();
     const entity = new Entity().add(new Position(0, 0));
     const query = new Query((entity: Entity) => {
@@ -267,7 +268,7 @@ describe("Query matching", () => {
     expect(query.entities.length).toBe(0);
   });
 
-  it("Entity invalidation should add entity to query with custom predicate", () => {
+  it('Entity invalidation should add entity to query with custom predicate', () => {
     const engine = new Engine();
     const entity = new Entity().add(new Position(0, 150));
     const query = new Query((entity: Entity) => {
@@ -282,7 +283,7 @@ describe("Query matching", () => {
     expect(query.entities.length).toBe(1);
   });
 
-  it("Removing and adding components to entity should properly update custom query", () => {
+  it('Removing and adding components to entity should properly update custom query', () => {
     const engine = new Engine();
     const entity = new Entity().add(new Position(0, 0));
     const query = new Query((entity: Entity) => {
@@ -298,7 +299,7 @@ describe("Query matching", () => {
     expect(query.length).toBe(1);
   });
 
-  it("Adding and removing entity that not related to query, must not affect it", () => {
+  it('Adding and removing entity that not related to query, must not affect it', () => {
     const engine = new Engine();
     const entity1 = new Entity().add(new Position(0, 0));
     const entity2 = new Entity();
@@ -413,7 +414,7 @@ describe("Query matching", () => {
     const query = new Query((entity: Entity) => {
       return entity.has(Position);
     });
-    const TAG = "tag";
+    const TAG = 'tag';
     const entities = [
       new Entity().add(new Position()),
       new Entity().add(new Position()).add(TAG),
@@ -430,7 +431,7 @@ describe("Query matching", () => {
     const query = new Query((entity: Entity) => {
       return entity.has(Position);
     });
-    const TAG = "tag";
+    const TAG = 'tag';
     const entities = [
       new Entity().add(TAG),
       new Entity().add(TAG),
@@ -451,15 +452,15 @@ describe("Query matching", () => {
     const query = new Query((entity: Entity) => {
       return entity.has(LogComponent);
     });
-    const entity = new Entity().append(new LogComponent("test"));
+    const entity = new Entity().append(new LogComponent('test'));
 
     query.matchEntities([entity]);
     expect(query.length).toBe(1);
   });
 });
 
-describe("Query signals", () => {
-  it("Query`s onEntityAdded must be invoked when entity is added to query", () => {
+describe('Query signals', () => {
+  it('Query`s onEntityAdded must be invoked when entity is added to query', () => {
     const query = new Query((entity: Entity) => {
       return entity.hasAll(View, Position);
     });
@@ -483,7 +484,7 @@ describe("Query signals", () => {
     expect(previousState).toBeTruthy();
   });
 
-  it("Query`s onEntityRemoved must be invoked when entity is removed from query", () => {
+  it('Query`s onEntityRemoved must be invoked when entity is removed from query', () => {
     const query = new Query((entity: Entity) => {
       return entity.hasAll(View, Position);
     });
@@ -506,7 +507,7 @@ describe("Query signals", () => {
     expect(previousState).toBeTruthy();
   });
 
-  it("Query`s onEntityAdded must be invoked when specific component is removed from entity", () => {
+  it('Query`s onEntityAdded must be invoked when specific component is removed from entity', () => {
     const query = new Query((entity: Entity) => {
       return entity.has(View) && !entity.has(Position);
     });
@@ -529,7 +530,7 @@ describe("Query signals", () => {
     expect(previousState).toBeTruthy();
   });
 
-  it("Query`s onEntityRemoved must be invoked when specific component is added to entity", () => {
+  it('Query`s onEntityRemoved must be invoked when specific component is added to entity', () => {
     const query = new Query((entity: Entity) => {
       return entity.has(View) && !entity.has(Position);
     });
@@ -575,7 +576,7 @@ describe("Query signals", () => {
     expect(addedNumber).toBe(1);
   });
 
-  it("Query onEntityRemoved must be triggered only when last linked component withdrawn", () => {
+  it('Query onEntityRemoved must be triggered only when last linked component withdrawn', () => {
     const query = new Query((entity: Entity) => {
       return entity.has(Damage);
     });

@@ -1,12 +1,12 @@
-import type { LibraryOptions } from 'vite'
-import type { PluginOptions as DtsPluginOptions } from 'vite-plugin-dts'
-import type { Options as ExternalPluginOptions } from 'vite-plugin-external'
+import type { LibraryOptions } from 'vite';
+import type { PluginOptions as DtsPluginOptions } from 'vite-plugin-dts';
+import type { Options as ExternalPluginOptions } from 'vite-plugin-external';
 
-import { globbySync } from 'globby'
-import preserveDirectives from 'rollup-plugin-preserve-directives'
-import { defineConfig } from 'vite'
-import dtsPlugin from 'vite-plugin-dts'
-import createExternal from 'vite-plugin-external'
+import { globbySync } from 'globby';
+import preserveDirectives from 'rollup-plugin-preserve-directives';
+import { defineConfig } from 'vite';
+import dtsPlugin from 'vite-plugin-dts';
+import createExternal from 'vite-plugin-external';
 
 /**
  * A vite config preset for bundling packages in lib mode.
@@ -22,10 +22,10 @@ export function buildConfig({
   external = {},
 }: {
   lib: LibraryOptions & {
-    entry: string[] | string
-  }
-  dts?: DtsPluginOptions
-  external?: ExternalPluginOptions
+    entry: string[] | string;
+  };
+  dts?: DtsPluginOptions;
+  external?: ExternalPluginOptions;
 }) {
   return defineConfig({
     plugins: [
@@ -60,10 +60,10 @@ export function buildConfig({
         treeshake: true,
         onwarn(warning, defaultHandler) {
           if (warning.code === 'SOURCEMAP_ERROR') {
-            return
+            return;
           }
 
-          defaultHandler(warning)
+          defaultHandler(warning);
         },
       },
       lib: {
@@ -72,5 +72,5 @@ export function buildConfig({
         entry: globbySync(lib.entry),
       },
     },
-  })
+  });
 }

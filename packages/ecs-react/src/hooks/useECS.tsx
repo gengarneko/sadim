@@ -1,9 +1,6 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from 'react';
 
-import { ECS } from "../components/ecs";
+import { ECS } from '../components/ecs';
 
 export function useECS() {
   const [state] = useState(() => {
@@ -16,7 +13,7 @@ export function useECS() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).ecs = state;
     }
-  })
+  });
 
   return state;
 }

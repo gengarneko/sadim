@@ -1,12 +1,11 @@
 import { Class } from '../utils/class';
 
-
 const COMPONENT_CLASS_ID = '__componentClassId__' as const;
 let componentClassId: number = 1;
 
 type Component<T> = {
   [K in keyof T]: T[K];
-}
+};
 
 type ComponentId<T> = Component<T> & {
   [COMPONENT_CLASS_ID]: number;
@@ -26,7 +25,8 @@ export function getComponentId<T>(
   if (component.hasOwnProperty(COMPONENT_CLASS_ID)) {
     return (component as ComponentId<T>)[COMPONENT_CLASS_ID];
   } else if (createIfNotExists) {
-    return (component as ComponentId<T>)[COMPONENT_CLASS_ID] = componentClassId++;
+    return ((component as ComponentId<T>)[COMPONENT_CLASS_ID] =
+      componentClassId++);
   }
   return undefined;
 }
@@ -34,7 +34,10 @@ export function getComponentId<T>(
 /**
  * @internal
  */
-export function getComponentClass<T extends K, K>(component: NonNullable<T>, resolveClass?: Class<K>) {
+export function getComponentClass<T extends K, K>(
+  component: NonNullable<T>,
+  resolveClass?: Class<K>,
+) {
   let componentClass = Object.getPrototypeOf(component).constructor as Class<T>;
   if (!resolveClass) {
     return componentClass;

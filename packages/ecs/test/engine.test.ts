@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from 'vitest';
+
 import {
   Engine,
   Entity,
@@ -7,9 +8,9 @@ import {
   Query,
   QueryBuilder,
   QueryPredicate,
-  System,
   ReactionSystem,
-} from "../src";
+  System,
+} from '../src';
 
 class Component {}
 
@@ -56,8 +57,8 @@ class TestSystem3 extends TestSystem {
   }
 }
 
-describe("System manipulation", () => {
-  it("Engine system creating", () => {
+describe('System manipulation', () => {
+  it('Engine system creating', () => {
     const engine = new Engine();
     expect(engine.systems).toBeDefined();
     expect(engine.systems.length).toBe(0);
@@ -67,7 +68,7 @@ describe("System manipulation", () => {
     expect(engine.queries.length).toBe(0);
   });
 
-  it("Adding system", () => {
+  it('Adding system', () => {
     const engine = new Engine();
     const system = new TestSystem1();
 
@@ -77,7 +78,7 @@ describe("System manipulation", () => {
     expect(engine.getSystem(TestSystem1)).toBe(system);
   });
 
-  it("Adding and removing multiple system with priority", () => {
+  it('Adding and removing multiple system with priority', () => {
     const engine = new Engine();
     const system1 = new TestSystem1();
     const system2 = new TestSystem2();
@@ -98,7 +99,7 @@ describe("System manipulation", () => {
     expect(engine.systems.length).toBe(0);
   });
 
-  it("Adding multiple systems with same priority must added in same order", () => {
+  it('Adding multiple systems with same priority must added in same order', () => {
     const engine = new Engine();
     const system1 = new TestSystem1();
     const system2 = new TestSystem2();
@@ -112,7 +113,7 @@ describe("System manipulation", () => {
     expect(engine.systems).toEqual([system1, system2, system3]);
   });
 
-  it("Remove system", () => {
+  it('Remove system', () => {
     const engine = new Engine();
     const system = new TestSystem1();
 
@@ -135,7 +136,7 @@ describe("System manipulation", () => {
     }).not.toThrowError();
   });
 
-  it("Engine updating", () => {
+  it('Engine updating', () => {
     const engine = new Engine();
     const arr: number[] = [];
     const system1 = new TestSystem1(arr);
@@ -150,7 +151,7 @@ describe("System manipulation", () => {
     expect(arr).toEqual([1, 2, 3]);
   });
 
-  it("Engine#clear should remove entities, systems, remove and clear queries", () => {
+  it('Engine#clear should remove entities, systems, remove and clear queries', () => {
     class TestSystem extends IterativeSystem {
       public constructor() {
         super(new Query((entity) => true));
@@ -179,7 +180,7 @@ describe("System manipulation", () => {
     expect(query.isEmpty).toBeTruthy();
   });
 
-  it("Expected that removing all entities will fire onEntityRemoved", () => {
+  it('Expected that removing all entities will fire onEntityRemoved', () => {
     const engine = new Engine();
     const entitiesCount = 2;
     let removedCount = 0;
@@ -231,8 +232,8 @@ describe("System manipulation", () => {
   });
 
   it(`Expected that system\`s message will be delivered through the engine to the handler`, () => {
-    const HERO = "hero";
-    const GAME_OVER = "gameOver";
+    const HERO = 'hero';
+    const GAME_OVER = 'gameOver';
 
     class GameOverSystem extends ReactionSystem {
       private dispatched: boolean = false;
@@ -271,7 +272,7 @@ describe("System manipulation", () => {
   });
 
   it(`Expected that system\`s message will be delivered through the engine to the handler`, () => {
-    const HERO = "hero";
+    const HERO = 'hero';
 
     class GameOver {}
 
@@ -350,7 +351,7 @@ describe("System manipulation", () => {
     expect(entityRemovedCount).toBe(0);
   });
 
-  it("Getting entity by id from engine should success if entity is in the engine", () => {
+  it('Getting entity by id from engine should success if entity is in the engine', () => {
     const engine = new Engine();
     const entity = new Entity();
     const id = entity.id;
@@ -358,7 +359,7 @@ describe("System manipulation", () => {
     expect(engine.getEntityById(id)).toBe(entity);
   });
 
-  it("Getting entity by id from engine should fail if entity is not in the engine", () => {
+  it('Getting entity by id from engine should fail if entity is not in the engine', () => {
     const engine = new Engine();
     const entity = new Entity();
     const id = entity.id;

@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ComponentProps } from 'react'
+import type { ComponentProps } from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { type Meta, type StoryObj } from '@storybook/react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { type Meta, type StoryObj } from '@storybook/react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { Button } from '@/primitives/button'
-import { Input } from '@/primitives/input'
+import { Button } from '@/primitives/button';
+import { Input } from '@/primitives/input';
 
 import {
   Form,
@@ -18,29 +18,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '.'
-import { Typography } from '../typography'
+} from '.';
+import { Typography } from '../typography';
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
-})
+});
 
 const FormExample = (props: ComponentProps<typeof Form>) => {
-  const [username, setUsername] = useState('')
+  const [username, setUsername] = useState('');
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
     },
-  })
+  });
 
   /**
    * Handles the form submission.
    * @param values The form values.
    */
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    setUsername(values.username)
+    console.log(values);
+    setUsername(values.username);
   }
 
   return (
@@ -70,18 +70,18 @@ const FormExample = (props: ComponentProps<typeof Form>) => {
         </Typography>
       )}
     </Form>
-  )
-}
+  );
+};
 
 const meta: Meta<typeof Form> = {
   component: Form,
   render: (args) => {
-    return <FormExample {...args} />
+    return <FormExample {...args} />;
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Form>
+type Story = StoryObj<typeof Form>;
 
-export const Default: Story = {}
+export const Default: Story = {};

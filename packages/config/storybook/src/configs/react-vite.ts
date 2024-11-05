@@ -1,6 +1,5 @@
-import { type StorybookConfig } from '@storybook/react-vite'
-
-import { getAbsolutePath } from '@ecs-pcl/utils/filesystem'
+import { getAbsolutePath } from '@ecs-pcl/utils/filesystem';
+import { type StorybookConfig } from '@storybook/react-vite';
 
 const config = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -27,6 +26,6 @@ const config = {
   docs: {
     autodocs: 'tag',
   },
-} satisfies StorybookConfig
+} satisfies StorybookConfig;
 
-export default config
+export default config;

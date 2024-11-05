@@ -1,7 +1,7 @@
-import { Canvas, Meta, Source } from '@storybook/blocks'
+import { Canvas, Meta, Source } from '@storybook/blocks';
 
-import { RadixPrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button'
-import * as PopoverStories from './popover.stories'
+import { RadixPrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
+import * as PopoverStories from './popover.stories';
 
 <Meta of={PopoverStories} />
 
@@ -21,12 +21,12 @@ export const importCode = `import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@ecs-pcl/ui/popover";`
+} from "@ecs-pcl/ui/popover";`;
 
 export const usageCode = `<Popover>
   <PopoverTrigger>Open</PopoverTrigger>
   <PopoverContent>Place content for the popover here.</PopoverContent>
-</Popover>`
+</Popover>`;
 
 <Source code={importCode} language='ts' dark />
 <Source code={usageCode} language='tsx' dark />

@@ -4,7 +4,7 @@
   "private": true,
   "description": "A package to share tsconfig presets around the workspace",
   "license": "MIT",
-  "author": "theo",
+  "author": "gengarneko",
   "type": "module",
   "files": [
     "./base.json",

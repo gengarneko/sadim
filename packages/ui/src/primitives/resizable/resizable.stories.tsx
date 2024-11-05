@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '.'
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '.';
 
 const meta: Meta<typeof ResizablePanelGroup> = {
   component: ResizablePanelGroup,
@@ -33,13 +33,13 @@ const meta: Meta<typeof ResizablePanelGroup> = {
       </ResizablePanel>
     </ResizablePanelGroup>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof ResizablePanelGroup>
+type Story = StoryObj<typeof ResizablePanelGroup>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 
 export const Vertical: Story = {
   render: (args) => (
@@ -61,7 +61,7 @@ export const Vertical: Story = {
       </ResizablePanel>
     </ResizablePanelGroup>
   ),
-}
+};
 
 export const WithHandle: Story = {
   render: (args) => (
@@ -83,4 +83,4 @@ export const WithHandle: Story = {
       </ResizablePanel>
     </ResizablePanelGroup>
   ),
-}
+};

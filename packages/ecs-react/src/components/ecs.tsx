@@ -2,8 +2,8 @@ import { createContext, ProviderProps } from 'react';
 
 import { Engine, Entity } from '@ecs-pcl/ecs';
 
-import { SystemsManager } from '../lib/systems-manager';
 import { System } from '../lib/system';
+import { SystemsManager } from '../lib/systems-manager';
 
 export const ECSContext = createContext<ECS>(null as unknown as ECS);
 
@@ -25,8 +25,7 @@ export class ECS {
 
   Provider(props: Omit<ProviderProps<ECS>, 'value'>) {
     return (
-      <ECSContext.Provider value= { this} > { props.children } </ECSContext.Provider>
-      );
+      <ECSContext.Provider value={this}> {props.children} </ECSContext.Provider>
+    );
   }
 }
-

@@ -1,7 +1,4 @@
-import {
-  System,
-  SystemEntry
-} from './system';
+import { System, SystemEntry } from './system';
 
 export class SystemsManager {
   systems: SystemEntry[];

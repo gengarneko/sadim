@@ -28,32 +28,38 @@ declare class LinkedComponentList<T extends LinkedComponent> {
 
 /** @internal */
 // This enables better control of the transpiled output size.
-function LinkedComponentList<T extends LinkedComponent>(this: LinkedComponentList<T>) {
+function LinkedComponentList<T extends LinkedComponent>(
+  this: LinkedComponentList<T>,
+) {
   this._head = undefined;
 }
 
 Object.defineProperty(LinkedComponentList.prototype, 'head', {
   get: function () {
     return this._head;
-  }
+  },
 });
 
 Object.defineProperty(LinkedComponentList.prototype, 'isEmpty', {
   get: function () {
     return this._head === undefined;
-  }
+  },
 });
 
 /** 添加 component 到链表 */
-LinkedComponentList.prototype.add = function (linkedComponent: LinkedComponent) {
+LinkedComponentList.prototype.add = function (
+  linkedComponent: LinkedComponent,
+) {
   let prev: LinkedComponent | undefined = undefined;
   let current: LinkedComponent | undefined = this._head;
   while (current !== undefined) {
     if (current === linkedComponent) {
-      throw new Error('Component is already appended, appending it once again will break linked items order');
+      throw new Error(
+        'Component is already appended, appending it once again will break linked items order',
+      );
     }
     prev = current;
-    current = current.next as (LinkedComponent | undefined);
+    current = current.next as LinkedComponent | undefined;
   }
   if (this._head === undefined) {
     this._head = linkedComponent;
@@ -64,13 +70,15 @@ LinkedComponentList.prototype.add = function (linkedComponent: LinkedComponent) 
 };
 
 /** 从链表中移除 component */
-LinkedComponentList.prototype.remove = function (linkedComponent: LinkedComponent) {
+LinkedComponentList.prototype.remove = function (
+  linkedComponent: LinkedComponent,
+) {
   const [prev, current] = this.find(linkedComponent);
   if (current === undefined) {
     return this;
   }
   if (prev === undefined) {
-    this._head = current.next as (LinkedComponent | undefined);
+    this._head = current.next as LinkedComponent | undefined;
   } else {
     prev.next = current.next;
   }
@@ -82,12 +90,14 @@ LinkedComponentList.prototype.nodes = function* () {
   let node = this._head;
   while (node !== undefined) {
     yield node;
-    node = node.next as (LinkedComponent | undefined);
+    node = node.next as LinkedComponent | undefined;
   }
 };
 
 /** 迭代链表 */
-LinkedComponentList.prototype.iterate = function (action: (value: LinkedComponent) => void) {
+LinkedComponentList.prototype.iterate = function (
+  action: (value: LinkedComponent) => void,
+) {
   for (const node of this.nodes()) {
     action(node);
   }
@@ -99,7 +109,9 @@ LinkedComponentList.prototype.clear = function () {
 };
 
 /** 查找链表中的 component */
-LinkedComponentList.prototype.find = function (linkedComponent: LinkedComponent) {
+LinkedComponentList.prototype.find = function (
+  linkedComponent: LinkedComponent,
+) {
   let prev: LinkedComponent | undefined;
   let current: LinkedComponent | undefined = this._head;
   while (current !== undefined) {
@@ -107,7 +119,7 @@ LinkedComponentList.prototype.find = function (linkedComponent: LinkedComponent)
       return [prev, current];
     }
     prev = current;
-    current = current.next as (LinkedComponent | undefined);
+    current = current.next as LinkedComponent | undefined;
   }
   return [undefined, undefined];
 };

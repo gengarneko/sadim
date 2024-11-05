@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Separator } from '.'
+import { Separator } from '.';
 
 const meta: Meta<typeof Separator> = {
   component: Separator,
@@ -22,10 +22,10 @@ const meta: Meta<typeof Separator> = {
       </div>
     </div>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Separator>
+type Story = StoryObj<typeof Separator>;
 
-export const Default: Story = {}
+export const Default: Story = {};

@@ -1,15 +1,15 @@
-import comments from '@eslint-community/eslint-plugin-eslint-comments/configs'
-import { fixupConfigRules } from '@eslint/compat'
-import js from '@eslint/js'
-import prettierConfig from 'eslint-config-prettier'
-import jsdoc from 'eslint-plugin-jsdoc'
-import * as regexpPlugin from 'eslint-plugin-regexp'
-import pluginSecurity from 'eslint-plugin-security'
-import turboPlugin from 'eslint-plugin-turbo'
-import globals from 'globals'
-import tseslint from 'typescript-eslint'
+import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
+import { fixupConfigRules } from '@eslint/compat';
+import js from '@eslint/js';
+import prettierConfig from 'eslint-config-prettier';
+import jsdoc from 'eslint-plugin-jsdoc';
+import * as regexpPlugin from 'eslint-plugin-regexp';
+import pluginSecurity from 'eslint-plugin-security';
+import turboPlugin from 'eslint-plugin-turbo';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-import { compat, defineConfig } from '../utils.js'
+import { compat, defineConfig } from '../utils.js';
 
 export const base = defineConfig(
   {
@@ -93,4 +93,4 @@ export const base = defineConfig(
       ],
     },
   },
-)
+);

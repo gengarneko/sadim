@@ -1,4 +1,4 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import {
   ContextMenu,
@@ -14,15 +14,15 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from '.'
+} from '.';
 
 const meta: Meta<typeof ContextMenu> = {
   component: ContextMenu,
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof ContextMenu>
+type Story = StoryObj<typeof ContextMenu>;
 
 export const Default: Story = {
   render: (args) => (
@@ -74,4 +74,4 @@ export const Default: Story = {
       </ContextMenuContent>
     </ContextMenu>
   ),
-}
+};

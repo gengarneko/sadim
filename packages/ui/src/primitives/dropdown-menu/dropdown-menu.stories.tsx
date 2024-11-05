@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ComponentProps } from 'react'
+import type { ComponentProps } from 'react';
 
-import { type DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import {
   DropdownMenu,
@@ -21,8 +21,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '.'
-import { Button } from '../button'
+} from '.';
+import { Button } from '../button';
 
 const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,
@@ -83,20 +83,20 @@ const meta: Meta<typeof DropdownMenu> = {
       </DropdownMenuContent>
     </DropdownMenu>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof DropdownMenu>
+type Story = StoryObj<typeof DropdownMenu>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 
-type Checked = DropdownMenuCheckboxItemProps['checked']
+type Checked = DropdownMenuCheckboxItemProps['checked'];
 
 const CheckboxesExample = (props: ComponentProps<typeof DropdownMenu>) => {
-  const [showStatusBar, setShowStatusBar] = useState<Checked>(true)
-  const [showActivityBar, setShowActivityBar] = useState<Checked>(false)
-  const [showPanel, setShowPanel] = useState<Checked>(false)
+  const [showStatusBar, setShowStatusBar] = useState<Checked>(true);
+  const [showActivityBar, setShowActivityBar] = useState<Checked>(false);
+  const [showPanel, setShowPanel] = useState<Checked>(false);
 
   return (
     <DropdownMenu {...props}>
@@ -127,15 +127,15 @@ const CheckboxesExample = (props: ComponentProps<typeof DropdownMenu>) => {
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};
 
 export const Checkboxes: Story = {
   render: (args) => <CheckboxesExample {...args} />,
-}
+};
 
 const RadioGroupExample = (props: ComponentProps<typeof DropdownMenu>) => {
-  const [position, setPosition] = useState('bottom')
+  const [position, setPosition] = useState('bottom');
 
   return (
     <DropdownMenu {...props}>
@@ -152,9 +152,9 @@ const RadioGroupExample = (props: ComponentProps<typeof DropdownMenu>) => {
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};
 
 export const RadioGroup: Story = {
   render: (args) => <RadioGroupExample {...args} />,
-}
+};

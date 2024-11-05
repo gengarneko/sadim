@@ -4,7 +4,7 @@
   "private": true,
   "description": "Vite presets for the workspace",
   "license": "MIT",
-  "author": "OrbitKit",
+  "author": "gengarneko",
   "sideEffects": false,
   "type": "module",
   "exports": {
@@ -17,7 +17,7 @@
     "build": "tsc -p tsconfig.build.json",
     "clean": "bun run rm -rf dist *.tsbuildinfo",
     "dev": "tsc -w -p tsconfig.build.json",
-    "lint": "eslint .  --max-warnings 0",
+    "lint": "oxlint .  --max-warnings 0",
     "typecheck": "tsc"
   },
   "dependencies": {

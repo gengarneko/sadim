@@ -2,10 +2,10 @@ import {
   ChevronRightIcon,
   EnvelopeOpenIcon,
   ReloadIcon,
-} from '@radix-ui/react-icons'
-import { type Meta, type StoryObj } from '@storybook/react'
+} from '@radix-ui/react-icons';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from './'
+import { Button } from './';
 
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -35,18 +35,18 @@ const meta: Meta<typeof Button> = {
       control: { type: 'select' },
     },
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Button>
+type Story = StoryObj<typeof Button>;
 
-export const Primary: Story = {}
-export const Secondary: Story = { args: { variant: 'secondary' } }
-export const Destructive: Story = { args: { variant: 'destructive' } }
-export const Outline: Story = { args: { variant: 'outline' } }
-export const Ghost: Story = { args: { variant: 'ghost' } }
-export const Link: Story = { args: { variant: 'link' } }
+export const Primary: Story = {};
+export const Secondary: Story = { args: { variant: 'secondary' } };
+export const Destructive: Story = { args: { variant: 'destructive' } };
+export const Outline: Story = { args: { variant: 'outline' } };
+export const Ghost: Story = { args: { variant: 'ghost' } };
+export const Link: Story = { args: { variant: 'link' } };
 
 export const Icon: Story = {
   args: {
@@ -61,7 +61,7 @@ export const Icon: Story = {
   argTypes: {
     children: { control: { disable: true } },
   },
-}
+};
 
 export const WithIcon: Story = {
   args: {
@@ -74,7 +74,7 @@ export const WithIcon: Story = {
   argTypes: {
     children: { control: { disable: true } },
   },
-}
+};
 
 export const Loading: Story = {
   args: {
@@ -90,4 +90,4 @@ export const Loading: Story = {
   argTypes: {
     children: { control: { disable: true } },
   },
-}
+};

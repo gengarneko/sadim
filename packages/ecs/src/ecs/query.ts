@@ -1,8 +1,9 @@
-import { getComponentId } from "./component-id";
-import { Entity, EntitySnapshot } from "./entity";
-import { isTag, Tag } from "./tag";
-import { Signal } from "@ecs-pcl/signal";
-import { Class } from "../utils/class";
+import { Signal } from '@ecs-pcl/signal';
+
+import { Class } from '../utils/class';
+import { getComponentId } from './component-id';
+import { Entity, EntitySnapshot } from './entity';
+import { isTag, Tag } from './tag';
 
 /**
  * Query Predicate is the type that describes a function that compares Entities with the conditions it sets.
@@ -319,7 +320,7 @@ export class QueryBuilder {
  * @internal
  */
 export function isQueryPredicate(item: unknown): item is QueryPredicate {
-  return typeof item === "function";
+  return typeof item === 'function';
 }
 
 /**

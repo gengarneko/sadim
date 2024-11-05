@@ -1,26 +1,56 @@
 {
   "name": "ecs-pcl",
   "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "update:workspace": "bun run ./scripts/update-workspace"
-  },
-  "devDependencies": {
-    "@types/bun": "^1.1.12",
-    "@types/yargs": "^17.0.33",
-    "pkg-types": "^1.2.1",
-    "prettier": "^3.3.3",
-    "turbo": "^2.2.3",
-    "typescript": "5.5.4",
-    "yargs": "^17.7.2"
-  },
-  "packageManager": "bun@1.1.26",
+  "author": "gengarneko",
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*",
     "packages/config/*"
-  ]
+  ],
+  "scripts": {
+    "commit": "git-cz",
+    "format": "bun format:write",
+    "format:check": "prettier \"**/*\" --ignore-unknown --list-different",
+    "format:write": "prettier \"**/*\" --ignore-unknown --list-different --write",
+    "lint": "oxlint . --max-warnings 0",
+    "lint:md": "markdownlint \"**/*.md\" --dot --ignore node_modules --ignore .changeset",
+    "prepare": "husky",
+    "release": "turbo run build lint typecheck && changeset version && changeset publish",
+    "reset:changelog": "bun run rm -rf */**/CHANGELOG.md",
+    "typecheck": "tsc",
+    "update:workspace": "bun run ./scripts/update-workspace"
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --list-different"
+    ],
+    "**/*.{ts,tsx,js,jsx,cjs,mjs}": [
+      "eslint"
+    ],
+    "**/*.{md,mdx}": [
+      "markdownlint"
+    ]
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "@commitlint/cli": "^19.4.1",
+    "@commitlint/config-conventional": "^19.4.1",
+    "@commitlint/cz-commitlint": "^19.4.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
+    "@playwright/test": "^1.46.1",
+    "@types/bun": "^1.1.12",
+    "@types/yargs": "^17.0.33",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "markdownlint": "^0.36.1",
+    "oxlint": "^0.11.0",
+    "pkg-types": "^1.2.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-packagejson": "^2.5.3",
+    "turbo": "^2.2.3",
+    "typescript": "5.5.4",
+    "yargs": "^17.7.2"
+  },
+  "packageManager": "bun@1.1.26"
 }

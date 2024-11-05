@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { Drawer as DrawerPrimitive } from 'vaul'
+import { Drawer as DrawerPrimitive } from 'vaul';
 
-import { cn } from '@/utils/cn'
+import { cn } from '@/utils/cn';
 
 const Drawer = ({
   shouldScaleBackground = true,
@@ -14,14 +14,14 @@ const Drawer = ({
     shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
-)
-Drawer.displayName = 'Drawer'
+);
+Drawer.displayName = 'Drawer';
 
-const DrawerTrigger: typeof DrawerPrimitive.Trigger = DrawerPrimitive.Trigger
+const DrawerTrigger: typeof DrawerPrimitive.Trigger = DrawerPrimitive.Trigger;
 
-const DrawerPortal: typeof DrawerPrimitive.Portal = DrawerPrimitive.Portal
+const DrawerPortal: typeof DrawerPrimitive.Portal = DrawerPrimitive.Portal;
 
-const DrawerClose: typeof DrawerPrimitive.Close = DrawerPrimitive.Close
+const DrawerClose: typeof DrawerPrimitive.Close = DrawerPrimitive.Close;
 
 const DrawerOverlay: typeof DrawerPrimitive.Overlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
@@ -32,8 +32,8 @@ const DrawerOverlay: typeof DrawerPrimitive.Overlay = React.forwardRef<
     className={cn('fixed inset-0 z-50 bg-black/80', className)}
     {...props}
   />
-))
-DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
+));
+DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
 const DrawerContent: typeof DrawerPrimitive.Content = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
@@ -53,8 +53,8 @@ const DrawerContent: typeof DrawerPrimitive.Content = React.forwardRef<
       {children}
     </DrawerPrimitive.Content>
   </DrawerPortal>
-))
-DrawerContent.displayName = 'DrawerContent'
+));
+DrawerContent.displayName = 'DrawerContent';
 
 const DrawerHeader = ({
   className,
@@ -64,8 +64,8 @@ const DrawerHeader = ({
     className={cn('grid gap-1.5 p-4 text-center sm:text-left', className)}
     {...props}
   />
-)
-DrawerHeader.displayName = 'DrawerHeader'
+);
+DrawerHeader.displayName = 'DrawerHeader';
 
 const DrawerFooter = ({
   className,
@@ -75,8 +75,8 @@ const DrawerFooter = ({
     className={cn('mt-auto flex flex-col gap-2 p-4', className)}
     {...props}
   />
-)
-DrawerFooter.displayName = 'DrawerFooter'
+);
+DrawerFooter.displayName = 'DrawerFooter';
 
 const DrawerTitle: typeof DrawerPrimitive.Title = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Title>,
@@ -90,8 +90,8 @@ const DrawerTitle: typeof DrawerPrimitive.Title = React.forwardRef<
     )}
     {...props}
   />
-))
-DrawerTitle.displayName = DrawerPrimitive.Title.displayName
+));
+DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
 const DrawerDescription: typeof DrawerPrimitive.Description = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Description>,
@@ -102,8 +102,8 @@ const DrawerDescription: typeof DrawerPrimitive.Description = React.forwardRef<
     className={cn('text-sm text-muted-foreground', className)}
     {...props}
   />
-))
-DrawerDescription.displayName = DrawerPrimitive.Description.displayName
+));
+DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 
 export {
   Drawer,
@@ -116,4 +116,4 @@ export {
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
-}
+};

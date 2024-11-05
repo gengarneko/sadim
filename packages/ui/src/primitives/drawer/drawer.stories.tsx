@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from '@/primitives/button'
+import { Button } from '@/primitives/button';
 
 import {
   Drawer,
@@ -11,7 +11,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '.'
+} from '.';
 
 const meta: Meta<typeof Drawer> = {
   component: Drawer,
@@ -32,10 +32,10 @@ const meta: Meta<typeof Drawer> = {
       </DrawerContent>
     </Drawer>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Drawer>
+type Story = StoryObj<typeof Drawer>;
 
-export const Default: Story = {}
+export const Default: Story = {};

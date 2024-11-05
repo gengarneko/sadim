@@ -1,10 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from 'vitest';
+
 import {
   Entity,
   EntitySnapshot,
   getComponentId,
   LinkedComponent,
-} from "../src";
+} from '../src';
 
 class Position {
   public x: number = 0;
@@ -37,12 +38,12 @@ class DamageChild extends Damage {
   }
 }
 
-describe("Components id", () => {
-  it("Getting component id without forcing of id creation returns undefined", () => {
+describe('Components id', () => {
+  it('Getting component id without forcing of id creation returns undefined', () => {
     expect(getComponentId(class Test {})).toBeUndefined();
   });
 
-  it("Getting component id return equal values for same component twice", () => {
+  it('Getting component id return equal values for same component twice', () => {
     class Test1 {}
 
     class Test2 {}
@@ -52,7 +53,7 @@ describe("Components id", () => {
     expect(getComponentId(Test2, true)).toBe(getComponentId(Test2));
   });
 
-  it("Getting components id returns different values", () => {
+  it('Getting components id returns different values', () => {
     class Test1 {}
 
     class Test2 {}
@@ -67,8 +68,8 @@ describe("Components id", () => {
   });
 });
 
-describe("Components and Tags", () => {
-  it("Adding single component, must to dispatch only onComponentAdded once", () => {
+describe('Components and Tags', () => {
+  it('Adding single component, must to dispatch only onComponentAdded once', () => {
     const entity = new Entity();
     let addedCount = 0;
     let removedCount = 0;
@@ -90,7 +91,7 @@ describe("Components and Tags", () => {
     expect(removedCount).toBe(0);
   });
 
-  it("Adding component twice, must override previous component", () => {
+  it('Adding component twice, must override previous component', () => {
     const entity = new Entity();
     let addedCount = 0;
     let removedCount = 0;
@@ -196,7 +197,7 @@ describe("Components and Tags", () => {
     expect(entity.get(Ancestor)).toBe(ancestor);
   });
 
-  it("Expected that hasAny returns true from component", () => {
+  it('Expected that hasAny returns true from component', () => {
     class Other {}
 
     const entity = new Entity();
@@ -204,12 +205,12 @@ describe("Components and Tags", () => {
     expect(entity.hasAny(Other, Position)).toBeTruthy();
   });
 
-  it("Expected that hasAny returns false", () => {
+  it('Expected that hasAny returns false', () => {
     class Other {}
 
     class A {}
 
-    const TAG = "tag";
+    const TAG = 'tag';
 
     const entity = new Entity();
     entity.add(new A());
@@ -217,7 +218,7 @@ describe("Components and Tags", () => {
     expect(entity.hasAny(Other, Position)).toBeFalsy();
   });
 
-  it("Expected that hasAll returns true", () => {
+  it('Expected that hasAll returns true', () => {
     const entity = new Entity();
     const TAG = 12345;
     entity.add(new Position());
@@ -225,7 +226,7 @@ describe("Components and Tags", () => {
     expect(entity.hasAll(TAG, Position)).toBeTruthy();
   });
 
-  it("Expected that hasAll returns false", () => {
+  it('Expected that hasAll returns false', () => {
     class Other {}
 
     const entity = new Entity();
@@ -298,8 +299,6 @@ describe("Components and Tags", () => {
     }).toThrow();
   });
 
-
-
   it(`Expected that appending the same linked component twice with gaps will throw an error`, () => {
     const entity = new Entity();
     const damage = new Damage(10);
@@ -353,41 +352,41 @@ describe("Components and Tags", () => {
   it(`get LinkedComponent by id returns specific linked component instance`, () => {
     const entity = new Entity();
     const damage1 = new Damage(1);
-    const damage2 = new Damage(2, "ka-boom");
+    const damage2 = new Damage(2, 'ka-boom');
     entity.append(damage1);
     entity.append(damage2);
-    expect(entity.get(Damage, "ka-boom")).toBe(damage2);
+    expect(entity.get(Damage, 'ka-boom')).toBe(damage2);
   });
 
   it(`get regular component by id returns always undefined`, () => {
     const entity = new Entity();
     entity.add(new Position());
-    expect(entity.get(Position, "ka-boom")).toBeUndefined();
+    expect(entity.get(Position, 'ka-boom')).toBeUndefined();
   });
 
   it(`has LinkedComponent with id returns specific linked component instance`, () => {
     const entity = new Entity();
     const damage1 = new Damage(1);
-    const damage2 = new Damage(2, "ka-boom");
+    const damage2 = new Damage(2, 'ka-boom');
     entity.append(damage1);
     entity.append(damage2);
-    expect(entity.has(Damage, "ka-boom")).toBeTruthy();
+    expect(entity.has(Damage, 'ka-boom')).toBeTruthy();
   });
 
   it(`has regular Component with id always returns false`, () => {
     const entity = new Entity();
     const position = new Position();
     entity.add(position);
-    expect(entity.has(Position, "ka-boom")).toBeFalsy();
+    expect(entity.has(Position, 'ka-boom')).toBeFalsy();
   });
 
   it(`"pick" by id removes component as expected`, () => {
     const entity = new Entity();
     const damage1 = new Damage(1);
-    const damage2 = new Damage(2, "ka-boom");
+    const damage2 = new Damage(2, 'ka-boom');
     entity.append(damage1);
     entity.append(damage2);
-    const picked = entity.pick(Damage, "ka-boom");
+    const picked = entity.pick(Damage, 'ka-boom');
     expect(damage2).toBe(picked);
   });
 
@@ -397,7 +396,7 @@ describe("Components and Tags", () => {
     const damage2 = new Damage(2);
     entity.append(damage1);
     entity.append(damage2);
-    const picked = entity.pick(Damage, "ka-boom");
+    const picked = entity.pick(Damage, 'ka-boom');
     expect(picked).toBeUndefined();
   });
 
@@ -486,7 +485,7 @@ describe("Components and Tags", () => {
     );
   });
 
-  it("Entity.linkedComponents returns all linked components instances for specific component class", () => {
+  it('Entity.linkedComponents returns all linked components instances for specific component class', () => {
     const entity = new Entity();
     entity.append(new Damage(1)).append(new Damage(2)).append(new Damage(3));
     let amount = 0;
@@ -499,8 +498,8 @@ describe("Components and Tags", () => {
   });
 });
 
-describe("Removing component", () => {
-  it("Simple", () => {
+describe('Removing component', () => {
+  it('Simple', () => {
     const entity = new Entity();
     const position = new Position(1, 1);
 
@@ -525,7 +524,7 @@ describe("Removing component", () => {
     expect(removedComponent).toBe(position);
   });
 
-  it("Removing absent component", () => {
+  it('Removing absent component', () => {
     const entity = new Entity();
 
     let addedCount = 0;
@@ -578,14 +577,14 @@ describe("Removing component", () => {
   });
 });
 
-describe("Snapshot", () => {
+describe('Snapshot', () => {
   it(`Expected that checking tag in the blank snapshot gives false`, () => {
     const TAG = 1;
     const snapshot = new EntitySnapshot();
     expect(snapshot.previous.has(TAG)).toBeFalsy();
   });
 
-  it("Expect undefined value (but not throwing an error) for getting component instance, if snapshot not initialized", () => {
+  it('Expect undefined value (but not throwing an error) for getting component instance, if snapshot not initialized', () => {
     class Component {}
 
     const snapshot = new EntitySnapshot();
@@ -593,7 +592,7 @@ describe("Snapshot", () => {
     expect(snapshot.previous.get(Component)).toBeUndefined();
   });
 
-  it("Expect undefined value for class that was not being initialized as component", () => {
+  it('Expect undefined value for class that was not being initialized as component', () => {
     class Component {}
 
     class NotAComponent {}
@@ -612,7 +611,7 @@ describe("Snapshot", () => {
 
     class ComponentB {}
 
-    const TAG_C = "tag-c";
+    const TAG_C = 'tag-c';
 
     const snapshot = new EntitySnapshot();
     const entity = new Entity().add(new ComponentA());
@@ -637,7 +636,7 @@ describe("Snapshot", () => {
   it(`Expected that removed component appears in previous state, but not in the current`, () => {
     class ComponentA {}
 
-    const TAG_C = "tag-c";
+    const TAG_C = 'tag-c';
 
     const snapshot = new EntitySnapshot();
     const entity = new Entity().add(new ComponentA()).add(TAG_C);
@@ -661,7 +660,7 @@ describe("Snapshot", () => {
     }
   });
 
-  it("Adding linked component must replace all existing linked component instances", () => {
+  it('Adding linked component must replace all existing linked component instances', () => {
     const entity = new Entity()
       .append(new Damage(1))
       .append(new Damage(2))

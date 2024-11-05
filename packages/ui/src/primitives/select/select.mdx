@@ -1,9 +1,9 @@
-import { ExternalLinkIcon } from '@radix-ui/react-icons'
-import { Canvas, Meta, Source } from '@storybook/blocks'
+import { ExternalLinkIcon } from '@radix-ui/react-icons';
+import { Canvas, Meta, Source } from '@storybook/blocks';
 
-import { RadixPrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button'
+import { RadixPrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
 
-import * as SelectStories from './select.stories'
+import * as SelectStories from './select.stories';
 
 <Meta of={SelectStories} />
 
@@ -25,7 +25,7 @@ export const importCode = `import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@ecs-pcl/ui/select";`
+} from "@ecs-pcl/ui/select";`;
 
 export const usageCode = `<Select>
   <SelectTrigger className="w-[180px]">
@@ -36,7 +36,7 @@ export const usageCode = `<Select>
     <SelectItem value="dark">Dark</SelectItem>
     <SelectItem value="system">System</SelectItem>
   </SelectContent>
-</Select>`
+</Select>`;
 
 <Source code={importCode} language='ts' dark />
 <Source code={usageCode} language='tsx' dark />

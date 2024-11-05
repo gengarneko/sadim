@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ComponentProps } from 'react'
-import type { CarouselApi } from '.'
+import type { ComponentProps } from 'react';
+import type { CarouselApi } from '.';
 
-import { type Meta, type StoryObj } from '@storybook/react'
-import AutoplayPlugin from 'embla-carousel-autoplay'
+import { type Meta, type StoryObj } from '@storybook/react';
+import AutoplayPlugin from 'embla-carousel-autoplay';
 
-import { Card, CardContent } from '@/primitives/card'
+import { Card, CardContent } from '@/primitives/card';
 
 import {
   Carousel,
@@ -14,15 +14,15 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from '.'
+} from '.';
 
 const meta: Meta<typeof Carousel> = {
   component: Carousel,
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Carousel>
+type Story = StoryObj<typeof Carousel>;
 
 export const Default: Story = {
   render: (args) => (
@@ -46,7 +46,7 @@ export const Default: Story = {
       </Carousel>
     </div>
   ),
-}
+};
 
 export const Sizes: Story = {
   render: (args) => (
@@ -76,7 +76,7 @@ export const Sizes: Story = {
       </Carousel>
     </div>
   ),
-}
+};
 
 export const Spacing: Story = {
   render: (args) => (
@@ -103,7 +103,7 @@ export const Spacing: Story = {
       </Carousel>
     </div>
   ),
-}
+};
 
 export const Orientation: Story = {
   render: (args) => (
@@ -134,25 +134,25 @@ export const Orientation: Story = {
       </Carousel>
     </div>
   ),
-}
+};
 
 const WithSlideNumberExample = (props: ComponentProps<typeof Carousel>) => {
-  const [api, setApi] = useState<CarouselApi>()
-  const [current, setCurrent] = useState(0)
-  const [count, setCount] = useState(0)
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!api) {
-      return
+      return;
     }
 
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
 
     api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1)
-    })
-  }, [api])
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   return (
     <div>
@@ -177,12 +177,12 @@ const WithSlideNumberExample = (props: ComponentProps<typeof Carousel>) => {
         Slide {current} of {count}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const WithSlideNumber: Story = {
   render: (args) => <WithSlideNumberExample {...args} />,
-}
+};
 
 export const Autoplay: Story = {
   render: (args) => (
@@ -210,4 +210,4 @@ export const Autoplay: Story = {
       </Carousel>
     </div>
   ),
-}
+};

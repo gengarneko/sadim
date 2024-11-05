@@ -14,7 +14,7 @@ function LinkedComponent(this: LinkedComponent, id?: string) {
 /** 检查是否为链表组件 */
 const isLinkedComponent = (component: any): component is LinkedComponent => {
   return component !== undefined && component.hasOwnProperty('next');
-}
+};
 
 function linkedComponent(id?: string) {
   return new LinkedComponent(id);

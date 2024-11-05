@@ -1,9 +1,9 @@
-import { CopyIcon } from '@radix-ui/react-icons'
-import { type Meta, type StoryObj } from '@storybook/react'
+import { CopyIcon } from '@radix-ui/react-icons';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Button } from '@/primitives/button'
-import { Input } from '@/primitives/input'
-import { Label } from '@/primitives/label'
+import { Button } from '@/primitives/button';
+import { Input } from '@/primitives/input';
+import { Label } from '@/primitives/label';
 
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '.'
+} from '.';
 
 const meta: Meta<typeof Dialog> = {
   component: Dialog,
@@ -50,13 +50,13 @@ const meta: Meta<typeof Dialog> = {
       </DialogContent>
     </Dialog>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Dialog>
+type Story = StoryObj<typeof Dialog>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 
 export const CustomCloseButton: Story = {
   render: (args) => (
@@ -97,4 +97,4 @@ export const CustomCloseButton: Story = {
       </DialogContent>
     </Dialog>
   ),
-}
+};

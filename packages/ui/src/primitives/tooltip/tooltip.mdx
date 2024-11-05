@@ -1,7 +1,7 @@
-import { Canvas, Controls, Meta, Source } from '@storybook/blocks'
+import { Canvas, Controls, Meta, Source } from '@storybook/blocks';
 
-import { RadixPrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button'
-import * as TooltipStories from './tooltip.stories'
+import { RadixPrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
+import * as TooltipStories from './tooltip.stories';
 
 <Meta of={TooltipStories} />
 
@@ -24,7 +24,7 @@ export const importCode = `import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@ecs-pcl/ui/tooltip";`
+} from "@ecs-pcl/ui/tooltip";`;
 
 export const usageCode = `<TooltipProvider>
   <Tooltip>
@@ -33,7 +33,7 @@ export const usageCode = `<TooltipProvider>
       <p>Add to library</p>
     </TooltipContent>
   </Tooltip>
-</TooltipProvider>`
+</TooltipProvider>`;
 
 <Source code={importCode} language='ts' dark />
 <Source code={usageCode} language='tsx' dark />

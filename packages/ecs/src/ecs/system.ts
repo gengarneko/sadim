@@ -1,5 +1,5 @@
-import { Engine } from "./engine";
-import { Entity } from "./entity";
+import { Engine } from './engine';
+import { Entity } from './entity';
 
 /**
  * System 是应用的基础，用以处理实体和组件。
@@ -42,7 +42,7 @@ declare class System {
   setEngine(engine: Engine | undefined): void;
 
   /** @internal */
-  setPriority(priority: number): void
+  setPriority(priority: number): void;
 
   /** @internal */
   requestRemoval(): void;
@@ -55,11 +55,11 @@ function System(this: System) {
 }
 
 Object.defineProperty(System.prototype, 'engine', {
-    get() {
-      if (this._engine === undefined)
+  get() {
+    if (this._engine === undefined)
       throw new Error(
         `Property "engine" can't be accessed when system is not added to the engine`,
-    );
+      );
     return this._engine;
   },
 });

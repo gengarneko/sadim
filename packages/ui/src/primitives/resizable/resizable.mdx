@@ -1,7 +1,7 @@
-import { Canvas, Meta, Source } from '@storybook/blocks'
+import { Canvas, Meta, Source } from '@storybook/blocks';
 
-import { PrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button'
-import * as ResizableStories from './resizable.stories'
+import { PrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
+import * as ResizableStories from './resizable.stories';
 
 <Meta of={ResizableStories} />
 
@@ -28,13 +28,13 @@ export const importCode = `import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@ecs-pcl/ui/resizable";`
+} from "@ecs-pcl/ui/resizable";`;
 
 export const usageCode = `<ResizablePanelGroup direction="horizontal">
   <ResizablePanel>One</ResizablePanel>
   <ResizableHandle />
   <ResizablePanel>Two</ResizablePanel>
-</ResizablePanelGroup>`
+</ResizablePanelGroup>`;
 
 <Source code={importCode} language='ts' dark />
 <Source code={usageCode} language='tsx' dark />

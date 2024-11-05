@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ComponentProps } from 'react'
+import type { ComponentProps } from 'react';
 
 import {
   CalendarIcon,
@@ -9,8 +9,8 @@ import {
   GearIcon,
   PersonIcon,
   RocketIcon,
-} from '@radix-ui/react-icons'
-import { type Meta, type StoryObj } from '@storybook/react'
+} from '@radix-ui/react-icons';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import {
   Command,
@@ -22,7 +22,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '.'
+} from '.';
 
 const meta: Meta<typeof Command> = {
   component: Command,
@@ -47,29 +47,29 @@ const meta: Meta<typeof Command> = {
       </Command>
     </div>
   ),
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Command>
+type Story = StoryObj<typeof Command>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 
 const DialogExample = (props: ComponentProps<typeof CommandDialog>) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
+        e.preventDefault();
+        setOpen((open) => !open);
       }
-    }
-    document.addEventListener('keydown', down)
+    };
+    document.addEventListener('keydown', down);
     return () => {
-      document.removeEventListener('keydown', down)
-    }
-  }, [])
+      document.removeEventListener('keydown', down);
+    };
+  }, []);
 
   return (
     <>
@@ -118,9 +118,9 @@ const DialogExample = (props: ComponentProps<typeof CommandDialog>) => {
         </CommandList>
       </CommandDialog>
     </>
-  )
-}
+  );
+};
 
 export const Dialog: Story = {
   render: (args) => <DialogExample {...args} />,
-}
+};

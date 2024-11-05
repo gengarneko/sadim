@@ -5,7 +5,7 @@ import * as ToastStories from './toast.stories';
 
 <Meta of={ToastStories} />
 
-<RadixPrimitiveDocsButton name="toast" />
+<RadixPrimitiveDocsButton name='toast' />
 
 # Toast
 
@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
   );
 }`;
 
-<Source code={providerCode} language="tsx" dark />
+<Source code={providerCode} language='tsx' dark />
 
 ### Use `toast` function from `useToast` hook
 
@@ -42,25 +42,24 @@ export const importCode = `import { useToast } from "@ecs-pcl/ui/toast";`;
 export const usageCode = `export const ToastDemo = () => {
   const { toast } = useToast();
 
-  return (
-    <Button
-      onClick={() => {
-        toast({
-          title: "Scheduled: Catch up",
-          description: "Friday, February 10, 2023 at 5:57 PM",
-        })
-      }}
-    >
-      Show Toast
-    </Button>
-  );
+return (
+<Button
+onClick={() => {
+toast({
+title: "Scheduled: Catch up",
+description: "Friday, February 10, 2023 at 5:57 PM",
+})
+}} >
+Show Toast
+</Button>
+);
 }
 `;
 
 > To display multiple toasts at the same time, you can update the `TOAST_LIMIT` in `use-toast.tsx`.
 
-<Source code={importCode} language="ts" dark />
-<Source code={usageCode} language="tsx" dark />
+<Source code={importCode} language='ts' dark />
+<Source code={usageCode} language='tsx' dark />
 
 ## Examples
 

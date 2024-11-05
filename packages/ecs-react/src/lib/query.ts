@@ -1,13 +1,6 @@
-import {
-  Entity,
-  Query as _Query
-} from '@ecs-pcl/ecs';
+import { Query as _Query, Entity } from '@ecs-pcl/ecs';
 
-import {
-  Constructor,
-  Constructors,
-  Instances
-} from './utils';
+import { Constructor, Constructors, Instances } from './utils';
 
 export class Query extends _Query {
   loop<T extends Constructor[], K extends Constructors<T>>(
@@ -20,7 +13,7 @@ export class Query extends _Query {
         const component = entity.get(t)!;
         components.push(component);
       }
-      cb(entity as Entity, (components as unknown) as Instances<T, K>);
+      cb(entity as Entity, components as unknown as Instances<T, K>);
     }
   }
 }

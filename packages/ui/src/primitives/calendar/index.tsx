@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from '@radix-ui/react-icons'
-import { DayPicker } from 'react-day-picker'
+} from '@radix-ui/react-icons';
+import { DayPicker } from 'react-day-picker';
 
-import { buttonVariants } from '@/primitives/button'
-import { cn } from '@/utils/cn'
+import { buttonVariants } from '@/primitives/button';
+import { cn } from '@/utils/cn';
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 /**
  * A calendar component that uses the `react-day-picker` library.
@@ -75,24 +75,24 @@ function Calendar({
       components={{
         Chevron(props) {
           if (props.orientation === 'down') {
-            return <ChevronDownIcon className='size-4' />
+            return <ChevronDownIcon className='size-4' />;
           }
 
           if (props.orientation === 'up') {
-            return <ChevronRightIcon className='size-4' />
+            return <ChevronRightIcon className='size-4' />;
           }
 
           if (props.orientation === 'right') {
-            return <ChevronRightIcon className='size-4' />
+            return <ChevronRightIcon className='size-4' />;
           }
 
-          return <ChevronLeftIcon className='size-4' />
+          return <ChevronLeftIcon className='size-4' />;
         },
       }}
       {...props}
     />
-  )
+  );
 }
-Calendar.displayName = 'Calendar'
+Calendar.displayName = 'Calendar';
 
-export { Calendar }
+export { Calendar };

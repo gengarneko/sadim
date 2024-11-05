@@ -1,7 +1,7 @@
-import { ExclamationTriangleIcon, RocketIcon } from '@radix-ui/react-icons'
-import { type Meta, type StoryObj } from '@storybook/react'
+import { ExclamationTriangleIcon, RocketIcon } from '@radix-ui/react-icons';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Alert, AlertDescription, AlertTitle } from './'
+import { Alert, AlertDescription, AlertTitle } from './';
 
 const meta: Meta<typeof Alert> = {
   component: Alert,
@@ -16,11 +16,11 @@ const meta: Meta<typeof Alert> = {
       },
     },
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof Alert>
+type Story = StoryObj<typeof Alert>;
 
 export const Default: Story = {
   render: (args) => (
@@ -32,7 +32,7 @@ export const Default: Story = {
       </AlertDescription>
     </Alert>
   ),
-}
+};
 
 export const Destructive: Story = {
   args: {
@@ -47,4 +47,4 @@ export const Destructive: Story = {
       </AlertDescription>
     </Alert>
   ),
-}
+};

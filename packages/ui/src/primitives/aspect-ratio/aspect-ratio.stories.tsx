@@ -1,17 +1,17 @@
-import { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { AspectRatio } from './'
+import { AspectRatio } from './';
 
 const meta: Meta<typeof AspectRatio> = {
   component: AspectRatio,
   args: {
     ratio: 16 / 9,
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof AspectRatio>
+type Story = StoryObj<typeof AspectRatio>;
 
 export const Default: Story = {
   render: (args) => (
@@ -25,4 +25,4 @@ export const Default: Story = {
       </AspectRatio>
     </div>
   ),
-}
+};

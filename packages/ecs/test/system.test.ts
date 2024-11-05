@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from 'vitest';
+
 import {
   Engine,
   Entity,
@@ -7,7 +8,7 @@ import {
   Query,
   QueryBuilder,
   System,
-} from "../src";
+} from '../src';
 
 class Position {
   public x: number = 0;
@@ -44,8 +45,8 @@ class MovementSystem extends IterativeSystem {
   };
 }
 
-describe("Iterative system", () => {
-  it("Updating entities", () => {
+describe('Iterative system', () => {
+  it('Updating entities', () => {
     const engine = new Engine();
     const entity = new Entity().add(new Position(0, 0));
 
@@ -59,7 +60,7 @@ describe("Iterative system", () => {
     expect(position!.y).toBe(10);
   });
 
-  it("Entities in prepare should be available", () => {
+  it('Entities in prepare should be available', () => {
     let entities!: ReadonlyArray<Entity>;
 
     class TestSystem extends IterativeSystem {
@@ -71,7 +72,7 @@ describe("Iterative system", () => {
         entities = this.entities;
       }
 
-      protected updateEntity(entity: Entity, dt: number): void { }
+      protected updateEntity(entity: Entity, dt: number): void {}
     }
 
     const engine = new Engine();
@@ -85,7 +86,7 @@ describe("Iterative system", () => {
     expect(entities.length).toBe(entitiesCount);
   });
 
-  it("Adding and removing should properly construct EntitySnapshot ", () => {
+  it('Adding and removing should properly construct EntitySnapshot ', () => {
     let onRemoved: { snapshot?: boolean; entity?: boolean } = {
       snapshot: undefined,
       entity: undefined,
@@ -100,7 +101,7 @@ describe("Iterative system", () => {
         super(new QueryBuilder().contains(Position).build());
       }
 
-      protected updateEntity(entity: Entity, dt: number): void { }
+      protected updateEntity(entity: Entity, dt: number): void {}
 
       protected entityAdded = ({ current, previous }: EntitySnapshot) => {
         onAdded = {
@@ -132,9 +133,9 @@ describe("Iterative system", () => {
     expect(onRemoved).toEqual({ snapshot: true, entity: false });
   });
 
-  it("Entities safe removal during iteration should not break the iteration ordering", () => {
+  it('Entities safe removal during iteration should not break the iteration ordering', () => {
     class Health {
-      public constructor(public value: number) { }
+      public constructor(public value: number) {}
     }
 
     class HealthTickSystem extends IterativeSystem {
@@ -184,9 +185,9 @@ describe("Iterative system", () => {
   );
 });
 
-describe("Failure on accessing engine if not attached to it", () => {
+describe('Failure on accessing engine if not attached to it', () => {
   it(`Expected that engine can't be accessed if system is not attached to it`, () => {
-    class Message { }
+    class Message {}
 
     class TestSystem extends System {
       public update(dt: number) {
@@ -199,7 +200,7 @@ describe("Failure on accessing engine if not attached to it", () => {
   });
 
   it(`Expected that message can't be sent if system is not attached to the engine`, () => {
-    class Message { }
+    class Message {}
 
     class TestSystem extends System {
       public update(dt: number) {
@@ -212,7 +213,7 @@ describe("Failure on accessing engine if not attached to it", () => {
   });
 
   it(`Expected that removing system from engine breaking the iteration`, () => {
-    class Component { }
+    class Component {}
 
     let amountOfIterations = 0;
 
@@ -241,7 +242,7 @@ describe("Failure on accessing engine if not attached to it", () => {
   });
 
   it(`Iterative system should iterate over entities after removing and subsequent adding it to the engine`, () => {
-    class Component { }
+    class Component {}
 
     const engine = new Engine();
     const entity = new Entity().add(new Component());
@@ -259,7 +260,7 @@ describe("Failure on accessing engine if not attached to it", () => {
 
     engine.addSystem(system);
     engine.update(1);
-    
+
     engine.removeSystem(system);
     engine.update(1);
 
