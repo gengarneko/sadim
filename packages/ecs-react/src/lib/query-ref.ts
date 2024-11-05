@@ -5,6 +5,11 @@ import {Entity, QueryPredicate} from '@ecs-pcl/ecs';
 import {Query} from './query';
 import {Constructor, Constructors, Instances} from './utils';
 
+/**
+ * 对 Query 进行包装，提供一些额外的功能
+ *  空值检查
+ *  更安全的访问
+ */
 export class QueryRef {
   ref: MutableRefObject<Query>;
 

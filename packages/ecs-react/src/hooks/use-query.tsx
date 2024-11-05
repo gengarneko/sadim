@@ -4,7 +4,7 @@ import {EntitySnapshot, QueryPredicate} from '@ecs-pcl/ecs';
 
 import {Query} from '../lib/query';
 import {QueryRef} from '../lib/query-ref';
-import {useEngine} from './useEngine';
+import {useEngine} from './use-engine';
 
 export type SnapshotHandler = (snapshot: EntitySnapshot) => void;
 export type UseQueryOptions = {

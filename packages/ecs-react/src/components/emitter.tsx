@@ -10,9 +10,9 @@ import {
 
 import {Entity as _Entity} from '@ecs-pcl/ecs';
 
-import {useEngine} from '../hooks/useEngine';
-import {useStatefulRef} from '../hooks/useStatefulRef';
-import {useTimer} from '../hooks/useTimer';
+import {useEngine} from '../hooks/use-engine';
+import {useStatefulRef} from '../hooks/use-stateful-ref';
+import {useTimer} from '../hooks/use-timer';
 import {EntityRef} from './entity';
 
 export type EmitterProps = {

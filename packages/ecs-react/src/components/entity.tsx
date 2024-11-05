@@ -3,7 +3,7 @@ import React from 'react';
 import {Entity as _Entity} from '@ecs-pcl/ecs';
 import {useMount, useUnmount} from 'ahooks';
 
-import {EntityContext} from '../hooks/useEntity';
+import {EntityContext} from '../hooks/use-entity';
 import {ECSContext} from './ecs';
 
 export type EntityRef = {

@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 
 import {Class} from '@ecs-pcl/ecs';
 
-import {useEntity} from './useEntity';
+import {useEntity} from './use-entity';
 
 export function useFacet<T>(type: Class<T>) {
   const entity = useEntity();
