@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import {describe, expect, it} from 'vitest';
 
-import { linkedComponent } from '../src/ecs/linked-component';
-import { linkedComponentList } from '../src/ecs/linked-component-list';
+import {linkedComponent} from '../src/ecs/linked-component';
+import {linkedComponentList} from '../src/ecs/linked-component-list';
 
 const component = linkedComponent();
 

@@ -3,9 +3,9 @@ import {
   EnvelopeOpenIcon,
   ReloadIcon,
 } from '@radix-ui/react-icons';
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Button } from './';
+import {Button} from './';
 
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -23,7 +23,7 @@ const meta: Meta<typeof Button> = {
         'ghost',
         'link',
       ],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
     asChild: {
       control: {
@@ -32,7 +32,7 @@ const meta: Meta<typeof Button> = {
     },
     size: {
       options: ['default', 'sm', 'lg', 'icon'],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
   },
 };
@@ -42,11 +42,11 @@ export default meta;
 type Story = StoryObj<typeof Button>;
 
 export const Primary: Story = {};
-export const Secondary: Story = { args: { variant: 'secondary' } };
-export const Destructive: Story = { args: { variant: 'destructive' } };
-export const Outline: Story = { args: { variant: 'outline' } };
-export const Ghost: Story = { args: { variant: 'ghost' } };
-export const Link: Story = { args: { variant: 'link' } };
+export const Secondary: Story = {args: {variant: 'secondary'}};
+export const Destructive: Story = {args: {variant: 'destructive'}};
+export const Outline: Story = {args: {variant: 'outline'}};
+export const Ghost: Story = {args: {variant: 'ghost'}};
+export const Link: Story = {args: {variant: 'link'}};
 
 export const Icon: Story = {
   args: {
@@ -59,7 +59,7 @@ export const Icon: Story = {
     ),
   },
   argTypes: {
-    children: { control: { disable: true } },
+    children: {control: {disable: true}},
   },
 };
 
@@ -72,7 +72,7 @@ export const WithIcon: Story = {
     ),
   },
   argTypes: {
-    children: { control: { disable: true } },
+    children: {control: {disable: true}},
   },
 };
 
@@ -88,6 +88,6 @@ export const Loading: Story = {
     ),
   },
   argTypes: {
-    children: { control: { disable: true } },
+    children: {control: {disable: true}},
   },
 };

@@ -1,5 +1,5 @@
 import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
-import { fixupConfigRules } from '@eslint/compat';
+import {fixupConfigRules} from '@eslint/compat';
 import js from '@eslint/js';
 import prettierConfig from 'eslint-config-prettier';
 import jsdoc from 'eslint-plugin-jsdoc';
@@ -9,7 +9,7 @@ import turboPlugin from 'eslint-plugin-turbo';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-import { compat, defineConfig } from '../utils.js';
+import {compat, defineConfig} from '../utils.js';
 
 export const base = defineConfig(
   {
@@ -72,17 +72,17 @@ export const base = defineConfig(
       ...turboPlugin.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+        {argsIgnorePattern: '^_', varsIgnorePattern: '^_'},
       ],
 
       '@typescript-eslint/consistent-type-imports': [
         'warn',
-        { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
+        {prefer: 'type-imports', fixStyle: 'separate-type-imports'},
       ],
 
       '@typescript-eslint/no-misused-promises': [
         'error',
-        { checksVoidReturn: { attributes: false } },
+        {checksVoidReturn: {attributes: false}},
       ],
 
       '@typescript-eslint/no-unnecessary-condition': [

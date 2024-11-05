@@ -1,7 +1,7 @@
 /// <reference types="../eslint-types.d.ts" />
 
-import type { FlatCompat } from '@eslint/eslintrc';
-import type { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
+import type {FlatCompat} from '@eslint/eslintrc';
+import type {FlatConfig} from '@typescript-eslint/utils/ts-eslint';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 export declare const defineConfig: typeof import('typescript-eslint').config;

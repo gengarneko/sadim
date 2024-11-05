@@ -1,11 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import {describe, expect, it} from 'vitest';
 
-import {
-  Entity,
-  EntitySnapshot,
-  getComponentId,
-  LinkedComponent,
-} from '../src';
+import {Entity, EntitySnapshot, getComponentId, LinkedComponent} from '../src';
 
 class Position {
   public x: number = 0;

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
-import { ECS } from '../components/ecs';
+import {ECS} from '../components/ecs';
 
 export function useECS() {
   const [state] = useState(() => {

@@ -1,8 +1,8 @@
-import { useContext } from 'react';
+import {useContext} from 'react';
 
-import { ECSContext } from '../components/ecs';
+import {ECSContext} from '../components/ecs';
 
 export const useEngine = () => {
-  const { engine } = useContext(ECSContext);
+  const {engine} = useContext(ECSContext);
   return engine;
 };

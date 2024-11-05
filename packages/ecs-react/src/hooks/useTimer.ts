@@ -1,6 +1,6 @@
-import { useRef } from 'react';
+import {useRef} from 'react';
 
-import { useSystem } from './useSystem';
+import {useSystem} from './useSystem';
 
 export const useTimer = (interval: number, callback: () => void) => {
   const time = useRef(0);

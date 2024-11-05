@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import {useState} from 'react';
 
-import type { ComponentProps } from 'react';
+import type {ComponentProps} from 'react';
 
-import { type DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu';
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type DropdownMenuCheckboxItemProps} from '@radix-ui/react-dropdown-menu';
+import {type Meta, type StoryObj} from '@storybook/react';
 
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '.';
-import { Button } from '../button';
+import {Button} from '../button';
 
 const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,

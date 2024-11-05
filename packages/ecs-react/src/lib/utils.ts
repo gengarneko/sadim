@@ -1,11 +1,11 @@
-import { Component, ReactNode } from 'react';
+import {Component, ReactNode} from 'react';
 
 export type Tuple3 = [number, number, number];
 
 export type PickRename<T, K extends keyof T, R extends PropertyKey> = Omit<
   T,
   K
-> & { [P in R]: T[K] };
+> & {[P in R]: T[K]};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
 export type Constructor<T = {}> = new (...args: any[]) => T;
@@ -25,7 +25,7 @@ export type NonFunctionPropertyNames<T> = {
 
 export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 
-export type EmptyProps = { children: ReactNode };
+export type EmptyProps = {children: ReactNode};
 
 export type AnyObject = Record<string, unknown>;
 

@@ -1,5 +1,5 @@
-import { blueDark, grayDark } from '@radix-ui/colors';
-import { create } from '@storybook/theming';
+import {blueDark, grayDark} from '@radix-ui/colors';
+import {create} from '@storybook/theming';
 
 export default create({
   base: 'dark',

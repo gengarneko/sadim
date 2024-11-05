@@ -1,14 +1,14 @@
-import type { Signal } from '@ecs-pcl/signal';
-import type { LinkedComponent } from './linked-component';
-import type { LinkedComponentList } from './linked-component-list';
+import type {Signal} from '@ecs-pcl/signal';
+import type {LinkedComponent} from './linked-component';
+import type {LinkedComponentList} from './linked-component-list';
 
-import { signal } from '@ecs-pcl/signal';
+import {signal} from '@ecs-pcl/signal';
 
-import { Class } from '../utils/class';
-import { getComponentClass, getComponentId } from './component-id';
-import { isLinkedComponent } from './linked-component';
-import { linkedComponentList } from './linked-component-list';
-import { isTag, Tag } from './tag';
+import {Class} from '../utils/class';
+import {getComponentClass, getComponentId} from './component-id';
+import {isLinkedComponent} from './linked-component';
+import {linkedComponentList} from './linked-component-list';
+import {isTag, Tag} from './tag';
 
 export interface ReadonlyEntity {
   /** 当 component 或者 tag 被添加到 entity 时触发 */
@@ -674,4 +674,4 @@ export type ComponentUpdateHandler = <T>(
  */
 let entityId: number = 1;
 
-export { Entity };
+export {Entity};

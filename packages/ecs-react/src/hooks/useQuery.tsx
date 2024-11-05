@@ -1,10 +1,10 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import {MutableRefObject, useEffect, useRef, useState} from 'react';
 
-import { EntitySnapshot, QueryPredicate } from '@ecs-pcl/ecs';
+import {EntitySnapshot, QueryPredicate} from '@ecs-pcl/ecs';
 
-import { Query } from '../lib/query';
-import { QueryRef } from '../lib/query-ref';
-import { useEngine } from './useEngine';
+import {Query} from '../lib/query';
+import {QueryRef} from '../lib/query-ref';
+import {useEngine} from './useEngine';
 
 export type SnapshotHandler = (snapshot: EntitySnapshot) => void;
 export type UseQueryOptions = {

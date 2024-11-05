@@ -1,4 +1,4 @@
-import { System, SystemEntry } from './system';
+import {System, SystemEntry} from './system';
 
 export class SystemsManager {
   systems: SystemEntry[];
@@ -12,7 +12,7 @@ export class SystemsManager {
   }
 
   add(callback: System, priority = 0) {
-    this.systems.push({ callback, priority });
+    this.systems.push({callback, priority});
     this.sort();
   }
 

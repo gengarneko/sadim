@@ -1,13 +1,13 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Separator } from '@/primitives/separator';
+import {Separator} from '@/primitives/separator';
 
-import { ScrollArea, ScrollBar } from '.';
+import {ScrollArea, ScrollBar} from '.';
 
 const meta: Meta<typeof ScrollArea> = {
   component: ScrollArea,
   argTypes: {
-    asChild: { control: { disable: true } },
+    asChild: {control: {disable: true}},
   },
 };
 
@@ -15,7 +15,7 @@ export default meta;
 
 type Story = StoryObj<typeof ScrollArea>;
 
-const tags = Array.from({ length: 50 }).map(
+const tags = Array.from({length: 50}).map(
   (_, i, a) => `v1.2.0-beta.${String(a.length - i)}`,
 );
 

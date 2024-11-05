@@ -1,9 +1,9 @@
-import { CopyIcon } from '@radix-ui/react-icons';
-import { type Meta, type StoryObj } from '@storybook/react';
+import {CopyIcon} from '@radix-ui/react-icons';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Button } from '@/primitives/button';
-import { Input } from '@/primitives/input';
-import { Label } from '@/primitives/label';
+import {Button} from '@/primitives/button';
+import {Input} from '@/primitives/input';
+import {Label} from '@/primitives/label';
 
 import {
   Dialog,

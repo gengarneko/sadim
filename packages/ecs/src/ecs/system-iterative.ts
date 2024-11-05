@@ -1,6 +1,6 @@
-import { Entity } from './entity';
-import { Query, QueryBuilder, QueryPredicate } from './query';
-import { ReactionSystem } from './system-reaction';
+import {Entity} from './entity';
+import {Query, QueryBuilder, QueryPredicate} from './query';
+import {ReactionSystem} from './system-reaction';
 
 /**
  * Iterative system made for iterating over entities that matches its query.

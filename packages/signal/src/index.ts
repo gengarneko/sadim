@@ -64,7 +64,7 @@ Signal.prototype.connect = function (handler: Handler, priority: number = 0) {
     existingHandler.priority = priority;
   } else {
     const lastHandler = this._handlers[this._handlers.length - 1];
-    this._handlers.push({ handler, priority });
+    this._handlers.push({handler, priority});
     needSort = lastHandler !== undefined && lastHandler.priority > priority;
   }
   if (needSort) {
@@ -102,4 +102,4 @@ function signal() {
   return new Signal();
 }
 
-export { Signal, signal };
+export {Signal, signal};

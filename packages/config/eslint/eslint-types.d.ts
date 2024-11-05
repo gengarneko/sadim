@@ -5,16 +5,16 @@
 
 // From: https://github.com/t3-oss/create-t3-turbo/blob/main/tooling/eslint/types.d.ts
 declare module '@eslint/js' {
-  import type { Linter } from 'eslint';
+  import type {Linter} from 'eslint';
 
   export const configs: {
-    readonly recommended: { readonly rules: Readonly<Linter.RulesRecord> };
-    readonly all: { readonly rules: Readonly<Linter.RulesRecord> };
+    readonly recommended: {readonly rules: Readonly<Linter.RulesRecord>};
+    readonly all: {readonly rules: Readonly<Linter.RulesRecord>};
   };
 }
 
 declare module '@eslint-community/eslint-plugin-eslint-comments/configs' {
-  import type { Linter } from 'eslint';
+  import type {Linter} from 'eslint';
 
   export const recommended: {
     rules: Linter.RulesRecord;
@@ -22,7 +22,7 @@ declare module '@eslint-community/eslint-plugin-eslint-comments/configs' {
 }
 
 declare module '@eslint/eslintrc' {
-  import type { Linter } from 'eslint';
+  import type {Linter} from 'eslint';
 
   export class FlatCompat {
     constructor({
@@ -44,8 +44,8 @@ declare module '@eslint/eslintrc' {
 }
 
 declare module '@eslint/compat' {
-  import type { Linter } from 'eslint';
-  import type { ConfigWithExtends } from 'typescript-eslint';
+  import type {Linter} from 'eslint';
+  import type {ConfigWithExtends} from 'typescript-eslint';
 
   export const fixupConfigRules: (
     config: string | Linter.Config,
@@ -53,8 +53,8 @@ declare module '@eslint/compat' {
 }
 
 declare module 'eslint-plugin-regexp' {
-  import type { Linter } from 'eslint';
-  import type { ConfigWithExtends } from 'typescript-eslint';
+  import type {Linter} from 'eslint';
+  import type {ConfigWithExtends} from 'typescript-eslint';
 
   export const configs: {
     'flat/recommended': {
@@ -69,8 +69,8 @@ declare module 'eslint-plugin-regexp' {
 }
 
 declare module 'eslint-plugin-security' {
-  import type { Linter } from 'eslint';
-  import type { ConfigWithExtends } from 'typescript-eslint';
+  import type {Linter} from 'eslint';
+  import type {ConfigWithExtends} from 'typescript-eslint';
 
   export const configs: {
     recommended: {
@@ -81,10 +81,10 @@ declare module 'eslint-plugin-security' {
 }
 
 declare module 'eslint-plugin-turbo' {
-  import type { Linter, Rule } from 'eslint';
+  import type {Linter, Rule} from 'eslint';
 
   export const configs: {
-    recommended: { rules: Linter.RulesRecord };
+    recommended: {rules: Linter.RulesRecord};
   };
   export const rules: Record<string, Rule.RuleModule>;
 }

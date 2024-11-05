@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import {describe, expect, it} from 'vitest';
 
-import { signal } from '../src';
+import {signal} from '../src';
 
 describe('Signals', () => {
   it('成功创建 signal', () => {

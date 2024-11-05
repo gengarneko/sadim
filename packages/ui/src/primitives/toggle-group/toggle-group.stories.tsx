@@ -3,9 +3,9 @@ import {
   FontItalicIcon,
   UnderlineIcon,
 } from '@radix-ui/react-icons';
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { ToggleGroup, ToggleGroupItem } from '.';
+import {ToggleGroup, ToggleGroupItem} from '.';
 
 const items = [
   {
@@ -36,15 +36,15 @@ const meta: Meta<typeof ToggleGroup> = {
   argTypes: {
     type: {
       options: ['single', 'multiple'],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
     variant: {
       options: ['default', 'outline'],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
     size: {
       options: ['default', 'sm', 'lg'],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
   },
   render: (args) => (
@@ -61,8 +61,8 @@ export default meta;
 type Story = StoryObj<typeof ToggleGroup>;
 
 export const Default: Story = {};
-export const Outline: Story = { args: { variant: 'outline' } };
-export const Single: Story = { args: { type: 'single' } };
-export const Small: Story = { args: { size: 'sm' } };
-export const Large: Story = { args: { size: 'lg' } };
-export const Disabled: Story = { args: { disabled: true } };
+export const Outline: Story = {args: {variant: 'outline'}};
+export const Single: Story = {args: {type: 'single'}};
+export const Small: Story = {args: {size: 'sm'}};
+export const Large: Story = {args: {size: 'lg'}};
+export const Disabled: Story = {args: {disabled: true}};

@@ -1,7 +1,7 @@
-import { ExclamationTriangleIcon, RocketIcon } from '@radix-ui/react-icons';
-import { type Meta, type StoryObj } from '@storybook/react';
+import {ExclamationTriangleIcon, RocketIcon} from '@radix-ui/react-icons';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Alert, AlertDescription, AlertTitle } from './';
+import {Alert, AlertDescription, AlertTitle} from './';
 
 const meta: Meta<typeof Alert> = {
   component: Alert,

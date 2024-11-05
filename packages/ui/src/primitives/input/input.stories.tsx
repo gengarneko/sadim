@@ -1,8 +1,8 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Button } from '../button';
-import { Label } from '../label';
-import { Input } from './';
+import {Button} from '../button';
+import {Label} from '../label';
+import {Input} from './';
 
 const meta: Meta<typeof Input> = {
   component: Input,

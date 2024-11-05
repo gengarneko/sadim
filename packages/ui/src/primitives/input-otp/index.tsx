@@ -2,17 +2,17 @@
 
 import * as React from 'react';
 
-import type { SlotProps } from 'input-otp';
+import type {SlotProps} from 'input-otp';
 
-import { DashIcon } from '@radix-ui/react-icons';
-import { OTPInput } from 'input-otp';
+import {DashIcon} from '@radix-ui/react-icons';
+import {OTPInput} from 'input-otp';
 
-import { cn } from '@/utils/cn';
+import {cn} from '@/utils/cn';
 
 const InputOTP = React.forwardRef<
   React.ElementRef<typeof OTPInput>,
   React.ComponentPropsWithoutRef<typeof OTPInput>
->(({ className, ...props }, ref) => (
+>(({className, ...props}, ref) => (
   <OTPInput
     ref={ref}
     containerClassName={cn('flex items-center gap-2', className)}
@@ -24,7 +24,7 @@ InputOTP.displayName = 'InputOTP';
 const InputOTPGroup = React.forwardRef<
   React.ElementRef<'div'>,
   React.ComponentPropsWithoutRef<'div'>
->(({ className, ...props }, ref) => (
+>(({className, ...props}, ref) => (
   <div ref={ref} className={cn('flex items-center', className)} {...props} />
 ));
 InputOTPGroup.displayName = 'InputOTPGroup';
@@ -32,7 +32,7 @@ InputOTPGroup.displayName = 'InputOTPGroup';
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<'div'>,
   SlotProps & React.ComponentPropsWithoutRef<'div'>
->(({ char, hasFakeCaret, isActive, className, ...props }, ref) => {
+>(({char, hasFakeCaret, isActive, className, ...props}, ref) => {
   return (
     <div
       ref={ref}
@@ -57,11 +57,11 @@ InputOTPSlot.displayName = 'InputOTPSlot';
 const InputOTPSeparator = React.forwardRef<
   React.ElementRef<'div'>,
   React.ComponentPropsWithoutRef<'div'>
->(({ ...props }, ref) => (
+>(({...props}, ref) => (
   <div ref={ref} role='separator' {...props}>
     <DashIcon />
   </div>
 ));
 InputOTPSeparator.displayName = 'InputOTPSeparator';
 
-export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator };
+export {InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator};

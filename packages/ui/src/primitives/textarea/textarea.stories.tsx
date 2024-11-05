@@ -1,9 +1,9 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Textarea } from '.';
-import { Button } from '../button';
-import { Label } from '../label';
-import { Typography } from '../typography';
+import {Textarea} from '.';
+import {Button} from '../button';
+import {Label} from '../label';
+import {Typography} from '../typography';
 
 const meta: Meta<typeof Textarea> = {
   component: Textarea,
@@ -18,7 +18,7 @@ export default meta;
 type Story = StoryObj<typeof Textarea>;
 
 export const Default: Story = {};
-export const Disabled: Story = { args: { disabled: true } };
+export const Disabled: Story = {args: {disabled: true}};
 export const WithLabel: Story = {
   args: {
     id: 'message',

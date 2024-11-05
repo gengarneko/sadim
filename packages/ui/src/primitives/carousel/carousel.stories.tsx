@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
-import type { ComponentProps } from 'react';
-import type { CarouselApi } from '.';
+import type {ComponentProps} from 'react';
+import type {CarouselApi} from '.';
 
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 import AutoplayPlugin from 'embla-carousel-autoplay';
 
-import { Card, CardContent } from '@/primitives/card';
+import {Card, CardContent} from '@/primitives/card';
 
 import {
   Carousel,
@@ -29,7 +29,7 @@ export const Default: Story = {
     <div className='flex justify-center'>
       <Carousel {...args} className='w-full max-w-xs'>
         <CarouselContent>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({length: 5}).map((_, index) => (
             <CarouselItem key={index}>
               <div className='p-1'>
                 <Card>
@@ -59,7 +59,7 @@ export const Sizes: Story = {
         className='w-full max-w-sm'
       >
         <CarouselContent>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({length: 5}).map((_, index) => (
             <CarouselItem key={index} className='md:basis-1/2 lg:basis-1/3'>
               <div className='p-1'>
                 <Card>
@@ -83,7 +83,7 @@ export const Spacing: Story = {
     <div className='flex justify-center'>
       <Carousel {...args} className='w-full max-w-sm'>
         <CarouselContent className='-ml-1'>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({length: 5}).map((_, index) => (
             <CarouselItem
               key={index}
               className='pl-1 md:basis-1/2 lg:basis-1/3'
@@ -117,7 +117,7 @@ export const Orientation: Story = {
         className='w-full max-w-xs'
       >
         <CarouselContent className='-mt-1 h-[200px]'>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({length: 5}).map((_, index) => (
             <CarouselItem key={index} className='pt-1 md:basis-1/2'>
               <div className='p-1'>
                 <Card>
@@ -159,7 +159,7 @@ const WithSlideNumberExample = (props: ComponentProps<typeof Carousel>) => {
       <div className='flex justify-center'>
         <Carousel {...props} setApi={setApi} className='w-full max-w-xs'>
           <CarouselContent>
-            {Array.from({ length: 5 }).map((_, index) => (
+            {Array.from({length: 5}).map((_, index) => (
               <CarouselItem key={index}>
                 <Card>
                   <CardContent className='flex aspect-[1_/_1] items-center justify-center p-6'>
@@ -189,11 +189,11 @@ export const Autoplay: Story = {
     <div className='flex justify-center'>
       <Carousel
         {...args}
-        plugins={[AutoplayPlugin({ delay: 2000, stopOnInteraction: true })]}
+        plugins={[AutoplayPlugin({delay: 2000, stopOnInteraction: true})]}
         className='w-full max-w-xs'
       >
         <CarouselContent>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({length: 5}).map((_, index) => (
             <CarouselItem key={index}>
               <div className='p-1'>
                 <Card>

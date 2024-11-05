@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { cn } from '@/utils/cn';
+import {cn} from '@/utils/cn';
 
 import {
   NavigationMenu,
@@ -17,7 +17,7 @@ import {
 const ListItem = React.forwardRef<
   React.ElementRef<'a'>,
   React.ComponentPropsWithoutRef<'a'>
->(({ className, title, children, ...props }, ref) => {
+>(({className, title, children, ...props}, ref) => {
   return (
     <li>
       <NavigationMenuLink asChild>
@@ -40,7 +40,7 @@ const ListItem = React.forwardRef<
 });
 ListItem.displayName = 'ListItem';
 
-const components: { title: string; href: string; description: string }[] = [
+const components: {title: string; href: string; description: string}[] = [
   {
     title: 'Alert Dialog',
     href: '/docs/primitives/alert-dialog',

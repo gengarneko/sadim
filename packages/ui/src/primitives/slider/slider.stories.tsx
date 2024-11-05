@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Slider } from '.';
+import {Slider} from '.';
 
 const meta: Meta<typeof Slider> = {
   component: Slider,

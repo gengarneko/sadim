@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { ButtonProps } from '@/primitives/button';
+import type {ButtonProps} from '@/primitives/button';
 
 import {
   ChevronLeftIcon,
@@ -8,10 +8,10 @@ import {
   DotsHorizontalIcon,
 } from '@radix-ui/react-icons';
 
-import { buttonVariants } from '@/primitives/button';
-import { cn } from '@/utils/cn';
+import {buttonVariants} from '@/primitives/button';
+import {cn} from '@/utils/cn';
 
-const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
+const Pagination = ({className, ...props}: React.ComponentProps<'nav'>) => (
   <nav
     role='navigation'
     aria-label='pagination'
@@ -24,7 +24,7 @@ Pagination.displayName = 'Pagination';
 const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.ComponentProps<'ul'>
->(({ className, ...props }, ref) => (
+>(({className, ...props}, ref) => (
   <ul
     ref={ref}
     className={cn('flex flex-row items-center gap-1', className)}
@@ -36,7 +36,7 @@ PaginationContent.displayName = 'PaginationContent';
 const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<'li'>
->(({ ...props }, ref) => <li ref={ref} {...props} />);
+>(({...props}, ref) => <li ref={ref} {...props} />);
 PaginationItem.displayName = 'PaginationItem';
 
 type PaginationLinkProps = {

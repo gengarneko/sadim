@@ -1,9 +1,9 @@
-import { Signal } from '@ecs-pcl/signal';
+import {Signal} from '@ecs-pcl/signal';
 
-import { Class } from '../utils/class';
-import { getComponentId } from './component-id';
-import { Entity, EntitySnapshot } from './entity';
-import { isTag, Tag } from './tag';
+import {Class} from '../utils/class';
+import {getComponentId} from './component-id';
+import {Entity, EntitySnapshot} from './entity';
+import {isTag, Tag} from './tag';
 
 /**
  * Query Predicate is the type that describes a function that compares Entities with the conditions it sets.

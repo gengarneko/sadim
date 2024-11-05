@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import {describe, expect, it} from 'vitest';
 
-import { Engine, Query, System } from '../src';
+import {Engine, Query, System} from '../src';
 
 describe('Shared config', () => {
   it('Shared config is accessible when system added to engine', () => {

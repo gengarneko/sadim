@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
-import type { ComponentProps } from 'react';
+import type {ComponentProps} from 'react';
 
 import {
   CalendarIcon,
@@ -10,7 +10,7 @@ import {
   PersonIcon,
   RocketIcon,
 } from '@radix-ui/react-icons';
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
 import {
   Command,

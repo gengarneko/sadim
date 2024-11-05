@@ -1,6 +1,6 @@
-import { Canvas, Meta, Source } from '@storybook/blocks';
+import {Canvas, Meta, Source} from '@storybook/blocks';
 
-import { RadixPrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
+import {RadixPrimitiveDocsButton} from '../../storybook-utils/primitive-docs-button';
 import * as ToastStories from './toast.stories';
 
 <Meta of={ToastStories} />
@@ -43,18 +43,18 @@ export const usageCode = `export const ToastDemo = () => {
   const { toast } = useToast();
 
 return (
+
 <Button
-onClick={() => {
-toast({
-title: "Scheduled: Catch up",
-description: "Friday, February 10, 2023 at 5:57 PM",
-})
-}} >
-Show Toast
+  onClick={() => {
+    toast({
+      title: 'Scheduled: Catch up',
+      description: 'Friday, February 10, 2023 at 5:57 PM',
+    });
+  }}
+>
+  Show Toast
 </Button>
-);
-}
-`;
+); } `;
 
 > To display multiple toasts at the same time, you can update the `TOAST_LIMIT` in `use-toast.tsx`.
 

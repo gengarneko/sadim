@@ -1,9 +1,9 @@
-import { Signal } from '@ecs-pcl/signal';
+import {Signal} from '@ecs-pcl/signal';
 
-import { Class } from '../utils/class';
-import { Entity } from './entity';
-import { Query } from './query';
-import { System } from './system';
+import {Class} from '../utils/class';
+import {Entity} from './entity';
+import {Query} from './query';
+import {System} from './system';
 
 /**
  * Engine represents game state, and provides entities update loop on top of systems.

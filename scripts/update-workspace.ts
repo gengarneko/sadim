@@ -1,8 +1,8 @@
-import type { PackageJson } from 'pkg-types';
+import type {PackageJson} from 'pkg-types';
 
-import { $ } from 'bun';
+import {$} from 'bun';
 import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
+import {hideBin} from 'yargs/helpers';
 
 import {
   replaceInFile,

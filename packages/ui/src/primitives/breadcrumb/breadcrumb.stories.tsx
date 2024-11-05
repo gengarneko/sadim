@@ -1,5 +1,5 @@
-import { ChevronDownIcon, SlashIcon } from '@radix-ui/react-icons';
-import { type Meta, type StoryObj } from '@storybook/react';
+import {ChevronDownIcon, SlashIcon} from '@radix-ui/react-icons';
+import {type Meta, type StoryObj} from '@storybook/react';
 
 import {
   DropdownMenu,

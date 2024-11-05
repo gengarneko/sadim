@@ -1,6 +1,6 @@
-import { Canvas, Meta, Source } from '@storybook/blocks';
+import {Canvas, Meta, Source} from '@storybook/blocks';
 
-import { PrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
+import {PrimitiveDocsButton} from '../../storybook-utils/primitive-docs-button';
 import * as CarouselStories from './carousel.stories';
 
 <Meta of={CarouselStories} />
@@ -171,15 +171,15 @@ return
 }, [api])
 
 return (
+
 <Carousel setApi={setApi}>
-<CarouselContent>
-<CarouselItem>...</CarouselItem>
-<CarouselItem>...</CarouselItem>
-<CarouselItem>...</CarouselItem>
-</CarouselContent>
+  <CarouselContent>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+  </CarouselContent>
 </Carousel>
-)
-}`;
+) }`;
 
 ## Events
 
@@ -203,15 +203,15 @@ return
 }, [api])
 
 return (
+
 <Carousel setApi={setApi}>
-<CarouselContent>
-<CarouselItem>...</CarouselItem>
-<CarouselItem>...</CarouselItem>
-<CarouselItem>...</CarouselItem>
-</CarouselContent>
+  <CarouselContent>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+  </CarouselContent>
 </Carousel>
-)
-};`;
+) };`;
 
 <Source code={eventsCode} language='tsx' dark />
 

@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '.';
+import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from '.';
 
 const meta: Meta<typeof ResizablePanelGroup> = {
   component: ResizablePanelGroup,

@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import {useState} from 'react';
 
-import type { ComponentProps } from 'react';
+import type {ComponentProps} from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { type Meta, type StoryObj } from '@storybook/react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {type Meta, type StoryObj} from '@storybook/react';
+import {useForm} from 'react-hook-form';
+import {z} from 'zod';
 
-import { Button } from '@/primitives/button';
-import { Input } from '@/primitives/input';
+import {Button} from '@/primitives/button';
+import {Input} from '@/primitives/input';
 
 import {
   Form,
@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from '.';
-import { Typography } from '../typography';
+import {Typography} from '../typography';
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -49,7 +49,7 @@ const FormExample = (props: ComponentProps<typeof Form>) => {
         <FormField
           control={form.control}
           name='username'
-          render={({ field }) => (
+          render={({field}) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>

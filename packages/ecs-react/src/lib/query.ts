@@ -1,6 +1,6 @@
-import { Query as _Query, Entity } from '@ecs-pcl/ecs';
+import {Query as _Query, Entity} from '@ecs-pcl/ecs';
 
-import { Constructor, Constructors, Instances } from './utils';
+import {Constructor, Constructors, Instances} from './utils';
 
 export class Query extends _Query {
   loop<T extends Constructor[], K extends Constructors<T>>(

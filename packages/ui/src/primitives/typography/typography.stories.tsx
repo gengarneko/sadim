@@ -1,7 +1,7 @@
-import { type Meta, type StoryObj } from '@storybook/react';
-import { expect, within } from '@storybook/test';
+import {type Meta, type StoryObj} from '@storybook/react';
+import {expect, within} from '@storybook/test';
 
-import { Typography } from './';
+import {Typography} from './';
 
 const meta: Meta<typeof Typography> = {
   component: Typography,
@@ -11,13 +11,13 @@ const meta: Meta<typeof Typography> = {
   },
   argTypes: {
     className: {
-      control: { disable: true },
+      control: {disable: true},
     },
     as: {
-      control: { disable: true },
+      control: {disable: true},
     },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({canvasElement}) => {
     const canvas = within(canvasElement);
     await expect(
       canvas.getByText('The big brown fox jumps over the lazy dog.'),
@@ -79,7 +79,7 @@ export const Ul: Story = {
       </>
     ),
   },
-  play: async ({ canvasElement }) => {
+  play: async ({canvasElement}) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('One')).toBeInTheDocument();
   },
@@ -96,7 +96,7 @@ export const Ol: Story = {
       </>
     ),
   },
-  play: async ({ canvasElement }) => {
+  play: async ({canvasElement}) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('One')).toBeInTheDocument();
   },
@@ -107,7 +107,7 @@ export const Code: Story = {
     variant: 'code',
     children: 'console.log("Hello, World!");',
   },
-  play: async ({ canvasElement }) => {
+  play: async ({canvasElement}) => {
     const canvas = within(canvasElement);
     await expect(
       canvas.getByText('console.log("Hello, World!");'),

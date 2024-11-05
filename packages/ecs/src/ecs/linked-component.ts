@@ -20,4 +20,4 @@ function linkedComponent(id?: string) {
   return new LinkedComponent(id);
 }
 
-export { linkedComponent, LinkedComponent, isLinkedComponent };
+export {linkedComponent, LinkedComponent, isLinkedComponent};

@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Button } from '@/primitives/button';
+import {Button} from '@/primitives/button';
 
 import {
   Drawer,

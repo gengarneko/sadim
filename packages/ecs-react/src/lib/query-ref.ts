@@ -1,9 +1,9 @@
-import { MutableRefObject } from 'react';
+import {MutableRefObject} from 'react';
 
-import { Entity, QueryPredicate } from '@ecs-pcl/ecs';
+import {Entity, QueryPredicate} from '@ecs-pcl/ecs';
 
-import { Query } from './query';
-import { Constructor, Constructors, Instances } from './utils';
+import {Query} from './query';
+import {Constructor, Constructors, Instances} from './utils';
 
 export class QueryRef {
   ref: MutableRefObject<Query>;

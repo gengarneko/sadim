@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { AspectRatio } from './';
+import {AspectRatio} from './';
 
 const meta: Meta<typeof AspectRatio> = {
   component: AspectRatio,

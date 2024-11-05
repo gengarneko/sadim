@@ -1,4 +1,4 @@
-import { getWorkspacePackageNames } from './scripts/utils';
+import {getWorkspacePackageNames} from './scripts/utils';
 
 // ------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ function getProjects(context?: Context): string[] {
 // We are exporting a custom commitlint configuration
 export default {
   extends: ['@commitlint/config-conventional'],
-  utils: { getProjects },
+  utils: {getProjects},
   rules: {
     // 'scope-enum': (ctx: Context) => [2, 'always', getProjects(ctx)],
   },

@@ -1,9 +1,9 @@
-import { createContext, ProviderProps } from 'react';
+import {createContext, ProviderProps} from 'react';
 
-import { Engine, Entity } from '@ecs-pcl/ecs';
+import {Engine, Entity} from '@ecs-pcl/ecs';
 
-import { System } from '../lib/system';
-import { SystemsManager } from '../lib/systems-manager';
+import {System} from '../lib/system';
+import {SystemsManager} from '../lib/systems-manager';
 
 export const ECSContext = createContext<ECS>(null as unknown as ECS);
 

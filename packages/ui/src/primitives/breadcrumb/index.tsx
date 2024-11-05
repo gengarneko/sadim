@@ -1,20 +1,20 @@
 import * as React from 'react';
 
-import { ChevronRightIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { Slot } from '@radix-ui/react-slot';
+import {ChevronRightIcon, DotsHorizontalIcon} from '@radix-ui/react-icons';
+import {Slot} from '@radix-ui/react-slot';
 
-import { cn } from '@/utils/cn';
+import {cn} from '@/utils/cn';
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,
   React.ComponentPropsWithoutRef<'nav'>
->(({ ...props }, ref) => <nav ref={ref} aria-label='breadcrumb' {...props} />);
+>(({...props}, ref) => <nav ref={ref} aria-label='breadcrumb' {...props} />);
 Breadcrumb.displayName = 'Breadcrumb';
 
 const BreadcrumbList = React.forwardRef<
   HTMLOListElement,
   React.ComponentPropsWithoutRef<'ol'>
->(({ className, ...props }, ref) => (
+>(({className, ...props}, ref) => (
   <ol
     ref={ref}
     className={cn(
@@ -29,7 +29,7 @@ BreadcrumbList.displayName = 'BreadcrumbList';
 const BreadcrumbItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentPropsWithoutRef<'li'>
->(({ className, ...props }, ref) => (
+>(({className, ...props}, ref) => (
   <li
     ref={ref}
     className={cn('inline-flex items-center gap-1.5', className)}
@@ -43,7 +43,7 @@ const BreadcrumbLink = React.forwardRef<
   React.ComponentPropsWithoutRef<'a'> & {
     asChild?: boolean;
   }
->(({ asChild, className, ...props }, ref) => {
+>(({asChild, className, ...props}, ref) => {
   const Comp = asChild ? Slot : 'a';
 
   return (
@@ -59,7 +59,7 @@ BreadcrumbLink.displayName = 'BreadcrumbLink';
 const BreadcrumbPage = React.forwardRef<
   HTMLSpanElement,
   React.ComponentPropsWithoutRef<'span'>
->(({ className, ...props }, ref) => (
+>(({className, ...props}, ref) => (
   <span
     ref={ref}
     role='link'

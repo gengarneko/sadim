@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import {cn} from '@/utils/cn';
 
 /**
  * A primitive component that renders a skeleton.
@@ -6,10 +6,7 @@ import { cn } from '@/utils/cn';
  * @param props.className The className to apply to the skeleton.
  * @returns The skeleton component.
  */
-function Skeleton({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+function Skeleton({className, ...props}: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn('animate-pulse rounded-md bg-accent', className)}
@@ -18,4 +15,4 @@ function Skeleton({
   );
 }
 
-export { Skeleton };
+export {Skeleton};

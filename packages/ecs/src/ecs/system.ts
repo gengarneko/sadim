@@ -1,5 +1,5 @@
-import { Engine } from './engine';
-import { Entity } from './entity';
+import {Engine} from './engine';
+import {Entity} from './entity';
 
 /**
  * System 是应用的基础，用以处理实体和组件。
@@ -118,4 +118,4 @@ export function system() {
   return new System();
 }
 
-export { System };
+export {System};

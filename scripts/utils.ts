@@ -1,6 +1,6 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 
-import type { PackageJson } from 'pkg-types';
+import type {PackageJson} from 'pkg-types';
 
 import * as fs from 'fs';
 import * as fsPromise from 'fs/promises';

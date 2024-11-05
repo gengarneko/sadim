@@ -6,6 +6,7 @@ const config = {
   arrowParens: 'always',
   jsxSingleQuote: true,
   printWidth: 80,
+  bracketSpacing: false,
   plugins: [
     '@ianvs/prettier-plugin-sort-imports',
     'prettier-plugin-packagejson',

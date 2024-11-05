@@ -1,6 +1,6 @@
-import { Canvas, Meta, Source } from '@storybook/blocks';
+import {Canvas, Meta, Source} from '@storybook/blocks';
 
-import { PrimitiveDocsButton } from '../../storybook-utils/primitive-docs-button';
+import {PrimitiveDocsButton} from '../../storybook-utils/primitive-docs-button';
 import * as FormStories from './form.stories';
 
 <Meta of={FormStories} />
@@ -65,7 +65,7 @@ export const exampleCode = `const form = useForm()
 <FormField
   control={form.control}
   name='username'
-  render={({ field }) => (
+  render={({field}) => (
     <FormItem>
       <FormLabel>Username</FormLabel>
       <FormControl>
@@ -88,7 +88,7 @@ Define the shape of your form using a Zod schema. You can read more about using 
 
 export const schemaCode = `"use client"
 
-import { z } from 'zod';
+import {z} from 'zod';
 
 const formSchema = z.object({
 username: z.string().min(2).max(50),
@@ -102,9 +102,9 @@ Use the `useForm` hook from `react-hook-form` to create a form.
 
 export const formCode = `"use client"
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useForm} from 'react-hook-form';
+import {z} from 'zod';
 
 const formSchema = z.object({
 username: z.string().min(2, {
@@ -138,11 +138,11 @@ Since `FormField` is using a controlled component, you need to provide a default
 
 export const buildCode = `"use client"
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useForm} from 'react-hook-form';
+import {z} from 'zod';
 
-import { Button } from '@ecs-pcl/ui/button';
+import {Button} from '@ecs-pcl/ui/button';
 import {
   Form,
   FormControl,
@@ -152,7 +152,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@ecs-pcl/ui/form';
-import { Input } from '@ecs-pcl/ui/input';
+import {Input} from '@ecs-pcl/ui/input';
 
 const formSchema = z.object({
 username: z.string().min(2, {
@@ -164,27 +164,27 @@ export function ProfileForm() {
   // ...
 
 return (
+
 <Form {...form}>
-<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-<FormField
-control={form.control}
-name="username"
-render={({ field }) => (
-<FormItem>
-<FormLabel>Username</FormLabel>
-<FormControl>
-<Input placeholder="shadcn" {...field} />
-</FormControl>
-<FormDescription>This is your public display name.</FormDescription>
-<FormMessage />
-</FormItem>
-)}
-/>
-<Button type="submit">Submit</Button>
-</form>
+  <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+    <FormField
+      control={form.control}
+      name='username'
+      render={({field}) => (
+        <FormItem>
+          <FormLabel>Username</FormLabel>
+          <FormControl>
+            <Input placeholder='shadcn' {...field} />
+          </FormControl>
+          <FormDescription>This is your public display name.</FormDescription>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+    <Button type='submit'>Submit</Button>
+  </form>
 </Form>
-)
-}`;
+) }`;
 
 <Source code={buildCode} language='tsx' dark format />
 

@@ -1,8 +1,8 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Label } from '@/primitives/label';
+import {Label} from '@/primitives/label';
 
-import { Switch } from '.';
+import {Switch} from '.';
 
 const meta: Meta<typeof Switch> = {
   component: Switch,

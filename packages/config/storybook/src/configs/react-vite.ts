@@ -1,5 +1,5 @@
-import { getAbsolutePath } from '@ecs-pcl/utils/filesystem';
-import { type StorybookConfig } from '@storybook/react-vite';
+import {getAbsolutePath} from '@ecs-pcl/utils/filesystem';
+import {type StorybookConfig} from '@storybook/react-vite';
 
 const config = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],

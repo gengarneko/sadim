@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import {describe, expect, it} from 'vitest';
 
-import { Engine, Entity, LinkedComponent, Query, QueryBuilder } from '../src';
+import {Engine, Entity, LinkedComponent, Query, QueryBuilder} from '../src';
 
 class Position {
   public x: number = 0;

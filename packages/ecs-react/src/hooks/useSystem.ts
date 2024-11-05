@@ -1,10 +1,10 @@
-import { useContext, useEffect } from 'react';
+import {useContext, useEffect} from 'react';
 
-import { ECSContext } from '../components/ecs';
-import { System } from '../lib/system';
+import {ECSContext} from '../components/ecs';
+import {System} from '../lib/system';
 
 export const useSystem = (callback: System, priority = 0) => {
-  const { systems } = useContext(ECSContext);
+  const {systems} = useContext(ECSContext);
 
   useEffect(() => {
     systems.add(callback, priority);

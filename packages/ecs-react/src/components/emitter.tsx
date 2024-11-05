@@ -8,12 +8,12 @@ import {
   useRef,
 } from 'react';
 
-import { Entity as _Entity } from '@ecs-pcl/ecs';
+import {Entity as _Entity} from '@ecs-pcl/ecs';
 
-import { useEngine } from '../hooks/useEngine';
-import { useStatefulRef } from '../hooks/useStatefulRef';
-import { useTimer } from '../hooks/useTimer';
-import { EntityRef } from './entity';
+import {useEngine} from '../hooks/useEngine';
+import {useStatefulRef} from '../hooks/useStatefulRef';
+import {useTimer} from '../hooks/useTimer';
+import {EntityRef} from './entity';
 
 export type EmitterProps = {
   emissionDelay?: number;
@@ -34,8 +34,8 @@ type ManagedElement<T> = {
  */
 export const Emitter: FC<EmitterProps> = (props) => {
   const engine = useEngine();
-  props = { ...emitterDefaults, ...props };
-  const { emissionDelay } = props;
+  props = {...emitterDefaults, ...props};
+  const {emissionDelay} = props;
 
   const id = useRef(0);
   const template = props.children;
@@ -50,14 +50,14 @@ export const Emitter: FC<EmitterProps> = (props) => {
     let element: ReactElement;
 
     if (template instanceof Function) {
-      element = Object.assign({}, template(), { ref, key });
+      element = Object.assign({}, template(), {ref, key});
     } else {
       element = cloneElement(
         template as ReactElement,
-        Object.assign({}, {}, { ref, key }),
+        Object.assign({}, {}, {ref, key}),
       );
     }
-    return { element, ref } as ManagedElement<EntityRef>;
+    return {element, ref} as ManagedElement<EntityRef>;
   };
 
   const remove = (index: number) => {

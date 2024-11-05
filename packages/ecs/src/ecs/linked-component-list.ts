@@ -1,4 +1,4 @@
-import { LinkedComponent } from './linked-component';
+import {LinkedComponent} from './linked-component';
 
 declare class LinkedComponentList<T extends LinkedComponent> {
   /** @internal */
@@ -129,4 +129,4 @@ function linkedComponentList<T extends LinkedComponent>() {
   return new LinkedComponentList<T>();
 }
 
-export { linkedComponentList, LinkedComponentList };
+export {linkedComponentList, LinkedComponentList};

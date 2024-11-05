@@ -1,9 +1,9 @@
-import { Component, ContextType } from 'react';
+import {Component, ContextType} from 'react';
 
-import { configure, makeObservable, observable } from 'mobx';
+import {configure, makeObservable, observable} from 'mobx';
 
-import { EntityContext } from '../hooks/useEntity';
-import { NonFunctionProperties } from '../lib/utils';
+import {EntityContext} from '../hooks/useEntity';
+import {NonFunctionProperties} from '../lib/utils';
 
 configure({
   enforceActions: 'never',
@@ -11,10 +11,8 @@ configure({
 
 const filteredProps = ['props', 'context', 'refs', 'updater', 'meta'];
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export class Facet<T extends {}> extends Component<
   NonFunctionProperties<Omit<T, 'meta'>>
-  // NonFunctionProperties<Omit<T, ''>>
 > {
   static override contextType = EntityContext;
   override context!: ContextType<typeof EntityContext>;
@@ -30,7 +28,6 @@ export class Facet<T extends {}> extends Component<
         .filter((k) => !filteredProps.includes(k) && !k.endsWith('Ref'))
         .map((k) => [k, observable]),
     ).entries();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return Object.fromEntries(entries) as any;
   }
 
@@ -46,7 +43,6 @@ export class Facet<T extends {}> extends Component<
       makeObservable(this, annotations, {
         autoBind: true,
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.context.add(this as any);
     } else {
       console.error(`Data Component without Entity Context!`);

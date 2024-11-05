@@ -1,8 +1,8 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Button } from '@/primitives/button';
-import { Input } from '@/primitives/input';
-import { Label } from '@/primitives/label';
+import {Button} from '@/primitives/button';
+import {Input} from '@/primitives/input';
+import {Label} from '@/primitives/label';
 
 import {
   Sheet,
@@ -23,7 +23,7 @@ const meta: Meta<typeof SheetContent> = {
   argTypes: {
     side: {
       options: ['left', 'right', 'top', 'bottom'],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
   },
 };

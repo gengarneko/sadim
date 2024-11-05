@@ -1,17 +1,17 @@
-import { type FC } from 'react';
+import {type FC} from 'react';
 
-import type { ToastArgs } from './use-toast';
+import type {ToastArgs} from './use-toast';
 
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Button } from '@/primitives/button';
+import {Button} from '@/primitives/button';
 
-import { ToastAction } from './toast';
-import { Toaster } from './toaster';
-import { useToast } from './use-toast';
+import {ToastAction} from './toast';
+import {Toaster} from './toaster';
+import {useToast} from './use-toast';
 
 const ToastDemo: FC<ToastArgs> = (props) => {
-  const { toast } = useToast();
+  const {toast} = useToast();
 
   return (
     <Button
@@ -33,10 +33,10 @@ const meta: Meta<typeof ToastDemo> = {
     description: 'Friday, February 10, 2023 at 5:57 PM',
   },
   argTypes: {
-    action: { control: { disable: true } },
+    action: {control: {disable: true}},
     variant: {
       options: ['default', 'destructive'],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
   },
   render: (args) => (

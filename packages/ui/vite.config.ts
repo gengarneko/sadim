@@ -1,4 +1,4 @@
-import { buildConfig, mergeConfig, reactConfig } from '@ecs-pcl/vite';
+import {buildConfig, mergeConfig, reactConfig} from '@ecs-pcl/vite';
 
 import pkg from './package.json';
 

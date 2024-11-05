@@ -1,9 +1,9 @@
-import type { VariantProps } from 'class-variance-authority';
-import type { FC, PropsWithChildren } from 'react';
+import type {VariantProps} from 'class-variance-authority';
+import type {FC, PropsWithChildren} from 'react';
 
-import { cva } from 'class-variance-authority';
+import {cva} from 'class-variance-authority';
 
-import { cn } from '@/utils/cn';
+import {cn} from '@/utils/cn';
 
 const typographyStyles = cva([], {
   variants: {
@@ -42,7 +42,7 @@ export const Typography: FC<PropsWithChildren<TypographyProps>> = ({
   if (as) {
     const Component = as;
     return (
-      <Component className={cn(typographyStyles({ variant }), className)}>
+      <Component className={cn(typographyStyles({variant}), className)}>
         {children}
       </Component>
     );
@@ -56,7 +56,7 @@ export const Typography: FC<PropsWithChildren<TypographyProps>> = ({
         : (variant ?? 'p');
 
   return (
-    <Component className={cn(typographyStyles({ variant }), className)}>
+    <Component className={cn(typographyStyles({variant}), className)}>
       {children}
     </Component>
   );

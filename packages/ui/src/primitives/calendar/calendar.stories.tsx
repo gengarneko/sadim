@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import {useState} from 'react';
 
-import type { ComponentProps } from 'react';
+import type {ComponentProps} from 'react';
 
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { type Meta, type StoryObj } from '@storybook/react';
-import { addDays, format } from 'date-fns';
-import { type DateRange } from 'react-day-picker';
+import {CalendarIcon} from '@radix-ui/react-icons';
+import {type Meta, type StoryObj} from '@storybook/react';
+import {addDays, format} from 'date-fns';
+import {type DateRange} from 'react-day-picker';
 
-import { Button } from '@/primitives/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/primitives/popover';
-import { cn } from '@/utils/cn';
+import {Button} from '@/primitives/button';
+import {Popover, PopoverContent, PopoverTrigger} from '@/primitives/popover';
+import {cn} from '@/utils/cn';
 
-import { Calendar } from '.';
+import {Calendar} from '.';
 import {
   Select,
   SelectContent,

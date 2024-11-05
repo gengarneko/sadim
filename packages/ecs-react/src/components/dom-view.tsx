@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useMount } from 'ahooks';
+import {useMount} from 'ahooks';
 
-import { EntityContext } from '../hooks';
+import {EntityContext} from '../hooks';
 
 export interface DOMViewProps {
   children: React.ReactElement;

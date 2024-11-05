@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Entity as _Entity } from '@ecs-pcl/ecs';
-import { useMount, useUnmount } from 'ahooks';
+import {Entity as _Entity} from '@ecs-pcl/ecs';
+import {useMount, useUnmount} from 'ahooks';
 
-import { EntityContext } from '../hooks/useEntity';
-import { ECSContext } from './ecs';
+import {EntityContext} from '../hooks/useEntity';
+import {ECSContext} from './ecs';
 
 export type EntityRef = {
   entity: _Entity;
@@ -18,8 +18,8 @@ export type EntityProps = {
 export const EntityComponent: React.ForwardRefRenderFunction<
   EntityRef,
   EntityProps
-> = ({ children, entity: providedEntity }, ref) => {
-  const { engine } = React.useContext(ECSContext);
+> = ({children, entity: providedEntity}, ref) => {
+  const {engine} = React.useContext(ECSContext);
   const entity = React.useMemo(
     () => providedEntity || new _Entity(),
     [providedEntity],

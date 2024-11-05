@@ -1,4 +1,4 @@
-import { Class } from '../utils/class';
+import {Class} from '../utils/class';
 
 const COMPONENT_CLASS_ID = '__componentClassId__' as const;
 let componentClassId: number = 1;

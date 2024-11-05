@@ -1,10 +1,10 @@
-import type { Preview } from '@storybook/react';
+import type {Preview} from '@storybook/react';
 
 import type {} from '@storybook/types';
 
-import { withThemeByClassName } from '@storybook/addon-themes';
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import { type ReactRenderer } from '@storybook/react';
+import {withThemeByClassName} from '@storybook/addon-themes';
+import {INITIAL_VIEWPORTS} from '@storybook/addon-viewport';
+import {type ReactRenderer} from '@storybook/react';
 
 import theme from './theme';
 
@@ -48,7 +48,7 @@ const customViewports = {
 
 const preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
+    actions: {argTypesRegex: '^on[A-Z].*'},
     controls: {
       matchers: {
         color: /(background|color)$/i,

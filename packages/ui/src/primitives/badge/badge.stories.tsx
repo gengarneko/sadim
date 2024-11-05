@@ -1,6 +1,6 @@
-import { type Meta, type StoryObj } from '@storybook/react';
+import {type Meta, type StoryObj} from '@storybook/react';
 
-import { Badge } from './';
+import {Badge} from './';
 
 const meta: Meta<typeof Badge> = {
   component: Badge,
@@ -11,7 +11,7 @@ const meta: Meta<typeof Badge> = {
   argTypes: {
     variant: {
       options: ['default', 'secondary', 'destructive', 'outline'],
-      control: { type: 'select' },
+      control: {type: 'select'},
     },
   },
 };

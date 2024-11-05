@@ -1,5 +1,6 @@
 // import {Engine} from './engine';
-import { Entity, EntitySnapshot } from './entity';
+
+import {Entity, EntitySnapshot} from './entity';
 import {
   isQueryBuilder,
   isQueryPredicate,
@@ -7,7 +8,7 @@ import {
   QueryBuilder,
   QueryPredicate,
 } from './query';
-import { System } from './system';
+import {System} from './system';
 
 /**
  * Represents a system that reacts when entities are added to or removed from its query.

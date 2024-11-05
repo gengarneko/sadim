@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import {describe, expect, it} from 'vitest';
 
 import {
   Engine,
@@ -40,7 +40,7 @@ class MovementSystem extends IterativeSystem {
     }
   }
 
-  protected entityAdded = ({ current }: EntitySnapshot) => {
+  protected entityAdded = ({current}: EntitySnapshot) => {
     current.get(Position)!.x = 100;
   };
 }
@@ -87,11 +87,11 @@ describe('Iterative system', () => {
   });
 
   it('Adding and removing should properly construct EntitySnapshot ', () => {
-    let onRemoved: { snapshot?: boolean; entity?: boolean } = {
+    let onRemoved: {snapshot?: boolean; entity?: boolean} = {
       snapshot: undefined,
       entity: undefined,
     };
-    let onAdded: { snapshot?: boolean; entity?: boolean } = {
+    let onAdded: {snapshot?: boolean; entity?: boolean} = {
       snapshot: undefined,
       entity: undefined,
     };
@@ -103,14 +103,14 @@ describe('Iterative system', () => {
 
       protected updateEntity(entity: Entity, dt: number): void {}
 
-      protected entityAdded = ({ current, previous }: EntitySnapshot) => {
+      protected entityAdded = ({current, previous}: EntitySnapshot) => {
         onAdded = {
           snapshot: previous.has(Position),
           entity: current.has(Position),
         };
       };
 
-      protected entityRemoved = ({ current, previous }: EntitySnapshot) => {
+      protected entityRemoved = ({current, previous}: EntitySnapshot) => {
         onRemoved = {
           snapshot: previous.has(Position),
           entity: current.has(Position),
@@ -129,8 +129,8 @@ describe('Iterative system', () => {
     entity.add(new Position());
     entity.remove(Position);
 
-    expect(onAdded).toEqual({ snapshot: false, entity: true });
-    expect(onRemoved).toEqual({ snapshot: true, entity: false });
+    expect(onAdded).toEqual({snapshot: false, entity: true});
+    expect(onRemoved).toEqual({snapshot: true, entity: false});
   });
 
   it('Entities safe removal during iteration should not break the iteration ordering', () => {

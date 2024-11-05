@@ -1,13 +1,13 @@
-import { type Meta, type StoryObj } from '@storybook/react';
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
+import {type Meta, type StoryObj} from '@storybook/react';
+import {REGEXP_ONLY_DIGITS_AND_CHARS} from 'input-otp';
 
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '.';
+import {InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot} from '.';
 
 const meta: Meta<typeof InputOTP> = {
   component: InputOTP,
   args: {
     maxLength: 6,
-    render: ({ slots }) => (
+    render: ({slots}) => (
       <>
         <InputOTPGroup>
           {slots.slice(0, 3).map((slot, index) => (

@@ -1,6 +1,6 @@
-import { ExternalLinkIcon } from '@radix-ui/react-icons';
+import {ExternalLinkIcon} from '@radix-ui/react-icons';
 
-import { Button } from '../primitives/button';
+import {Button} from '../primitives/button';
 
 /**
  * This component is used inside storybook mdx files to render a button that links to the Radix docs of the primitive.
@@ -8,7 +8,7 @@ import { Button } from '../primitives/button';
  * @param props.name The name of the primitive.
  * @returns The rendered component.
  */
-export function RadixPrimitiveDocsButton({ name }: { name: string }) {
+export function RadixPrimitiveDocsButton({name}: {name: string}) {
   return (
     <div className='dark !mb-6 flex gap-4'>
       <Button variant='outline' size='sm' asChild>
