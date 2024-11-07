@@ -21,8 +21,8 @@
     "mobx": "^6.13.5"
   },
   "devDependencies": {
-    "@ecs-pcl/eslint": "workspace:^",
-    "@ecs-pcl/signal": "workspace:^",
+    "@ecs-pcl/eslint": "workspace:",
+    "@ecs-pcl/signal": "workspace:*",
     "@ecs-pcl/tsconfig": "workspace:^",
     "tsup": "^8.3.5",
     "typescript": "5.5.4",

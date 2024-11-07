@@ -24,7 +24,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
 
-    "lib": ["es2023"],
+    "lib": ["esnext"],
     "module": "esnext",
     "target": "es2022",
     "moduleResolution": "bundler",

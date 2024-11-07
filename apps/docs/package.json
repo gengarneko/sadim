@@ -1,0 +1,16 @@
+{
+  "name": "sadim-docs",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rspress build",
+    "dev": "rspress dev",
+    "preview": "rspress preview"
+  },
+  "dependencies": {
+    "rspress": "^1.35.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16"
+  }
+}
