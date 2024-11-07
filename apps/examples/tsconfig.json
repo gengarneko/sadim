@@ -1,7 +1,11 @@
 {
-  "files": [],
-  "references": [
-    {"path": "./tsconfig.app.json"},
-    {"path": "./tsconfig.node.json"}
-  ]
+  "extends": ["@sadim/tsconfig/react.json"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js", ".storybook/**/*"],
+  "exclude": ["node_modules", "dist", "storybook-static"]
 }
