@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/signal",
+  "name": "@sadim/signal",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -18,8 +18,8 @@
     "test:watch": "vitest dev"
   },
   "devDependencies": {
-    "@ecs-pcl/eslint": "workspace:^",
-    "@ecs-pcl/tsconfig": "workspace:^",
+    "@sadim/eslint": "workspace:^",
+    "@sadim/tsconfig": "workspace:^",
     "tsup": "^8.3.5",
     "typescript": "5.5.4",
     "vitest": "^2.1.3"

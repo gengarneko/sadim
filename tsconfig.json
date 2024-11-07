@@ -1,4 +1,4 @@
 {
-  "extends": ["@ecs-pcl/tsconfig/base.json"],
+  "extends": ["@sadim/tsconfig/base.json"],
   "exclude": ["apps", "packages", "node_modules"]
 }

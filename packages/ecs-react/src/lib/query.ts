@@ -1,4 +1,4 @@
-import {Query as _Query, Entity} from '@ecs-pcl/ecs';
+import {Query as _Query, Entity} from '@sadim/ecs';
 
 import {Constructor, Constructors, Instances} from './utils';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Entity as _Entity} from '@ecs-pcl/ecs';
+import {Entity as _Entity} from '@sadim/ecs';
 import {useMount, useUnmount} from 'ahooks';
 
 import {EntityContext} from '../hooks/use-entity';

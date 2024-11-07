@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-import {Class} from '@ecs-pcl/ecs';
+import {Class} from '@sadim/ecs';
 
 import {useEntity} from './use-entity';
 

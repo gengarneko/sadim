@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/utils",
+  "name": "@sadim/utils",
   "version": "0.4.3",
   "private": true,
   "description": "Common utilities",
@@ -25,7 +25,7 @@
     "typecheck": "tsc"
   },
   "devDependencies": {
-    "@ecs-pcl/eslint": "workspace:^",
-    "@ecs-pcl/tsconfig": "workspace:^"
+    "@sadim/eslint": "workspace:^",
+    "@sadim/tsconfig": "workspace:^"
   }
 }

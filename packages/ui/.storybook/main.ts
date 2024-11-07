@@ -1,3 +1,3 @@
-import reactConfig from '@ecs-pcl/storybook/configs/react-vite';
+import reactConfig from '@sadim/storybook/configs/react-vite';
 
 export default reactConfig;

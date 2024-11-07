@@ -1,5 +1,5 @@
-import '@ecs-pcl/assets/fonts/stylesheet.css';
+import '@sadim/assets/fonts/stylesheet.css';
 
-import {registerAddons} from '@ecs-pcl/storybook/manager';
+import {registerAddons} from '@sadim/storybook/manager';
 
 registerAddons();

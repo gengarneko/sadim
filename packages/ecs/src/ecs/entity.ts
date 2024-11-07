@@ -1,8 +1,8 @@
-import type {Signal} from '@ecs-pcl/signal';
+import type {Signal} from '@sadim/signal';
 import type {LinkedComponent} from './linked-component';
 import type {LinkedComponentList} from './linked-component-list';
 
-import {signal} from '@ecs-pcl/signal';
+import {signal} from '@sadim/signal';
 
 import {Class} from '../utils/class';
 import {getComponentClass, getComponentId} from './component-id';

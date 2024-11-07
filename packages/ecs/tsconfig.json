@@ -1,5 +1,5 @@
 {
-  "extends": "@ecs-pcl/tsconfig/base.json",
+  "extends": "@sadim/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist"
   },

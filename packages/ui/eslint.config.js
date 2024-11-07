@@ -1,4 +1,4 @@
-import {configs, defineConfig} from '@ecs-pcl/eslint';
+import {configs, defineConfig} from '@sadim/eslint';
 
 export default defineConfig(
   ...configs.base,

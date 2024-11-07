@@ -1,6 +1,6 @@
 import {MutableRefObject} from 'react';
 
-import {Entity, QueryPredicate} from '@ecs-pcl/ecs';
+import {Entity, QueryPredicate} from '@sadim/ecs';
 
 import {Query} from './query';
 import {Constructor, Constructors, Instances} from './utils';

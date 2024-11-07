@@ -8,7 +8,7 @@ import {
   useRef,
 } from 'react';
 
-import {Entity as _Entity} from '@ecs-pcl/ecs';
+import {Entity as _Entity} from '@sadim/ecs';
 
 import {useEngine} from '../hooks/use-engine';
 import {useStatefulRef} from '../hooks/use-stateful-ref';

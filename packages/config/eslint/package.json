@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/eslint",
+  "name": "@sadim/eslint",
   "version": "0.4.3",
   "private": true,
   "description": "A package to share ESLint configurations in workspace",
@@ -36,8 +36,8 @@
     "typescript-eslint": "^8.4.0"
   },
   "devDependencies": {
-    "@ecs-pcl/tsconfig": "workspace:^",
     "@next/eslint-plugin-next": "^14.2.7",
+    "@sadim/tsconfig": "workspace:^",
     "@types/eslint-config-prettier": "^6.11.3",
     "@typescript-eslint/utils": "^8.4.0",
     "eslint-plugin-storybook": "^0.8.0"

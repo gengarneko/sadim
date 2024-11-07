@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/storybook",
+  "name": "@sadim/storybook",
   "version": "0.4.3",
   "private": true,
   "description": "A package to share Storybook configuration preset for the workspace",
@@ -33,9 +33,9 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@ecs-pcl/assets": "workspace:^",
-    "@ecs-pcl/utils": "workspace:^",
     "@radix-ui/colors": "^3.0.0",
+    "@sadim/assets": "workspace:^",
+    "@sadim/utils": "workspace:^",
     "@storybook/addon-a11y": "^8.2.9",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/addon-interactions": "^8.2.9",
@@ -53,8 +53,8 @@
     "storybook": "^8.2.9"
   },
   "devDependencies": {
-    "@ecs-pcl/eslint": "workspace:^",
-    "@ecs-pcl/tsconfig": "workspace:^",
+    "@sadim/eslint": "workspace:^",
+    "@sadim/tsconfig": "workspace:^",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0"
   }

@@ -1,6 +1,6 @@
 import type {Config} from 'tailwindcss';
 
-import {TailwindPreset} from '@ecs-pcl/tailwind';
+import {TailwindPreset} from '@sadim/tailwind';
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],

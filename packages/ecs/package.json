@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/ecs",
+  "name": "@sadim/ecs",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -21,9 +21,9 @@
     "mobx": "^6.13.5"
   },
   "devDependencies": {
-    "@ecs-pcl/eslint": "workspace:",
-    "@ecs-pcl/signal": "workspace:*",
-    "@ecs-pcl/tsconfig": "workspace:^",
+    "@sadim/eslint": "workspace:",
+    "@sadim/signal": "workspace:*",
+    "@sadim/tsconfig": "workspace:^",
     "tsup": "^8.3.5",
     "typescript": "5.5.4",
     "vitest": "^2.1.3"

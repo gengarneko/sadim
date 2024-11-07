@@ -1,4 +1,4 @@
-import {Signal} from '@ecs-pcl/signal';
+import {Signal} from '@sadim/signal';
 
 import {Class} from '../utils/class';
 import {getComponentId} from './component-id';

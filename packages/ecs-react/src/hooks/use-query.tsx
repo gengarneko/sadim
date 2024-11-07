@@ -1,6 +1,6 @@
 import {MutableRefObject, useEffect, useRef, useState} from 'react';
 
-import {EntitySnapshot, QueryPredicate} from '@ecs-pcl/ecs';
+import {EntitySnapshot, QueryPredicate} from '@sadim/ecs';
 
 import {Query} from '../lib/query';
 import {QueryRef} from '../lib/query-ref';

@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/react",
+  "name": "@sadim/react",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -21,10 +21,10 @@
     "ahooks": "^3.8.1"
   },
   "devDependencies": {
-    "@ecs-pcl/ecs": "workspace:^",
-    "@ecs-pcl/eslint": "workspace:^",
-    "@ecs-pcl/signal": "workspace:^",
-    "@ecs-pcl/tsconfig": "workspace:^",
+    "@sadim/ecs": "workspace:^",
+    "@sadim/eslint": "workspace:^",
+    "@sadim/signal": "workspace:^",
+    "@sadim/tsconfig": "workspace:^",
     "@types/react": "^18.3.12",
     "tsup": "^8.3.5",
     "typescript": "5.5.4",

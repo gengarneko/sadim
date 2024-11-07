@@ -1,4 +1,4 @@
-import {getAbsolutePath} from '@ecs-pcl/utils/filesystem';
+import {getAbsolutePath} from '@sadim/utils/filesystem';
 import {type StorybookConfig} from '@storybook/react-vite';
 
 const config = {
@@ -22,7 +22,7 @@ const config = {
       strictMode: true,
     },
   },
-  staticDirs: [getAbsolutePath('@ecs-pcl/assets')],
+  staticDirs: [getAbsolutePath('@sadim/assets')],
   docs: {
     autodocs: 'tag',
   },

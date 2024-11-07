@@ -1,6 +1,6 @@
 import {createContext, useContext} from 'react';
 
-import {Entity} from '@ecs-pcl/ecs';
+import {Entity} from '@sadim/ecs';
 
 export const EntityContext = createContext<Entity | null>(null);
 

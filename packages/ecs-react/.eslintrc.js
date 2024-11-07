@@ -1,3 +1,3 @@
-const {configs, defineConfig} = require('@ecs-pcl/eslint');
+const {configs, defineConfig} = require('@sadim/eslint');
 
 module.exports = defineConfig(...configs.base);

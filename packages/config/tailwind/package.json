@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/tailwind",
+  "name": "@sadim/tailwind",
   "version": "0.4.3",
   "private": true,
   "description": "Tailwindcss preset",
@@ -26,7 +26,7 @@
     "windy-radix-typography": "1.0.0-beta.0"
   },
   "devDependencies": {
-    "@ecs-pcl/eslint": "workspace:^",
-    "@ecs-pcl/tsconfig": "workspace:^"
+    "@sadim/eslint": "workspace:^",
+    "@sadim/tsconfig": "workspace:^"
   }
 }

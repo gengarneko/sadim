@@ -142,7 +142,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
 
-import {Button} from '@ecs-pcl/ui/button';
+import {Button} from '@sadim/ui/button';
 import {
   Form,
   FormControl,
@@ -151,8 +151,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@ecs-pcl/ui/form';
-import {Input} from '@ecs-pcl/ui/input';
+} from '@sadim/ui/form';
+import {Input} from '@sadim/ui/input';
 
 const formSchema = z.object({
 username: z.string().min(2, {

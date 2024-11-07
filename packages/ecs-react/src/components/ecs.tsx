@@ -1,6 +1,6 @@
 import {createContext, ProviderProps} from 'react';
 
-import {Engine, Entity} from '@ecs-pcl/ecs';
+import {Engine, Entity} from '@sadim/ecs';
 
 import {System} from '../lib/system';
 import {SystemsManager} from '../lib/systems-manager';

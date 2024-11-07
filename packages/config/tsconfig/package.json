@@ -1,5 +1,5 @@
 {
-  "name": "@ecs-pcl/tsconfig",
+  "name": "@sadim/tsconfig",
   "version": "0.4.3",
   "private": true,
   "description": "A package to share tsconfig presets around the workspace",

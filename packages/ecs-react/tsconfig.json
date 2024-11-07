@@ -1,5 +1,5 @@
 {
-  "extends": "@ecs-pcl/tsconfig/react.json",
+  "extends": "@sadim/tsconfig/react.json",
   "compilerOptions": {
     "outDir": "dist",
     "lib": ["dom", "dom.iterable", "esnext"],
