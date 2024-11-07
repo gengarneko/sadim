@@ -1,0 +1,32 @@
+[
+  {
+    "type": "dir",
+    "name": "start",
+    "label": "开始"
+  },
+  {
+    "type": "dir",
+    "name": "core",
+    "label": "核心概念"
+  },
+  {
+    "type": "dir",
+    "name": "features",
+    "label": "特性"
+  },
+  {
+    "type": "dir",
+    "name": "advanced",
+    "label": "高级用法"
+  },
+  {
+    "type": "dir",
+    "name": "react",
+    "label": "React"
+  },
+  {
+    "type": "dir",
+    "name": "vue",
+    "label": "Vue"
+  }
+]

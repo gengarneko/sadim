@@ -1,0 +1,11 @@
+[
+  {
+    "text": "Guide",
+    "link": "/guide/",
+    "activeMatch": "/guide/"
+  },
+  {
+    "text": "GitHub",
+    "link": "https://github.com/gengarneko/sadim"
+  }
+]

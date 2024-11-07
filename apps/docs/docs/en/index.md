@@ -4,7 +4,7 @@ pageType: home
 hero:
   name: Sadim
   text: ECS-Powered Point Cloud Annotation Platform
-  tagline: Designed for modern point cloud labeling workflows
+  tagline: Simple, efficient and easy to extend
   actions:
     - theme: brand
       text: Quick Start
