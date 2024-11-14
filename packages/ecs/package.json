@@ -14,16 +14,15 @@
     "build-fast": "tsup src/index.ts --format cjs,esm",
     "lint": "eslint . --max-warnings 0",
     "prepublishOnly": "bun run build",
+    "t": "vitest dev src/v2",
     "test": "vitest run",
     "test:watch": "vitest dev"
-  },
-  "dependencies": {
-    "mobx": "^6.13.5"
   },
   "devDependencies": {
     "@sadim/eslint": "workspace:",
     "@sadim/signal": "workspace:*",
     "@sadim/tsconfig": "workspace:^",
+    "esm-env": "^1.1.4",
     "tsup": "^8.3.5",
     "typescript": "5.5.4",
     "vitest": "^2.1.3"
