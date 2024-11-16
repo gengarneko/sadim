@@ -218,14 +218,14 @@ Entities.prototype._setDestination = function (
 };
 
 /**
- * 实体当前状态:     0000...0001  (只有组件0)
- * 要添加组件1:      0000...0010  (1 << 1)
- * 按位或后:         0000...0011  (现在有组件0和1)
- * 要移除组件1:      0000...0001  (1 << 1)
- * 按位异或后:       0000...0000  (只剩下组件0)
+ * current archetype:       0000...0001  (only component0)
+ * add component1:          0000...0010  (1 << 1)
+ * after or:                0000...0011  (now has component0 and component1)
+ * remove component1:       0000...0001  (1 << 1)
+ * after xor:               0000...0000  (only component0)
  *
- * | (按位或) 用于添加组件：保证该位一定为1
- * ^ (异或) 用于移除组件：翻转该位的状态
+ * | (or) used for adding component: ensure the bit is 1
+ * ^ (xor) used for removing component: flip the bit's state
  */
 Entities.prototype.remove = function (entity: Readonly<Entity>, type: Class) {
   const val = this._destinations.get(entity) ?? this.getArchetype(entity);
