@@ -3,8 +3,8 @@ import type {Class} from './utils/class';
 import {Entities, Entity} from './entity';
 import {Plugin} from './plugin';
 import {Schedule, ScheduleType} from './schedule';
-import {createTable, Table} from './storage';
 import {System} from './system';
+import {createTable, Table} from './table';
 import {DEV_ASSERT} from './utils/dev';
 import {Event} from './utils/event';
 
@@ -321,11 +321,11 @@ export class World {
     if (table) {
       return table;
     }
-    table = new Table({
-      id: this.tables.length,
+    table = new Table(
+      this.tables.length,
       archetype,
-      components: this.getComponentsForArchetype(archetype),
-    });
+      this.getComponentsForArchetype(archetype),
+    );
     this.tables.push(table);
     this._archetypeToTable.set(archetype, table);
     for (const listener of this._listeners.createTable) {

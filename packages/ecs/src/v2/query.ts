@@ -1,5 +1,5 @@
 import {Entity} from './entity';
-import {Table} from './storage';
+import {Table} from './table';
 import {Class} from './utils/class';
 import {DEV_ASSERT} from './utils/dev';
 import {World} from './world';
@@ -244,14 +244,14 @@ Query.prototype.reduce = function <T>(
  * ```
  */
 Query.prototype.get = function (entity: Entity): Accessor[] | null {
-  const [tableId, row] = entity.locate();
+  const {tableId, tableRow} = entity.getLocation();
   const table = this._world.tables[tableId];
   if (!this._testArchetype(table!.archetype)) {
     return null;
   }
   const result: Accessor[] = [];
   for (const component of this._components) {
-    result.push(table!.getColumn(component)[row]);
+    result.push(table!.getColumn(component)[tableRow]);
   }
   return result;
 };

@@ -735,11 +735,11 @@ export class Entities {
       const {tableId, tableRow} = entity.getLocation();
       const sourceTable = world.tables[tableId]!;
       const targetTable = world.getTable(archetype);
-      const location = sourceTable.move({
-        row: tableRow,
+      const location = sourceTable.move(
+        tableRow,
         targetTable,
-        components: components ?? [],
-      });
+        components ?? [],
+      );
       entity.setLocation(location);
     }
     this.state.clear();
