@@ -1,3 +1,33 @@
+/**
+ * Schedule System for ECS
+ *
+ * Schedule manages and executes systems in a specific order. It's responsible for:
+ * 1. System registration and management
+ * 2. System argument preparation
+ * 3. Sequential system execution
+ *
+ * Workflow Diagram:
+ * ----------------
+ * ┌─────────────────┐
+ * │     World       │
+ * └────────┬────────┘
+ *          │ creates
+ *          ▼
+ * ┌─────────────────┐    add      ┌─────────────┐
+ * │    Schedule     │◄───────────│   Systems   │
+ * └────────┬────────┘             └─────────────┘
+ *          │ prepare
+ *          ▼
+ * ┌──────────────────┐
+ * │ System Arguments │
+ * └────────┬─────────┘
+ *          │ run
+ *          ▼
+ * ┌──────────────────┐
+ * │ System Execution │
+ * └──────────────────┘
+ */
+
 import {DEV_ASSERT} from 'src/v2/utils/dev';
 
 import {System} from './system';
@@ -11,6 +41,18 @@ import {World} from './world';
  * A class that contains systems to be run, as well as the arguments to provide these systems.
  *
  * Can be extended to create custom schedules.
+ *
+ * Internal Structure:
+ * ------------------
+ * ┌───────────────────────────────┐
+ * │           Schedule            │
+ * ├───────────────┬───────────────┤
+ * │  _systems[]   │   _args[][]   │
+ * ├───────────┬───┴───┬───────────┤
+ * │ System 1  │ Arg 1 │   ...     │
+ * │ System 2  │ Arg 2 │   ...     │
+ * │    ...    │  ...  │   ...     │
+ * └───────────┴───────┴───────────┘
  */
 export class Schedule {
   _systems: System[] = [];

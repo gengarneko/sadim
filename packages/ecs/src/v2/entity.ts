@@ -1,3 +1,41 @@
+/**
+ * Entity Component System (ECS) - Entity Management
+ *
+ * Core Concepts & Data Structure:
+ * ------------------------------
+ * ┌─────────────────────────────────────────┐
+ * │               Entity                    │
+ * ├─────────────────┬───────────────────────┤
+ * │     EntityId    │ Unique identifier     │
+ * │   TableId       │ Current table         │
+ * │   TableRow      │ Position in table     │
+ * └─────────────────┴───────────────────────┘
+ *
+ * Entity Location System:
+ * ---------------------
+ * ┌─────────────┐      ┌──────────────┐
+ * │   Entity    │      │    Table     │
+ * │  ID: 1      │────►│   ID: 2      │
+ * │ Table: 2    │      │ ┌──────────┐ │
+ * │  Row: 3     │      │ │Position  │ │
+ * └─────────────┘      │ │Velocity  │ │
+ *                      │ │Row 3 ◄──┼──┘
+ *                      └──────────────┘
+ *
+ * Component Mask System:
+ * --------------------
+ * Components:    Entity   Position   Velocity
+ * Component ID:    0         1          2
+ *
+ * Bitmask:      0b001     0b010      0b100
+ * Combined:     0b111 (Entity + Position + Velocity)
+ *
+ *           MSB ◄────────────────────► LSB
+ * Archetype: 0000 0000 0000 0000 0111
+ *                                └┬┘
+ *                          Component Bits
+ */
+
 import type {Component} from './component';
 import type {Class} from './utils/class';
 import type {World} from './world';
@@ -200,6 +238,14 @@ const ENTITY_STATE = {
 /**
  * Internal state manager for the entity system
  * Handles entity ID generation, component staging, and entity destinations
+ *
+ * Entity State Management Flow:
+ * --------------------------
+ * ┌──────────┐    ┌────────────┐    ┌──────────┐
+ * │  Spawn   │──►│ Component  │──►│  Flush   │
+ * │  Entity  │    │  Changes   │    │   to     │
+ * │          │    │ (Pending)  │    │ Tables   │
+ * └──────────┘    └────────────┘    └──────────┘
  *
  * State Management:
  * 1. Entity IDs
