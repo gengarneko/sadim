@@ -32,17 +32,18 @@ declare class Table {
   get length(): number;
 
   /** move the entity at `row` and all its associated data into `targetTable` */
-  move: (args: {
-    row: number;
-    targetTable: Table;
-    components: object[];
-  }) => Entity | undefined;
+  move: (args: {row: number; targetTable: Table; components: object[]}) => {
+    tableId: number;
+    tableRow: number;
+  };
 
   /** if this table contains a column for the provided component type */
   hasColumn(componentType: Class): boolean;
 
   /** the column for the provided component */
   getColumn<T extends Class>(componentType: T): InstanceType<T>[];
+
+  getRow(row: number): object[];
 }
 
 /**
@@ -70,51 +71,54 @@ Object.defineProperty(Table.prototype, 'length', {
  * @returns The entity that was moved, or undefined if the entity was not found.
  */
 Table.prototype.move = function ({row, targetTable, components}) {
-  const entity = this._columns[0]?.[row] as Entity;
-  const newRow = targetTable.getColumn(Entity)?.length;
+  if (this === targetTable) {
+    for (const component of components) {
+      const componentType = component.constructor as any;
+      const columnIndex = this._components.indexOf(componentType);
+      if (columnIndex !== -1) {
+        this._columns[columnIndex]![row] = component;
+      }
+    }
+    return {tableId: this.id, tableRow: row};
+  }
+
+  const newRow = targetTable.getColumn(Entity)?.length ?? 0;
+  const finalComponents = new Map();
 
   // 1. move component data
   for (let i = 0; i < this._components.length; i++) {
     const componentType = this._components[i]!;
     const column = this._columns[i]!;
 
+    const removed = swapRemove(column, row);
+    if (!removed) continue;
+
     if (componentType === Entity) {
-      // remove current entity
-      column.splice(row, 1);
+      const backfilledEntity = column[row] as Entity;
+      if (backfilledEntity) {
+        backfilledEntity.setLocation({tableRow: row});
+      }
+    }
 
-      // update subsequent entities' row number
-      for (let j = row; j < column.length; j++) {
-        const e = column[j] as Entity;
-        e._row = j;
-      }
-
-      // add to target table
-      if (targetTable.hasColumn(Entity)) {
-        targetTable.getColumn(Entity).push(entity);
-      }
-    } else {
-      // other components move normally
-      const element = column.splice(row, 1)[0]!;
-      if (targetTable.hasColumn(componentType)) {
-        targetTable.getColumn(componentType).push(element);
-      }
+    if (targetTable.hasColumn(componentType)) {
+      finalComponents.set(componentType, removed);
     }
   }
 
-  // 2. add new components
+  // 2. add or overwrite existing components
   for (const component of components) {
-    if (targetTable.hasColumn(component.constructor as any)) {
-      targetTable.getColumn(component.constructor as any).push(component);
+    const componentType = component.constructor as any;
+    if (targetTable.hasColumn(componentType)) {
+      finalComponents.set(componentType, component);
     }
   }
 
-  // 3. update moved entity's reference
-  if (entity) {
-    entity._table = targetTable.id;
-    entity._row = newRow;
+  // 3. add new components (only if not the same table)
+  for (const [componentType, component] of finalComponents) {
+    targetTable.getColumn(componentType)?.push(component);
   }
 
-  return entity;
+  return {tableId: targetTable.id, tableRow: newRow};
 };
 
 /**
@@ -133,6 +137,24 @@ Table.prototype.getColumn = function <T extends Class>(componentType: T) {
   return this._columns[
     this._components.indexOf(componentType)
   ] as InstanceType<T>[];
+};
+
+/**
+ * @param componentType The component type to get the column for.
+ * @returns The column for the provided component type.
+ */
+Table.prototype.getRow = function (row: number) {
+  if (row < 0 || row > (this._columns[0]?.length ?? 0)) {
+    return [];
+  }
+  const components: object[] = [];
+  for (let i = 0; i < this._columns.length; i++) {
+    const column = this._columns[i];
+    if (column?.[row] !== undefined) {
+      components.push(column[row]);
+    }
+  }
+  return components;
 };
 
 /**

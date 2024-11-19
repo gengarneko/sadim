@@ -203,11 +203,11 @@ export class World {
       `Could not find schedule "${String(scheduleType.name)}" in the world!`,
     );
     if (this.config.entityUpdateTiming === 'before') {
-      this.entities.update();
+      this.entities.flush();
     }
     await this.schedules.get(scheduleType)!.run();
     if (this.config.entityUpdateTiming === 'after') {
-      this.entities.update();
+      this.entities.flush();
     }
   }
 

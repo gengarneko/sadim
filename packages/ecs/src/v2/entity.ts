@@ -1,292 +1,336 @@
-import type {TagComponentType} from './component';
+import type {Component} from './component';
 import type {Class} from './utils/class';
+import type {World} from './world';
 
-import {isSizedComponent, isTagComponent} from './component';
 import {DEV_ASSERT} from './utils/dev';
-import {World} from './world';
+
+// import type {TagComponent} from './component';
+// import {isSizedComponent, isTagComponent} from './component';
+
+export type EntityId = number;
+export type TableId = number;
+export type TableRow = number;
 
 // * --------------------------------------------------------------------------
 // * Entity
 // * --------------------------------------------------------------------------
 
-declare class Entity {
-  /** ref to the entity manager */
-  _entities: Entities;
-
-  /** @internal world-unique integer id */
-  _id: number;
-
-  /** @internal storage table */
-  _table: number;
-
-  /** @internal storage location */
-  _row: number;
-
-  constructor(entities: Entities, id: number);
-
-  /** if this entity is still alive or has been despawned */
-  get isAlive(): boolean;
-
-  /** world-unique integer id */
-  id(): number;
-
-  /** if this entity has the provided component */
-  has(component: Class): boolean;
-
-  /** add a component to this entity */
-  add<T extends object>(component: T extends Function ? never : T): this;
-
-  /** add a tag to this entity */
-  addTag(tag: TagComponentType): this;
-
-  /** remove a component from this entity */
-  remove(component: Class): this;
-
-  /** despawn this entity */
-  despawn(): void;
-
-  // unsafe to use alone - use `Entities.p.update()` instead
-  move(table: number, row: number): void;
-
-  // provides the location of the entity
-  locate(): [table: number, row: number];
+/**
+ * Entity location in the table system
+ */
+export interface EntityLocation {
+  tableId: TableId; // Table identifier
+  tableRow: TableRow; // Row within the table
 }
 
 /**
+ * Represents an entity in the ECS system
+ * Provides interface for component manipulation and state queries
+ */
+export class Entity {
+  private location: EntityLocation = {
+    tableId: 0,
+    tableRow: 0,
+  };
+
+  constructor(
+    private readonly entities: Entities,
+    private readonly entityId: EntityId,
+  ) {}
+
+  /** Custom inspect method for debugging */
+  [Symbol.for('nodejs.util.inspect.custom')]() {
+    return `Entity(${this.entityId}in${this.location.tableId}#${this.location.tableRow})`;
+  }
+
+  /** Check if entity is currently active */
+  get isAlive(): boolean {
+    return this.location.tableId !== 0;
+  }
+
+  /** Get entity's unique identifier */
+  get id(): EntityId {
+    return this.entityId;
+  }
+
+  /** Check if entity has specific component */
+  has(component: Component): boolean {
+    return this.entities.has(this, component);
+  }
+
+  /** Add component instance to entity */
+  insert(component: object): Entity {
+    this.entities.insert(this, component);
+    return this;
+  }
+
+  /** Add component type marker to entity */
+  insertTag(component: Class): Entity {
+    this.entities.insertTag(this, component);
+    return this;
+  }
+
+  /** Remove component from entity */
+  remove(component: Component): Entity {
+    this.entities.remove(this, component);
+    return this;
+  }
+
+  /** Update entity's location in tables */
+  setLocation(location: Partial<EntityLocation>): void {
+    if (location.tableId !== undefined && location.tableId < 0) {
+      DEV_ASSERT(false, `Invalid tableId: ${location.tableId}`);
+    }
+    if (location.tableRow !== undefined && location.tableRow < 0) {
+      DEV_ASSERT(false, `Invalid tableRow: ${location.tableRow}`);
+    }
+    this.location = {...this.location, ...location};
+  }
+
+  /** Get entity's current location */
+  getLocation(): EntityLocation {
+    return this.location;
+  }
+
+  toString(): string {
+    return `
+      entityId: ${this.id},
+      tableId: ${this.location.tableId},
+      tableRow: ${this.location.tableRow}
+    `;
+  }
+}
+
+// * --------------------------------------------------------------------------
+// * EntityState
+// * --------------------------------------------------------------------------
+
+/**
+ * Entity state constants
+ */
+const ENTITY_STATE = {
+  /** Entity is destroyed */
+  DESPAWNED: 0n,
+  /** Entity is active */
+  SPAWNED: 1n,
+} as const;
+
+/**
+ * Internal state manager for the entity system
+ * Handles entity ID generation, component staging, and entity destinations
  * @internal
- * This enables better control of the transpiled output size.
  */
-function Entity(this: Entity, entities: Entities, id: number) {
-  this._table = 0;
-  this._row = 0;
-  this._entities = entities;
-  this._id = id;
-}
+class EntityState {
+  /** Entity ID counter */
+  private nextId = 0;
 
-Entity.prototype.id = function () {
-  return this._id;
-};
+  /** Staged components for entities */
+  private pending = new Map<Entity, object[]>();
 
-Entity.prototype.has = function (component: Class) {
-  return this._entities.hasComponent(this, component);
-};
+  /** Entity archetype destinations */
+  private destinations = new Map<Entity, bigint>();
 
-Entity.prototype.add = function <T extends object>(component: T) {
-  const type = component.constructor as Class;
-  DEV_ASSERT(
-    type !== Entity,
-    'Tried to add Entity component, which is forbidden.',
-  );
-  DEV_ASSERT(
-    isSizedComponent(type),
-    'ZSTs must be added with EntityCommands.addType().',
-  );
-  this._entities.add(this, component);
-  return this;
-};
+  /** Create new entity with unique ID */
+  createEntity(entities: Entities): Entity {
+    return new Entity(entities, this.nextId++);
+  }
 
-Entity.prototype.addTag = function (tag: TagComponentType) {
-  DEV_ASSERT(
-    isTagComponent(tag),
-    'Sized types must be added with EntityCommands.add()',
-  );
-  this._entities.addTag(this, tag);
-  return this;
-};
+  /** Stage components for entity */
+  setPending(entity: Entity, components: object[]): void {
+    this.pending.set(entity, components);
+  }
 
-Entity.prototype.remove = function (type: Class) {
-  DEV_ASSERT(
-    type !== Entity,
-    'Tried to remove Entity component, which is forbidden.',
-  );
-  this._entities.remove(this, type);
-  return this;
-};
+  /** Get staged components for entity */
+  getPending(entity: Entity): object[] | undefined {
+    return this.pending.get(entity);
+  }
 
-Entity.prototype.despawn = function () {
-  this._entities.remove(this, Entity);
-};
+  /** Set entity's target archetype */
+  setDestination(entity: Entity, destination: bigint): void {
+    const current = this.destinations.get(entity);
+    if (current === destination) return;
+    this.destinations.set(entity, destination);
+  }
 
-Entity.prototype.move = function (table: number, row: number) {
-  this._table = table;
-  this._row = row;
-};
+  /** Get entity's target archetype */
+  getDestination(entity: Entity): bigint | undefined {
+    return this.destinations.get(entity);
+  }
 
-Entity.prototype.locate = function () {
-  return [this._table, this._row];
-};
+  /** Clear all staged state */
+  clear(): void {
+    this.pending.clear();
+    this.destinations.clear();
+  }
 
-Object.defineProperty(Entity.prototype, 'isAlive', {
-  get(): boolean {
-    return this._table !== 0;
-  },
-});
-
-/**
- * Create a plain entity.
- */
-function createEntity(entities: Entities, id: number) {
-  return new Entity(entities, id);
+  /** Support iteration over destinations */
+  [Symbol.iterator](): IterableIterator<[Entity, bigint]> {
+    return this.destinations.entries();
+  }
 }
 
 // * --------------------------------------------------------------------------
 // * Entities
 // * --------------------------------------------------------------------------
 
-declare class Entities {
-  /** ref to the world */
-  _world: World;
-
-  /** used to generate unique ids */
-  _nextId: number;
-
-  /** target archetype */
-  _destinations: Map<Readonly<Entity>, bigint>;
-
-  /** entities to be inserted */
-  _inserts: Map<Readonly<Entity>, object[]>;
-
-  /** empty array */
-  _EMPTY: [];
-
-  constructor(world: World);
-
-  /** @internal update the destination archetype */
-  _setDestination(entity: Readonly<Entity>, type: Class): void;
-
-  /** create a new entity */
-  spawn(): Entity;
-
-  /** add a component to an entity */
-  add(entity: Readonly<Entity>, instance: object): void;
-
-  /** add a tag to an entity */
-  addTag(entity: Readonly<Entity>, type: Class): void;
-
-  /** remove a component from an entity */
-  remove(entity: Readonly<Entity>, type: Class): void;
-
-  /** update the entity manager */
-  update(): void;
-
-  /** get the archetype of an entity */
-  getArchetype(entity: Readonly<Entity>): bigint;
-
-  /** check if an entity has a component */
-  hasComponent(entity: Readonly<Entity>, type: Class): boolean;
-}
-
 /**
- * @internal
- * This enables better control of the transpiled output size.
+ * Manages entity lifecycle and state changes
+ * Handles component operations and table movements
  */
-function Entities(this: Entities, world: World) {
-  this._nextId = 0;
-  this._destinations = new Map();
-  this._inserts = new Map();
-  this._EMPTY = [];
-  this._world = world;
-}
+export class Entities {
+  private state = new EntityState();
 
-Entities.prototype.spawn = function (this: Entities) {
-  const entity = new Entity(this, this._nextId++);
-  this._destinations.set(entity, 1n);
-  this._inserts.set(entity, [entity]);
-  return entity;
-};
+  constructor(readonly world: World) {}
 
-Entities.prototype.add = function (entity: Readonly<Entity>, instance: object) {
-  this.addTag(entity, instance.constructor as Class);
-  const inserts = this._inserts.get(entity) ?? [];
-  inserts.push(instance);
-  this._inserts.set(entity, inserts);
-};
-
-Entities.prototype.addTag = function (entity: Readonly<Entity>, type: Class) {
-  const val = this._destinations.get(entity) ?? this.getArchetype(entity);
-  const componentId = this._world.getComponentId(type);
-  this._destinations.set(entity, val | (1n << BigInt(componentId)));
-};
-
-Entities.prototype._setDestination = function (
-  entity: Readonly<Entity>,
-  type: Class,
-) {
-  const val = this._destinations.get(entity) ?? this.getArchetype(entity);
-  const componentId = this._world.getComponentId(type);
-  this._destinations.set(entity, val | (1n << BigInt(componentId)));
-};
-
-/**
- * current archetype:       0000...0001  (only component0)
- * add component1:          0000...0010  (1 << 1)
- * after or:                0000...0011  (now has component0 and component1)
- * remove component1:       0000...0001  (1 << 1)
- * after xor:               0000...0000  (only component0)
- *
- * | (or) used for adding component: ensure the bit is 1
- * ^ (xor) used for removing component: flip the bit's state
- */
-Entities.prototype.remove = function (entity: Readonly<Entity>, type: Class) {
-  const val = this._destinations.get(entity) ?? this.getArchetype(entity);
-  const componentId = this._world.getComponentId(type);
-  const mask = ~(1n << BigInt(componentId));
-  const newArchetype = val & mask;
-  this._destinations.set(entity, newArchetype);
-};
-
-Entities.prototype.update = function (this: Entities) {
-  const world = this._world;
-  for (const [entity, archetype] of this._destinations) {
-    const components = this._inserts.get(entity) ?? this._EMPTY;
-    const [table, row] = entity.locate();
-    const currentTable = world.tables[table];
-    const targetTable = world.getTable(archetype);
-    const backfilledEntity =
-      currentTable?.move({row, targetTable, components}) ?? entity;
-    backfilledEntity.move(table, row);
-    entity.move(targetTable.id, targetTable.length - 1);
+  /** Get archetype from entity's current table */
+  private getTableArchetype(entity: Entity): bigint {
+    const {tableId} = entity.getLocation();
+    DEV_ASSERT(this.world.tables[tableId], `Table ${tableId} does not exist`);
+    return this.world.tables[tableId]!.archetype;
   }
-  this._destinations.clear();
-  this._inserts.clear();
-};
 
-Entities.prototype.getArchetype = function (entity: Readonly<Entity>): bigint {
-  const [table] = entity.locate();
-  return this._world.tables[table]!.archetype;
-};
+  /** Get entity's target or current archetype */
+  private getEntityArchetype(entity: Entity): bigint {
+    return this.state.getDestination(entity) ?? this.getTableArchetype(entity);
+  }
 
-Entities.prototype.hasComponent = function (
-  entity: Readonly<Entity>,
-  component: Class,
-) {
-  const componentId = this._world.getComponentId(component);
-  const archetype = this.getArchetype(entity);
-  return (archetype & (1n << BigInt(componentId))) !== 0n;
-};
+  /** Calculate component bitmask */
+  private getComponentMask(componentType: Class, isRemove = false): bigint {
+    const componentId = this.world.getComponentId(componentType);
+    const baseMask = 1n << BigInt(componentId);
+    return isRemove ? ~baseMask : baseMask;
+  }
+
+  /**
+   * Create new entity with optional components
+   * @param components Optional array of component instances
+   * @returns Newly created entity
+   */
+  spawn(components: object[] = []): Entity {
+    const entity = this.state.createEntity(this);
+    this.state.setDestination(entity, ENTITY_STATE.SPAWNED);
+
+    let currentType = this.getEntityArchetype(entity);
+    for (const component of components) {
+      const componentMask = this.getComponentMask(
+        component.constructor as Class,
+      );
+      currentType |= componentMask;
+    }
+    this.state.setDestination(entity, currentType);
+
+    this.state.setPending(entity, [entity, ...components]);
+    return entity;
+  }
+
+  /**
+   * Destroy entity and clean up its state
+   * @throws {Error} If entity doesn't exist or is already despawned
+   */
+  despawn(entity: Entity): void {
+    this.state.setDestination(entity, ENTITY_STATE.DESPAWNED);
+    if (this.state.getPending(entity)) {
+      this.state.getPending(entity)!.length = 0;
+    }
+  }
+
+  /**
+   * Add component instance to entity
+   * @param entity Target entity
+   * @param instance Component instance to add
+   */
+  insert(entity: Entity, instance: object): Entity {
+    this.insertTag(entity, instance.constructor as Class);
+    const components = this.state.getPending(entity) ?? [];
+
+    const componentType = instance.constructor;
+    const existingIndex = components.findIndex(
+      (c) => c.constructor === componentType,
+    );
+    if (existingIndex !== -1) {
+      components[existingIndex] = instance;
+    } else {
+      components.push(instance);
+    }
+
+    this.state.setPending(entity, components);
+    return entity;
+  }
+
+  /**
+   * Add component type marker to entity
+   * @param entity Target entity
+   * @param component Component class to add
+   */
+  insertTag(entity: Entity, component: Class): void {
+    const currentType = this.getEntityArchetype(entity);
+    const componentMask = this.getComponentMask(component);
+    this.state.setDestination(entity, currentType | componentMask);
+  }
+
+  /**
+   * Remove component from entity
+   * @param entity Target entity
+   * @param component Component class to remove
+   */
+  remove(entity: Entity, component: Class): void {
+    const currentType = this.getEntityArchetype(entity);
+    const componentMask = this.getComponentMask(component, true);
+    this.state.setDestination(entity, currentType & componentMask);
+  }
+
+  /**
+   * Apply all pending changes to entities
+   * Moves entities between tables based on their component changes
+   */
+  flush(): void {
+    const world = this.world;
+    for (const [entity, archetype] of this.state) {
+      const components = this.state.getPending(entity);
+      const {tableId, tableRow} = entity.getLocation();
+      const sourceTable = world.tables[tableId]!;
+      const targetTable = world.getTable(archetype);
+      const location = sourceTable.move({
+        row: tableRow,
+        targetTable,
+        components: components ?? [],
+      });
+      entity.setLocation(location);
+    }
+    this.state.clear();
+  }
+
+  /**
+   * Check if entity has specific component
+   * @param entity Target entity
+   * @param component Component class to check
+   * @returns True if entity has component
+   */
+  has(entity: Entity, component: Class): boolean {
+    const currentArchetype = this.getTableArchetype(entity);
+    const componentId = this.world.getComponentId(component);
+    return (currentArchetype & (1n << BigInt(componentId))) !== 0n;
+  }
+
+  /**
+   * Get entity's components from table's row
+   */
+  entity(entity: Entity): object[] {
+    const {tableId, tableRow} = entity.getLocation();
+    const table = this.world.tables[tableId];
+    const components = table?.getRow(tableRow);
+    return components ?? [];
+  }
+}
 
 /**
- * Create a plain entity manager.
+ * Factory function to create entity manager instance
+ * @param world World instance to manage entities for
  */
-function createEntities(world: World) {
-  return new Entities(world);
-}
+export const createEntities = (world: World) => new Entities(world);
 
-function applyEntityUpdates(entities: Entities) {
-  entities.update();
-}
-applyEntityUpdates.getSystemArguments = (world: World) => [world.entities];
-
-// * --------------------------------------------------------------------------
-// * Export
-// * --------------------------------------------------------------------------
-
-export {
-  // Entity
-  Entity,
-  createEntity,
-  // Entities
-  Entities,
-  createEntities,
-  applyEntityUpdates,
-};
+/**
+ * Factory function to create entity manager factory
+ * Returns a function that creates entity managers
+ */
+export const makeEntities = () => (world: World) => new Entities(world);

@@ -26,7 +26,7 @@ class Tag {
   static readonly IS_ZST = true;
 }
 
-type TagComponentType = typeof Tag;
+type TagComponent = typeof Tag;
 
 /**
  * create a tag component
@@ -41,7 +41,7 @@ function createTag() {
  * @param item The component type to check.
  * @returns A boolean indicating if the provided component is a tag.
  */
-function isSizedComponent(item: any): item is TagComponentType {
+function isSizedComponent(item: any): item is TagComponent {
   return !item.IS_ZST;
 }
 
@@ -50,7 +50,7 @@ function isSizedComponent(item: any): item is TagComponentType {
  * @param item The component type to check.
  * @returns A boolean indicating if the provided component is a tag.
  */
-function isTagComponent(item: any): item is TagComponentType {
+function isTagComponent(item: any): item is TagComponent {
   return !isSizedComponent(item);
 }
 
@@ -85,7 +85,7 @@ declare class Entity {
   add<T extends object>(component: T extends Function ? never : T): this;
 
   /** add a tag to this entity */
-  addTag(tag: TagComponentType): this;
+  addTag(tag: TagComponent): this;
 
   /** remove a component from this entity */
   remove(component: Class): this;
@@ -127,7 +127,7 @@ Entity.prototype.add = function <T extends object>(component: T) {
   return this;
 };
 
-Entity.prototype.addTag = function (tag: TagComponentType) {
+Entity.prototype.addTag = function (tag: TagComponent) {
   DEV_ASSERT(
     isTagComponent(tag),
     'Sized types must be added with EntityCommands.add()',

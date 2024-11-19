@@ -1,10 +1,18 @@
+import {Class} from './utils/class';
+
 // * --------------------------------------------------------------------------
-// * Component
+// * Types
 // * --------------------------------------------------------------------------
 
 /**
  * Components are just javascript classes with constructor.
  */
+export type Component = Class;
+export type ComponentConstructor = new (...args: any[]) => Component;
+
+export interface TagComponent {
+  readonly IS_ZST: true;
+}
 
 // * --------------------------------------------------------------------------
 // * Tag
@@ -17,17 +25,29 @@
  * Use it to replace creating a new component class when you don't need extra data.
  */
 class Tag {
-  static readonly IS_ZST = true;
+  static readonly IS_ZST = true as const;
 }
-
-type TagComponentType = typeof Tag;
 
 /**
  * create a tag component
  */
-function createTag() {
-  class ZST extends Tag {}
-  return ZST;
+export function createTag(name?: string) {
+  const TagClass = class extends Tag {};
+  Object.defineProperty(TagClass, 'name', {value: name ?? 'AnonymousTag'});
+  return TagClass;
+}
+
+// * --------------------------------------------------------------------------
+// * Type Guards
+// * --------------------------------------------------------------------------
+
+/**
+ * Determine if the provided component type is a tag.
+ * @param item The component type to check.
+ * @returns A boolean indicating if the provided component is a tag.
+ */
+export function isSizedComponent(component: Component): boolean {
+  return !isTagComponent(component);
 }
 
 /**
@@ -35,27 +55,6 @@ function createTag() {
  * @param item The component type to check.
  * @returns A boolean indicating if the provided component is a tag.
  */
-function isSizedComponent(item: any): item is TagComponentType {
-  return !item.IS_ZST;
+export function isTagComponent(component: Component): boolean {
+  return 'IS_ZST' in component && component.IS_ZST === true;
 }
-
-/**
- * Determine if the provided component type is a tag.
- * @param item The component type to check.
- * @returns A boolean indicating if the provided component is a tag.
- */
-function isTagComponent(item: any): item is TagComponentType {
-  return !isSizedComponent(item);
-}
-
-// * --------------------------------------------------------------------------
-// * Export
-// * --------------------------------------------------------------------------
-
-export {
-  Tag,
-  createTag,
-  isSizedComponent,
-  isTagComponent,
-  type TagComponentType,
-};
