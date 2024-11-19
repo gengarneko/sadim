@@ -174,6 +174,21 @@ class EntityState {
 // * --------------------------------------------------------------------------
 
 /**
+ * Cache of component masks
+ *
+ * calculate mask every time when query/update component:
+ * - entity.has(Position)  // calculate mask
+ * - entity.insert(pos)    // calculate mask
+ * - entity.remove(pos)    // calculate mask
+ *
+ * only calculate once:
+ * - entity.has(Position)  // read from Map
+ * - entity.insert(pos)    // read from Map
+ * - entity.remove(pos)    // read from Map
+ */
+const COMPONENT_MASKS = new Map<Class, bigint>();
+
+/**
  * Manages entity lifecycle and state changes
  * Handles component operations and table movements
  */
@@ -182,50 +197,57 @@ export class Entities {
 
   constructor(readonly world: World) {}
 
-  /** Get archetype from entity's current table */
+  /**
+   * Get archetype from entity's current table
+   */
   private getTableArchetype(entity: Entity): bigint {
     const {tableId} = entity.getLocation();
     DEV_ASSERT(this.world.tables[tableId], `Table ${tableId} does not exist`);
     return this.world.tables[tableId]!.archetype;
   }
 
-  /** Get entity's target or current archetype */
+  /**
+   * Get entity's target or current archetype
+   */
   private getEntityArchetype(entity: Entity): bigint {
     return this.state.getDestination(entity) ?? this.getTableArchetype(entity);
   }
 
-  /** Calculate component bitmask */
+  /**
+   * Calculate component bitmask
+   */
   private getComponentMask(componentType: Class, isRemove = false): bigint {
     const componentId = this.world.getComponentId(componentType);
-    const baseMask = 1n << BigInt(componentId);
-    return isRemove ? ~baseMask : baseMask;
+    let mask = COMPONENT_MASKS.get(componentType);
+    if (mask === undefined) {
+      mask = 1n << BigInt(componentId);
+      COMPONENT_MASKS.set(componentType, mask);
+    }
+    return isRemove ? ~mask : mask;
   }
 
   /**
    * Create new entity with optional components
-   * @param components Optional array of component instances
-   * @returns Newly created entity
    */
   spawn(components: object[] = []): Entity {
     const entity = this.state.createEntity(this);
     this.state.setDestination(entity, ENTITY_STATE.SPAWNED);
 
-    let currentType = this.getEntityArchetype(entity);
-    for (const component of components) {
-      const componentMask = this.getComponentMask(
-        component.constructor as Class,
-      );
-      currentType |= componentMask;
+    let mask = ENTITY_STATE.SPAWNED;
+    for (let i = 0; i < components.length; i++) {
+      const component = components[i];
+      if (!component) continue;
+      const componentType = component.constructor as Class;
+      mask |= this.getComponentMask(componentType);
     }
-    this.state.setDestination(entity, currentType);
 
+    this.state.setDestination(entity, mask);
     this.state.setPending(entity, [entity, ...components]);
     return entity;
   }
 
   /**
    * Destroy entity and clean up its state
-   * @throws {Error} If entity doesn't exist or is already despawned
    */
   despawn(entity: Entity): void {
     this.state.setDestination(entity, ENTITY_STATE.DESPAWNED);
@@ -236,31 +258,34 @@ export class Entities {
 
   /**
    * Add component instance to entity
-   * @param entity Target entity
-   * @param instance Component instance to add
    */
   insert(entity: Entity, instance: object): Entity {
-    this.insertTag(entity, instance.constructor as Class);
-    const components = this.state.getPending(entity) ?? [];
-
-    const componentType = instance.constructor;
-    const existingIndex = components.findIndex(
-      (c) => c.constructor === componentType,
-    );
-    if (existingIndex !== -1) {
-      components[existingIndex] = instance;
-    } else {
-      components.push(instance);
+    if (!instance || typeof instance !== 'object') {
+      DEV_ASSERT(false, 'Invalid component instance');
     }
 
-    this.state.setPending(entity, components);
+    const componentType = instance.constructor as Class;
+    this.insertTag(entity, componentType);
+
+    const components = this.state.getPending(entity);
+    if (!components) {
+      this.state.setPending(entity, [entity, instance]);
+      return entity;
+    }
+
+    for (let i = 0; i < components.length; i++) {
+      if (components[i]!.constructor === componentType) {
+        components[i] = instance;
+        return entity;
+      }
+    }
+
+    components.push(instance);
     return entity;
   }
 
   /**
    * Add component type marker to entity
-   * @param entity Target entity
-   * @param component Component class to add
    */
   insertTag(entity: Entity, component: Class): void {
     const currentType = this.getEntityArchetype(entity);
@@ -270,8 +295,6 @@ export class Entities {
 
   /**
    * Remove component from entity
-   * @param entity Target entity
-   * @param component Component class to remove
    */
   remove(entity: Entity, component: Class): void {
     const currentType = this.getEntityArchetype(entity);
@@ -302,11 +325,8 @@ export class Entities {
 
   /**
    * Check if entity has specific component
-   * @param entity Target entity
-   * @param component Component class to check
-   * @returns True if entity has component
    */
-  has(entity: Entity, component: Class): boolean {
+  has(entity: Entity, component: Component): boolean {
     const currentArchetype = this.getTableArchetype(entity);
     const componentId = this.world.getComponentId(component);
     return (currentArchetype & (1n << BigInt(componentId))) !== 0n;
@@ -325,7 +345,6 @@ export class Entities {
 
 /**
  * Factory function to create entity manager instance
- * @param world World instance to manage entities for
  */
 export const createEntities = (world: World) => new Entities(world);
 
