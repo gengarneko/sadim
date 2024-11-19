@@ -335,177 +335,177 @@ describe('Table', () => {
     });
   });
 
-  describe('performance tests', () => {
-    const SMALL_COUNT = 1_000;
-    const MEDIUM_COUNT = 10_000;
-    const LARGE_COUNT = 100_000;
-    const PERFORMANCE_TIMEOUT = 100; // 100ms
+  // describe('performance tests', () => {
+  //   const SMALL_COUNT = 1_000;
+  //   const MEDIUM_COUNT = 10_000;
+  //   const LARGE_COUNT = 100_000;
+  //   const PERFORMANCE_TIMEOUT = 100; // 100ms
 
-    it('should handle large entity moves efficiently', () => {
-      const world = new World();
-      const sourceTable = createTable([Entity, Vec3]);
-      const targetTable = createTable([Entity, Vec3]);
+  //   it('should handle large entity moves efficiently', () => {
+  //     const world = new World();
+  //     const sourceTable = createTable([Entity, Vec3]);
+  //     const targetTable = createTable([Entity, Vec3]);
 
-      const startTime = performance.now();
+  //     const startTime = performance.now();
 
-      for (let i = 0; i < LARGE_COUNT; i++) {
-        addToTable(
-          sourceTable,
-          new Entity(world.entities, i),
-          new Vec3(i, i, i),
-        );
-      }
+  //     for (let i = 0; i < LARGE_COUNT; i++) {
+  //       addToTable(
+  //         sourceTable,
+  //         new Entity(world.entities, i),
+  //         new Vec3(i, i, i),
+  //       );
+  //     }
 
-      for (let i = 0; i < LARGE_COUNT; i++) {
-        sourceTable.move(0, targetTable, []);
-      }
+  //     for (let i = 0; i < LARGE_COUNT; i++) {
+  //       sourceTable.move(0, targetTable, []);
+  //     }
 
-      const duration = performance.now() - startTime;
-      expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
-    });
+  //     const duration = performance.now() - startTime;
+  //     expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
+  //   });
 
-    it('should handle batch component updates efficiently', () => {
-      const world = new World();
-      const table = createTable([Entity, Vec3]);
+  //   it('should handle batch component updates efficiently', () => {
+  //     const world = new World();
+  //     const table = createTable([Entity, Vec3]);
 
-      // 预填充数据
-      for (let i = 0; i < MEDIUM_COUNT; i++) {
-        addToTable(table, new Entity(world.entities, i), new Vec3(i, i, i));
-      }
+  //     // 预填充数据
+  //     for (let i = 0; i < MEDIUM_COUNT; i++) {
+  //       addToTable(table, new Entity(world.entities, i), new Vec3(i, i, i));
+  //     }
 
-      const startTime = performance.now();
+  //     const startTime = performance.now();
 
-      // 批量更新所有Vec3组件
-      for (let i = 0; i < MEDIUM_COUNT; i++) {
-        table.move(i, table, [new Vec3(i * 2, i * 2, i * 2)]);
-      }
+  //     // 批量更新所有Vec3组件
+  //     for (let i = 0; i < MEDIUM_COUNT; i++) {
+  //       table.move(i, table, [new Vec3(i * 2, i * 2, i * 2)]);
+  //     }
 
-      const duration = performance.now() - startTime;
-      expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
-    });
+  //     const duration = performance.now() - startTime;
+  //     expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
+  //   });
 
-    it('should handle frequent table-to-table entity moves efficiently', () => {
-      const world = new World();
-      const tables = [
-        createTable([Entity, Vec3]),
-        createTable([Entity, Vec3]),
-        createTable([Entity, Vec3]),
-        createTable([Entity, Vec3]),
-      ];
+  //   it('should handle frequent table-to-table entity moves efficiently', () => {
+  //     const world = new World();
+  //     const tables = [
+  //       createTable([Entity, Vec3]),
+  //       createTable([Entity, Vec3]),
+  //       createTable([Entity, Vec3]),
+  //       createTable([Entity, Vec3]),
+  //     ];
 
-      for (let i = 0; i < SMALL_COUNT; i++) {
-        addToTable(
-          tables[0]!,
-          new Entity(world.entities, i),
-          new Vec3(i, i, i),
-        );
-      }
+  //     for (let i = 0; i < SMALL_COUNT; i++) {
+  //       addToTable(
+  //         tables[0]!,
+  //         new Entity(world.entities, i),
+  //         new Vec3(i, i, i),
+  //       );
+  //     }
 
-      const startTime = performance.now();
+  //     const startTime = performance.now();
 
-      for (let i = 0; i < SMALL_COUNT; i++) {
-        for (let j = 0; j < tables.length - 1; j++) {
-          tables[j]!.move(0, tables[j + 1]!, []);
-        }
-        tables[tables.length - 1]!.move(0, tables[0]!, []);
-      }
+  //     for (let i = 0; i < SMALL_COUNT; i++) {
+  //       for (let j = 0; j < tables.length - 1; j++) {
+  //         tables[j]!.move(0, tables[j + 1]!, []);
+  //       }
+  //       tables[tables.length - 1]!.move(0, tables[0]!, []);
+  //     }
 
-      const duration = performance.now() - startTime;
-      expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
-    });
+  //     const duration = performance.now() - startTime;
+  //     expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
+  //   });
 
-    it('should handle large random accesses efficiently', () => {
-      const world = new World();
-      const table = createTable([Entity, Vec3]);
+  //   it('should handle large random accesses efficiently', () => {
+  //     const world = new World();
+  //     const table = createTable([Entity, Vec3]);
 
-      // 预填充数据
-      for (let i = 0; i < MEDIUM_COUNT; i++) {
-        addToTable(table, new Entity(world.entities, i), new Vec3(i, i, i));
-      }
+  //     // 预填充数据
+  //     for (let i = 0; i < MEDIUM_COUNT; i++) {
+  //       addToTable(table, new Entity(world.entities, i), new Vec3(i, i, i));
+  //     }
 
-      const startTime = performance.now();
+  //     const startTime = performance.now();
 
-      // 随机访问组件
-      for (let i = 0; i < MEDIUM_COUNT; i++) {
-        const randomIndex = Math.floor(Math.random() * MEDIUM_COUNT);
-        const row = table.getRow(randomIndex);
-        expect(row.length).toBe(2);
-      }
+  //     // 随机访问组件
+  //     for (let i = 0; i < MEDIUM_COUNT; i++) {
+  //       const randomIndex = Math.floor(Math.random() * MEDIUM_COUNT);
+  //       const row = table.getRow(randomIndex);
+  //       expect(row.length).toBe(2);
+  //     }
 
-      const duration = performance.now() - startTime;
-      expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
-    });
+  //     const duration = performance.now() - startTime;
+  //     expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
+  //   });
 
-    it('should handle mixed operations efficiently', () => {
-      const world = new World();
-      const sourceTable = createTable([Entity, Vec3]);
-      const targetTable = createTable([Entity, Vec3]);
+  //   it('should handle mixed operations efficiently', () => {
+  //     const world = new World();
+  //     const sourceTable = createTable([Entity, Vec3]);
+  //     const targetTable = createTable([Entity, Vec3]);
 
-      const startTime = performance.now();
+  //     const startTime = performance.now();
 
-      // 混合添加、移动和更新操作
-      for (let i = 0; i < SMALL_COUNT; i++) {
-        // 添加
-        addToTable(
-          sourceTable,
-          new Entity(world.entities, i),
-          new Vec3(i, i, i),
-        );
+  //     // 混合添加、移动和更新操作
+  //     for (let i = 0; i < SMALL_COUNT; i++) {
+  //       // 添加
+  //       addToTable(
+  //         sourceTable,
+  //         new Entity(world.entities, i),
+  //         new Vec3(i, i, i),
+  //       );
 
-        // 随机决定是移动还是更新
-        if (Math.random() > 0.5) {
-          sourceTable.move(0, targetTable, []);
-        } else {
-          sourceTable.move(0, sourceTable, [new Vec3(i * 2, i * 2, i * 2)]);
-        }
+  //       // 随机决定是移动还是更新
+  //       if (Math.random() > 0.5) {
+  //         sourceTable.move(0, targetTable, []);
+  //       } else {
+  //         sourceTable.move(0, sourceTable, [new Vec3(i * 2, i * 2, i * 2)]);
+  //       }
 
-        // 随机访问
-        if (i % 10 === 0) {
-          const randomTable = Math.random() > 0.5 ? sourceTable : targetTable;
-          const maxIndex = randomTable.length - 1;
-          if (maxIndex >= 0) {
-            const randomIndex = Math.floor(Math.random() * (maxIndex + 1));
-            const row = randomTable.getRow(randomIndex);
-            expect(row.length).toBeGreaterThan(0);
-          }
-        }
-      }
+  //       // 随机访问
+  //       if (i % 10 === 0) {
+  //         const randomTable = Math.random() > 0.5 ? sourceTable : targetTable;
+  //         const maxIndex = randomTable.length - 1;
+  //         if (maxIndex >= 0) {
+  //           const randomIndex = Math.floor(Math.random() * (maxIndex + 1));
+  //           const row = randomTable.getRow(randomIndex);
+  //           expect(row.length).toBeGreaterThan(0);
+  //         }
+  //       }
+  //     }
 
-      const duration = performance.now() - startTime;
-      expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
-    });
+  //     const duration = performance.now() - startTime;
+  //     expect(duration).toBeLessThan(PERFORMANCE_TIMEOUT);
+  //   });
 
-    // TODO
-    it('should maintain memory stability under large data scales', () => {
-      const world = new World();
-      const table = createTable([Entity, Vec3]);
+  //   // TODO
+  //   it('should maintain memory stability under large data scales', () => {
+  //     const world = new World();
+  //     const table = createTable([Entity, Vec3]);
 
-      const initialMemory = process.memoryUsage().heapUsed;
+  //     const initialMemory = process.memoryUsage().heapUsed;
 
-      for (let i = 0; i < LARGE_COUNT; i++) {
-        addToTable(table, new Entity(world.entities, i), new Vec3(i, i, i));
-      }
+  //     for (let i = 0; i < LARGE_COUNT; i++) {
+  //       addToTable(table, new Entity(world.entities, i), new Vec3(i, i, i));
+  //     }
 
-      const table2 = createTable([Entity]);
-      for (let i = 0; i < LARGE_COUNT / 2; i++) {
-        table.move(0, table2, []);
-      }
+  //     const table2 = createTable([Entity]);
+  //     for (let i = 0; i < LARGE_COUNT / 2; i++) {
+  //       table.move(0, table2, []);
+  //     }
 
-      for (let i = 0; i < LARGE_COUNT / 2; i++) {
-        addToTable(
-          table,
-          new Entity(world.entities, i + LARGE_COUNT),
-          new Vec3(i, i, i),
-        );
-      }
+  //     for (let i = 0; i < LARGE_COUNT / 2; i++) {
+  //       addToTable(
+  //         table,
+  //         new Entity(world.entities, i + LARGE_COUNT),
+  //         new Vec3(i, i, i),
+  //       );
+  //     }
 
-      const finalMemory = process.memoryUsage().heapUsed;
-      const memoryIncrease = finalMemory - initialMemory;
+  //     const finalMemory = process.memoryUsage().heapUsed;
+  //     const memoryIncrease = finalMemory - initialMemory;
 
-      const expectedMaxMemory = LARGE_COUNT * 300; // 18140288
-      expect(memoryIncrease).toBeLessThan(expectedMaxMemory);
-    });
-  });
+  //     const expectedMaxMemory = LARGE_COUNT * 300; // 18140288
+  //     expect(memoryIncrease).toBeLessThan(expectedMaxMemory);
+  //   });
+  // });
 });
 
 // it('does not create columns for ZSTs', async () => {

@@ -1,3 +1,36 @@
+/**
+ * Core ECS World Implementation
+ *
+ * The World class serves as the central container and coordinator for the ECS system.
+ * It manages entities, components, systems, and their relationships.
+ *
+ * Key Concepts:
+ * -------------
+ * 1. Entities: Unique identifiers for game objects
+ * 2. Components: Data containers that can be attached to entities
+ * 3. Systems: Logic that operates on entities with specific components
+ * 4. Tables: Data structures that group entities with identical component sets
+ * 5. Archetypes: Unique identifiers for component combinations
+ *
+ * Memory Management:
+ * -----------------
+ * - Tables are created on-demand for each unique archetype
+ * - Component data is stored in contiguous arrays for cache efficiency
+ * - Entity updates are batched based on entityUpdateTiming config
+ *
+ * Event System:
+ * ------------
+ * - Supports table creation notifications
+ * - System start/stop events
+ * - Entity lifecycle events (planned)
+ *
+ * Performance Considerations:
+ * -------------------------
+ * - Archetype calculations use bitwise operations
+ * - Table lookups are cached
+ * - Entity updates can be configured for optimal timing
+ */
+
 import type {Class} from './utils/class';
 
 import {Entities, Entity} from './entity';
@@ -13,8 +46,13 @@ import {Event} from './utils/event';
 // * --------------------------------------------------------------------------
 
 /**
- * Configuration used by a `World`.
- * May be accessed by resources or other data in a world.
+ * Configuration interface for World initialization and behavior.
+ *
+ * @property createWorker - Factory function for worker threads
+ * @property entityUpdateTiming - Controls when entity changes are processed:
+ *   - 'before': Updates before system execution
+ *   - 'after': Updates after system execution
+ *   - 'custom': Manual update timing
  */
 export type WorldConfig = {
   /**
@@ -38,9 +76,10 @@ export type WorldConfig = {
 } & Record<string, unknown>;
 
 /**
- * Completes the config for a world.
- * @param config The partial config for the world.
- * @returns The completed config.
+ * Utility function to complete partial world configurations with defaults.
+ *
+ * @param config - Partial configuration object
+ * @returns Complete configuration with defaults applied
  */
 export function getCompleteConfig(
   config?: Partial<WorldConfig> | undefined,
@@ -54,30 +93,30 @@ export function getCompleteConfig(
   };
 }
 
-/*---------*\
-|   TESTS   |
-\*---------*/
-// if (import.meta.vitest) {
-//   const {it, expect, afterEach, vi} = import.meta.vitest;
-
-//   afterEach(() => {
-//     vi.restoreAllMocks();
-//   });
-
-//   it('completes partial config', () => {
-//     const result = getCompleteConfig();
-//     expect(result).toHaveProperty('createWorker');
-//   });
-// }
-
 // * --------------------------------------------------------------------------
 // * World
 // * --------------------------------------------------------------------------
 
 /**
- * The entry point for a Thyseus application.
+ * Central coordinator for the ECS system.
  *
- * Contains data and types used by the app, such as entities, components, resources, and systems.
+ * Responsibilities:
+ * 1. Entity management and lifecycle
+ * 2. Component registration and ID assignment
+ * 3. System scheduling and execution
+ * 4. Resource management
+ * 5. Event coordination
+ *
+ * Usage Example:
+ * ```typescript
+ * const world = new World();
+ * world.addPlugin(myPlugin)
+ *      .addSystem(UpdateSchedule, mySystem)
+ *      .spawn()
+ *      .addComponent(Position, {x: 0, y: 0});
+ * await world.prepare();
+ * await world.runSchedule(UpdateSchedule);
+ * ```
  */
 export class World {
   static intoArgument(world: World): World {
@@ -123,10 +162,12 @@ export class World {
    * A list of async plugins that have been started.
    */
   _pendingPlugins: Promise<any>[] = [];
+
   /**
    * A lookup for archetypes (`bigint`s) to tables.
    */
   _archetypeToTable: Map<bigint, Table> = new Map([[0n, this.tables[0]!]]);
+
   /**
    * The event listeners for this world.
    */
@@ -279,9 +320,31 @@ export class World {
   }
 
   /**
-   * Returns the matching archetype (bigint) for a set of components.
-   * @param ...componentTypes The components to get an archetype for.
-   * @returns The archetype for this set of components.
+   * Computes a unique archetype identifier (bitfield) for a given set of component types.
+   *
+   * An archetype is represented as a bigint where each bit position corresponds to a
+   * component ID. The least significant bit (position 0) is always 1 to ensure non-zero
+   * archetypes.
+   *
+   * Example:
+   * - Position(id:1), Velocity(id:2) => 111n (binary: 0...0111)
+   * - Position(id:1) => 011n (binary: 0...0011)
+   *
+   * @param componentTypes - Array of component classes to include in the archetype.
+   *                        Order doesn't matter as the result is a bitfield.
+   *
+   * @returns A bigint where:
+   *          - Bit 0 is always 1 (base archetype)
+   *          - Bit N is 1 if component with ID N is present
+   *          - All other bits are 0
+   *
+   * Performance Note:
+   * - Uses bitwise operations for efficient archetype computation
+   * - Result is cached by caller for frequently used component combinations
+   *
+   * Memory Note:
+   * - BigInt is used to support more than 32 component types
+   * - Each unique combination creates a new table in the world
    */
   getArchetype(...componentTypes: Class[]): bigint {
     let result = 1n;
@@ -292,46 +355,56 @@ export class World {
   }
 
   /**
-   * Given an archetype (`bigint)`, returns the array of components that matches this archetype.
-   * @param archetype The archetype to get components for
-   * @returns An array of components (`Class[]`).
-   */
-  getComponentsForArchetype(archetype: bigint): Class[] {
-    const components = [];
-    let temp = archetype;
-    let i = 0;
-    while (temp !== 0n) {
-      if ((temp & 1n) === 1n) {
-        components.push(this.components[i]);
-      }
-      temp >>= 1n;
-      i++;
-    }
-    return components as Class[];
-  }
-
-  /**
-   * Gets a table for the provided archetype.
-   * If it doesn't exist, creates the table.
-   * @param archetype The archetype for the table to find.
-   * @returns The table matching the provided archetype.
+   * Gets or creates a table for the specified archetype.
+   *
+   * A table is a data structure that stores entities with the same component types.
+   * Each unique combination of components (archetype) has its own table.
+   *
+   * @param archetype - A bitfield representing the component types.
+   *                   Each bit position corresponds to a component ID.
+   *                   1 means the component is present, 0 means absent.
+   *
+   * @returns The existing table for this archetype, or a newly created one.
+   *
+   * Process:
+   * 1. Check if a table already exists for this archetype
+   * 2. If not, create a new table with:
+   *    - A unique table ID
+   *    - The archetype bitfield
+   *    - The decoded component types
+   * 3. Register the new table in the world's data structures
+   * 4. Notify all listeners about the new table
+   * 5. Emit a table update event
+   *
+   * Memory Consideration:
+   * - Each table allocates memory for its component columns
+   * - Initial capacity is determined by the Table constructor
+   * - Tables grow dynamically as needed
    */
   getTable(archetype: bigint): Table {
     let table = this._archetypeToTable.get(archetype);
     if (table) {
       return table;
     }
+
     table = new Table(
-      this.tables.length,
-      archetype,
-      this.getComponentsForArchetype(archetype),
+      this.tables.length, // Unique table ID
+      archetype, // Component bits
+      decodeArchetype(this.components, archetype), // Component types
     );
+
+    // Register the new table
     this.tables.push(table);
     this._archetypeToTable.set(archetype, table);
+
+    // Notify listeners about new table
     for (const listener of this._listeners.createTable) {
       listener(table);
     }
+
+    // Emit table update event
     this.onTableUpdated.emit(table);
+
     return table;
   }
 
@@ -398,3 +471,103 @@ type WorldEventListeners = {
   start: Array<(world: World) => void>;
   stop: Array<(world: World) => void>;
 };
+
+// * --------------------------------------------------------------------------
+// * Utils
+// * --------------------------------------------------------------------------
+
+/**
+ * Decodes an archetype bits into its component types.
+ *
+ * Algorithm Overview:
+ * ------------------
+ * 1. Initialize empty result array
+ * 2. For each bit in archetype:
+ *    - If bit is 1, add corresponding component to result
+ *    - Shift archetype right by 1
+ * 3. Continue until no bits remain
+ *
+ * Performance:
+ * - Time Complexity: O(n) where n is number of components
+ * - Space Complexity: O(k) where k is number of active components
+ *
+ * Example:
+ *
+ * ```ts
+ * const components = [Entity, Position, Velocity]
+ * const archetype = 5n // binary: 101
+ * const result = calcArchetype(components, archetype) // [Entity, Velocity]
+ * ```
+ *
+ * Explanation:
+ *
+ * components = [Entity, Position, Velocity, Health]  // components
+ * archetype = 11n                                    // binary: 1011
+ *
+ * ┌──────────────────────────────────────────────────────────┐
+ * │ initial state                                            │
+ * ├────────────────┬────────────┬────────────┬───────────────┤
+ * │    index       │     0      │     1      │      2        │
+ * │    component   │   Entity   │  Position  │   Velocity    │
+ * │    archetype   │     1      │     1      │      0        │
+ * └────────────────┴────────────┴────────────┴───────────────┘
+ *
+ * 1️⃣ first loop (i = 0):
+ * temp = 1011
+ * temp & 1n = 1  ✓ add `Entity` to result
+ * temp >>= 1n    → 0101
+ *
+ * ┌──────────────────┐
+ * │ result=[Entity]  │
+ * └──────────────────┘
+ *
+ * 2️⃣ second loop (i = 1):
+ * temp = 0101
+ * temp & 1n = 1  ✓ add `Position` to result
+ * temp >>= 1n    → 0010
+ *
+ * ┌──────────────────────────┐
+ * │ result=[Entity,Position] │
+ * └──────────────────────────┘
+ *
+ * 3️⃣ third loop (i = 2):
+ * temp = 0010
+ * temp & 1n = 0  ✗ skip `Velocity`
+ * temp >>= 1n    → 0001
+ *
+ * ┌──────────────────────────┐
+ * │ result=[Entity,Position] │
+ * └──────────────────────────┘
+ *
+ * 4️⃣ fourth loop (i = 3):
+ * temp = 0001
+ * temp & 1n = 1  ✓ add `Health` to result
+ * temp >>= 1n    → 0000
+ *
+ * ┌─────────────────────────────────┐
+ * │ result=[Entity,Position,Health] │
+ * └─────────────────────────────────┘
+ *
+ * 5️⃣ end loop (temp = 0)
+ *
+ * Space O(1), Time O(n)
+ */
+function decodeArchetype<T extends Class>(
+  components: T[],
+  archetype: bigint,
+): T[] {
+  const presentComponents: T[] = [];
+  let remainingBits = archetype;
+  let componentIndex = 0;
+
+  while (remainingBits !== 0n) {
+    const hasComponent = (remainingBits & 1n) === 1n;
+    if (hasComponent) {
+      const componentType = components[componentIndex];
+      componentType && presentComponents.push(componentType);
+    }
+    remainingBits >>= 1n;
+    componentIndex++;
+  }
+  return presentComponents;
+}
