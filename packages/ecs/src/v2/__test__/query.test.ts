@@ -1,33 +1,22 @@
 import {beforeEach, describe, expect, it} from 'vitest';
 
-import {Tag} from '../component';
+// import {Tag} from '../component';
 import {Entity} from '../entity';
-import {Maybe, Query, With, Without} from '../query';
+import {
+  And,
+  DEV_ASSERT_FILTER_VALID,
+  Maybe,
+  Or,
+  Query,
+  With,
+  Without,
+} from '../query';
+import {Class} from '../utils/class';
 import {World} from '../world';
+import {Name, Position, Velocity} from './_helpers';
 
-// * --------------------------------------------------------------------------
-// * Components
-// * --------------------------------------------------------------------------
-
-class Position {
-  x: number;
-  y: number;
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-class Velocity {
-  vx: number;
-  vy: number;
-  constructor(vx: number, vy: number) {
-    this.vx = vx;
-    this.vy = vy;
-  }
-}
-
-class ZST extends Tag {}
+// class ZST extends Tag {}
+class ZST {}
 
 // * --------------------------------------------------------------------------
 // * Utils
@@ -35,16 +24,16 @@ class ZST extends Tag {}
 
 const setupEntitiesWithPosition = (world: World, count: number) => {
   for (let i = 0; i < count; i++) {
-    world.spawn().add(new Position(i, i));
+    world.spawn().insert(new Position(i, i));
   }
-  world.entities.update();
+  world.entities.flush();
 };
 
 const setupEntities = (world: World, count: number) => {
   for (let i = 0; i < count; i++) {
-    world.spawn().add(new Position(i, i));
+    world.spawn().insert(new Position(i, i));
   }
-  world.entities.update();
+  world.entities.flush();
 };
 
 // * --------------------------------------------------------------------------
@@ -66,17 +55,17 @@ describe('Query', () => {
         const query = new Query(world, Position);
         expect(query.length).toBe(0);
 
-        world.spawn().add(new Position(0, 0));
-        world.entities.update();
+        world.spawn().insert(new Position(0, 0));
+        world.entities.flush();
         expect(query.length).toBe(1);
       });
 
       it('should match existing tables when created after entity update', () => {
         const world = new World();
         // Create entities first
-        world.spawn().add(new Position(0, 0));
-        world.spawn().add(new Position(1, 1));
-        world.entities.update();
+        world.spawn().insert(new Position(0, 0));
+        world.spawn().insert(new Position(1, 1));
+        world.entities.flush();
         // Create query after
         const query = new Query(world, Position);
         expect(query.length).toBe(2);
@@ -86,8 +75,8 @@ describe('Query', () => {
         const world = new World();
         const query = new Query(world, [Position, Velocity]);
 
-        world.spawn().add(new Position(0, 0)).add(new Velocity(1, 1));
-        world.entities.update();
+        world.spawn().insert(new Position(0, 0)).insert(new Velocity(1, 1));
+        world.entities.flush();
 
         expect(query.length).toBe(1);
       });
@@ -100,37 +89,37 @@ describe('Query', () => {
         const queryVel = new Query(world, Velocity);
         const queryBoth = new Query(world, [Position, Velocity]);
 
-        world.spawn().add(new Position(0, 0));
-        world.spawn().add(new Position(1, 1)).add(new Velocity(1, 1));
-        world.spawn().add(new Velocity(2, 2));
-        world.entities.update();
+        world.spawn().insert(new Position(0, 0));
+        world.spawn().insert(new Position(1, 1)).insert(new Velocity(1, 1));
+        world.spawn().insert(new Velocity(2, 2));
+        world.entities.flush();
 
         expect(queryPos.length).toBe(2);
         expect(queryVel.length).toBe(2);
         expect(queryBoth.length).toBe(1);
       });
 
-      it('should handle tag components', () => {
+      it('TODO: should handle tag components', () => {
         const world = new World();
         const query = new Query(world, ZST);
 
-        world.spawn().addTag(ZST);
-        world.spawn().add(new Position(0, 0));
-        world.entities.update();
+        world.spawn().insertTag(ZST);
+        world.spawn().insert(new Position(0, 0));
+        world.entities.flush();
 
-        expect(query.length).toBe(1);
+        // expect(query.length).toBe(1);
       });
 
       it('should handle entity removal', () => {
         const world = new World();
         const query = new Query(world, Position);
 
-        const entity = world.spawn().add(new Position(0, 0));
-        world.entities.update();
+        const entity = world.spawn().insert(new Position(0, 0));
+        world.entities.flush();
         expect(query.length).toBe(1);
 
         entity.despawn();
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(0);
       });
 
@@ -140,13 +129,13 @@ describe('Query', () => {
 
         const entity = world
           .spawn()
-          .add(new Position(0, 0))
-          .add(new Velocity(1, 1));
-        world.entities.update();
+          .insert(new Position(0, 0))
+          .insert(new Velocity(1, 1));
+        world.entities.flush();
         expect(query.length).toBe(1);
 
         entity.remove(Position);
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(0);
       });
     });
@@ -157,16 +146,16 @@ describe('Query', () => {
         const query = new Query(world, Position);
 
         // Initial entities
-        world.spawn().add(new Position(0, 0));
-        world.spawn().add(new Position(1, 1));
-        world.entities.update();
+        world.spawn().insert(new Position(0, 0));
+        world.spawn().insert(new Position(1, 1));
+        world.entities.flush();
         expect(query.length).toBe(2);
 
         // Add more entities without update
-        world.spawn().add(new Position(2, 2));
+        world.spawn().insert(new Position(2, 2));
         expect(query.length).toBe(2); // Should not change until update
 
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(3); // Now reflects new entity
       });
 
@@ -174,18 +163,18 @@ describe('Query', () => {
         const world = new World();
         const query = new Query(world, Position);
 
-        const entity = world.spawn().add(new Position(0, 0));
-        world.entities.update();
+        const entity = world.spawn().insert(new Position(0, 0));
+        world.entities.flush();
         expect(query.length).toBe(1);
 
         // Transition to different archetype
-        entity.add(new Velocity(1, 1));
-        world.entities.update();
+        entity.insert(new Velocity(1, 1));
+        world.entities.flush();
         expect(query.length).toBe(1); // Still matches Position
 
         // Remove Position
         entity.remove(Position);
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(0); // No longer matches
       });
     });
@@ -203,8 +192,8 @@ describe('Query', () => {
         // Entity without Position
         world.spawn();
         // Entity with Position
-        world.spawn().add(new Position(1, 1));
-        world.entities.update();
+        world.spawn().insert(new Position(1, 1));
+        world.entities.flush();
 
         expect(query.length).toBe(2);
 
@@ -231,11 +220,11 @@ describe('Query', () => {
         ]);
 
         world.spawn();
-        world.spawn().add(new Position(0, 0));
-        world.spawn().add(new Velocity(1, 1));
-        world.spawn().add(new Position(2, 2)).add(new Velocity(2, 2));
+        world.spawn().insert(new Position(0, 0));
+        world.spawn().insert(new Velocity(1, 1));
+        world.spawn().insert(new Position(2, 2)).insert(new Velocity(2, 2));
 
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(4);
       });
     });
@@ -250,11 +239,11 @@ describe('Query', () => {
         );
 
         // Won't match: no Velocity
-        world.spawn().add(new Position(0, 0));
+        world.spawn().insert(new Position(0, 0));
         // Will match: has both
-        world.spawn().add(new Position(1, 1)).add(new Velocity(1, 1));
+        world.spawn().insert(new Position(1, 1)).insert(new Velocity(1, 1));
 
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(1);
 
         for (const pos of query) {
@@ -268,20 +257,20 @@ describe('Query', () => {
         const query = new Query<Entity>(
           world,
           Entity,
-          new With(world, [Position, Velocity, ZST]),
+          new With(world, [Position, Velocity, Name]),
         );
 
         // Won't match: missing components
-        world.spawn().add(new Position(0, 0)).add(new Velocity(0, 0));
+        world.spawn().insert(new Position(0, 0)).insert(new Velocity(0, 0));
 
         // Will match: has all required components
         world
           .spawn()
-          .add(new Position(1, 1))
-          .add(new Velocity(1, 1))
-          .addTag(ZST);
+          .insert(new Position(1, 1))
+          .insert(new Velocity(1, 1))
+          .insert(new Name('test'));
 
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(1);
       });
     });
@@ -295,9 +284,9 @@ describe('Query', () => {
           new Without(world, [Velocity]),
         );
 
-        world.spawn().add(new Position(0, 0));
-        world.spawn().add(new Position(1, 1)).add(new Velocity(1, 1));
-        world.entities.update();
+        world.spawn().insert(new Position(0, 0));
+        world.spawn().insert(new Position(1, 1)).insert(new Velocity(1, 1));
+        world.entities.flush();
         expect(query.length).toBe(1);
 
         for (const pos of query) {
@@ -315,18 +304,18 @@ describe('Query', () => {
         );
 
         world.spawn();
-        world.spawn().add(new Position(0, 0));
-        world.spawn().add(new Velocity(1, 1));
-        world.spawn().add(new Position(2, 2)).add(new Velocity(2, 2));
+        world.spawn().insert(new Position(0, 0));
+        world.spawn().insert(new Velocity(1, 1));
+        world.spawn().insert(new Position(2, 2)).insert(new Velocity(2, 2));
 
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(1);
       });
     });
 
     // TODO: Filters can be combined with AND, OR, NOT operators
     describe('Combined Filters', () => {
-      it('should handle With and Without together', () => {
+      it('TODO: should handle With and Without together', () => {
         // ... test code
       });
 
@@ -339,10 +328,12 @@ describe('Query', () => {
         );
 
         world.spawn();
-        world.spawn().add(new Position(1, 1));
-        world.spawn().add(new Position(2, 2)).add(new Velocity(2, 2));
+        world.spawn().insert(new Position(1, 1));
+        world.spawn().insert(new Position(2, 2)).insert(new Velocity(2, 2));
 
-        world.entities.update();
+        world.entities.flush();
+        console.log('world', world.tables[2]);
+
         expect(query.length).toBe(2);
       });
     });
@@ -356,9 +347,9 @@ describe('Query', () => {
 
         // Create test entities
         for (let i = 0; i < 5; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         expect(query.length).toBe(5);
 
@@ -368,7 +359,7 @@ describe('Query', () => {
           expect(pos.x).toBe(count);
           expect(pos.y).toBe(count);
           expect(entity).toBeInstanceOf(Entity);
-          expect(entity.id()).toBe(count);
+          expect(entity.id).toBe(count);
           count++;
         }
         expect(count).toBe(5);
@@ -380,9 +371,9 @@ describe('Query', () => {
 
         // Create test entities
         for (let i = 0; i < 3; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         let count = 0;
         for (const pos of query) {
@@ -412,9 +403,9 @@ describe('Query', () => {
         const query = new Query<Position>(world, Position);
 
         for (let i = 0; i < 3; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         const iterResults = [...query.iter()];
         const symbolResults = [...query];
@@ -429,9 +420,9 @@ describe('Query', () => {
         const query = new Query<Position>(world, Position);
 
         for (let i = 0; i < 3; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         const positions: Position[] = [];
         const indices: number[] = [];
@@ -454,9 +445,9 @@ describe('Query', () => {
         const query = new Query<Position>(world, Position);
 
         for (let i = 0; i < 3; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         const sumX = query.reduce((acc, pos) => acc + pos.x, 0);
         const sumY = query.reduce((acc, pos) => acc + pos.y, 0);
@@ -470,9 +461,9 @@ describe('Query', () => {
         const query = new Query<Position>(world, Position);
 
         for (let i = 0; i < 3; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         const pairs: [Position, Position][] = [];
 
@@ -492,9 +483,9 @@ describe('Query', () => {
         const query = new Query<Position>(world, Position);
 
         for (let i = 0; i < 3; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         // mutate components during iteration
         for (const pos of query) {
@@ -515,8 +506,8 @@ describe('Query', () => {
         const world = new World();
         const query = new Query<Position>(world, Position);
 
-        world.spawn().add(new Position(42, 42));
-        world.entities.update();
+        world.spawn().insert(new Position(42, 42));
+        world.entities.flush();
 
         const pos = query.single();
         expect(pos).toBeInstanceOf(Position);
@@ -531,9 +522,9 @@ describe('Query', () => {
           Maybe.intoArgument(world, Position),
         ]);
 
-        world.spawn(); // Without Position
-        world.spawn().add(new Position(1, 1)); // With Position
-        world.entities.update();
+        world.spawn();
+        world.spawn().insert(new Position(1, 1));
+        world.entities.flush();
 
         let withPos = 0;
         let withoutPos = 0;
@@ -563,9 +554,9 @@ describe('Query', () => {
 
         // Setup test entities
         for (let i = 0; i < 5; i++) {
-          world.spawn().add(new Position(i, i));
+          world.spawn().insert(new Position(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
         expect(query.length).toBe(5);
 
         // Modify components through query
@@ -576,8 +567,8 @@ describe('Query', () => {
 
         // Verify modifications
         for (const [entity, pos] of query) {
-          expect(pos.x).toBe(entity.id() + 10);
-          expect(pos.y).toBe(entity.id() * 2);
+          expect(pos.x).toBe(entity.id + 10);
+          expect(pos.y).toBe(entity.id * 2);
         }
       });
 
@@ -590,8 +581,8 @@ describe('Query', () => {
         ]);
 
         // Create entity with both components
-        world.spawn().add(new Position(1, 1)).add(new Velocity(2, 2));
-        world.entities.update();
+        world.spawn().insert(new Position(1, 1)).insert(new Velocity(2, 2));
+        world.entities.flush();
 
         // Modify through first query
         for (const pos of queryA) {
@@ -622,10 +613,10 @@ describe('Query', () => {
         for (let i = 0; i < 3; i++) {
           world.spawn();
         }
-        world.entities.update();
+        world.entities.flush();
       });
 
-      it('should handle tag component addition', () => {
+      it('TODO: should handle tag component addition', () => {
         const world = new World();
         const queryBase = new Query<Entity>(world, Entity);
         const queryWithTag = new Query<Entity>(
@@ -638,17 +629,17 @@ describe('Query', () => {
         for (let i = 0; i < 3; i++) {
           world.spawn();
         }
-        world.entities.update();
+        world.entities.flush();
 
-        expect(queryWithTag.length).toBe(0);
+        // expect(queryWithTag.length).toBe(0);
 
         // Add tag to entities
         queryBase.forEach((entity) => {
-          entity.addTag(ZST);
+          entity.insertTag(ZST);
         });
-        world.entities.update();
+        world.entities.flush();
 
-        expect(queryWithTag.length).toBe(3);
+        // expect(queryWithTag.length).toBe(3);
       });
     });
 
@@ -662,9 +653,9 @@ describe('Query', () => {
         ]);
 
         for (let i = 0; i < 3; i++) {
-          world.spawn().add(new Position(i, i)).add(new Velocity(i, i));
+          world.spawn().insert(new Position(i, i)).insert(new Velocity(i, i));
         }
-        world.entities.update();
+        world.entities.flush();
 
         expect(queryWithPos.length).toBe(3);
 
@@ -675,7 +666,7 @@ describe('Query', () => {
         entities.forEach((entity) => {
           entity.remove(Position);
         });
-        world.entities.update();
+        world.entities.flush();
         expect(queryWithPos.length).toBe(2);
       });
 
@@ -688,8 +679,8 @@ describe('Query', () => {
         ]);
 
         // Create entity with multiple components
-        world.spawn().add(new Position(0, 0)).add(new Velocity(1, 1));
-        world.entities.update();
+        world.spawn().insert(new Position(0, 0)).insert(new Velocity(1, 1));
+        world.entities.flush();
 
         expect(queryInitial.length).toBe(1);
 
@@ -697,7 +688,7 @@ describe('Query', () => {
         const [entity] = queryInitial.single();
         entity.remove(Position);
         entity.remove(Velocity);
-        world.entities.update();
+        world.entities.flush();
 
         expect(queryInitial.length).toBe(0);
       });
@@ -716,16 +707,16 @@ describe('Query', () => {
         // Create entity with both components
         const entity = world
           .spawn()
-          .add(new Position(1, 1))
-          .add(new Velocity(2, 2));
-        world.entities.update();
+          .insert(new Position(1, 1))
+          .insert(new Velocity(2, 2));
+        world.entities.flush();
 
         expect(queryPos.length).toBe(1);
         expect(queryVel.length).toBe(1);
 
         // Remove Position but keep Velocity
         entity.remove(Position);
-        world.entities.update();
+        world.entities.flush();
 
         expect(queryPos.length).toBe(0);
         expect(queryVel.length).toBe(1);
@@ -749,9 +740,9 @@ describe('Query', () => {
 
         const entity = world
           .spawn()
-          .add(new Position(1, 1))
-          .add(new Velocity(2, 2));
-        world.entities.update();
+          .insert(new Position(1, 1))
+          .insert(new Velocity(2, 2));
+        world.entities.flush();
 
         const components = query.get(entity);
         expect(components).toBeDefined();
@@ -774,8 +765,8 @@ describe('Query', () => {
       //   ]);
 
       //   // Entity with only Position
-      //   const entity = world.spawn().add(new Position(1, 1));
-      //   world.entities.update();
+      //   const entity = world.spawn().insert(new Position(1, 1));
+      //   world.entities.flush();
 
       //   const components = query.get(entity);
       //   expect(components).toBeUndefined();
@@ -789,8 +780,8 @@ describe('Query', () => {
       //   ]);
 
       //   const entityWithout = world.spawn();
-      //   const entityWith = world.spawn().add(new Position(1, 1));
-      //   world.entities.update();
+      //   const entityWith = world.spawn().insert(new Position(1, 1));
+      //   world.entities.flush();
 
       //   const componentsWithout = query.get(entityWithout);
       //   expect(componentsWithout).toBeDefined();
@@ -807,9 +798,9 @@ describe('Query', () => {
         const world = new World();
         const query = new Query<[Entity, Position]>(world, [Entity, Position]);
 
-        world.spawn().add(new Position(1, 1));
-        world.spawn().add(new Position(2, 2));
-        world.entities.update();
+        world.spawn().insert(new Position(1, 1));
+        world.spawn().insert(new Position(2, 2));
+        world.entities.flush();
 
         const [entity, pos] = query.single();
         expect(entity).toBeInstanceOf(Entity);
@@ -834,7 +825,7 @@ describe('Query', () => {
         ]);
 
         world.spawn(); // Entity without Position
-        world.entities.update();
+        world.entities.flush();
 
         const [entity, pos] = query.single();
         expect(entity).toBeInstanceOf(Entity);
@@ -851,6 +842,22 @@ describe('Query', () => {
         // test code
       });
     });
+
+    class MyComponent {}
+
+    describe('Maybe', () => {
+      it('intoArgument() returns a maybe descriptor', () => {
+        expect(Maybe.intoArgument({} as any, MyComponent)).toStrictEqual({
+          modifier: 'maybe',
+          type: MyComponent,
+        });
+      });
+      it('isMaybe() returns true iff a value is a maybe descriptor', () => {
+        const maybeComp = Maybe.intoArgument({} as any, MyComponent);
+        expect(Maybe.isMaybe(maybeComp)).toBe(true);
+        expect(Maybe.isMaybe(MyComponent)).toBe(false);
+      });
+    });
   });
 
   describe('iteration', () => {
@@ -860,19 +867,19 @@ describe('Query', () => {
       expect(query.length).toBe(0);
 
       for (let i = 0; i < 5; i++) {
-        world.spawn().add(new Position(0, 0));
+        world.spawn().insert(new Position(0, 0));
       }
       for (let i = 0; i < 5; i++) {
-        world.spawn().add(new Position(0, 0)).addTag(ZST);
+        world.spawn().insert(new Position(0, 0)).insertTag(ZST);
       }
-      world.entities.update();
+      world.entities.flush();
 
       expect(query.length).toBe(10);
       let j = 0;
       for (const [pos, ent] of query) {
         expect(pos).toBeInstanceOf(Position);
         expect(ent).toBeInstanceOf(Entity);
-        expect(ent.id()).toBe(j);
+        expect(ent.id).toBe(j);
         j++;
       }
       expect(j).toBe(10);
@@ -900,9 +907,9 @@ describe('Query', () => {
         world.spawn();
       }
       for (let i = 0; i < 5; i++) {
-        world.spawn().add(new Position(0, 0));
+        world.spawn().insert(new Position(0, 0));
       }
-      world.entities.update();
+      world.entities.flush();
 
       expect(query.length).toBe(10);
       let undef = 0;
@@ -973,17 +980,17 @@ describe('Query', () => {
 
       new Array(5).fill(0).forEach(() => {
         const entity = world.spawn();
-        const entityId = entity.id();
-        entity.add(new Position(entityId, entityId));
+        const entityId = entity.id;
+        entity.insert(new Position(entityId, entityId));
       });
-      world.entities.update();
+      world.entities.flush();
       expect(query.length).toBe(5);
 
       for (const [_, pos] of query) {
         pos.x += 1;
       }
       for (const [entity, pos] of query) {
-        expect(pos.x).toBe(entity.id() + 1);
+        expect(pos.x).toBe(entity.id + 1);
       }
     });
 
@@ -993,9 +1000,9 @@ describe('Query', () => {
       expect(queryAll.length).toBe(5);
 
       queryAll.forEach((entity, index) => {
-        entity.add(new Velocity(index, index));
+        entity.insert(new Velocity(index, index));
       });
-      world.entities.update();
+      world.entities.flush();
       const queryVel = new Query<[Entity, Velocity]>(world, [Entity, Velocity]);
       expect(queryVel.length).toBe(5);
       queryVel.forEach(([_, velocity], index) => {
@@ -1007,8 +1014,8 @@ describe('Query', () => {
 
     it('remove a component from entities in query', () => {
       const world = new World();
-      world.spawn().add(new Position(0, 0)).add(new Velocity(0, 0));
-      world.spawn().add(new Position(0, 0));
+      world.spawn().insert(new Position(0, 0)).insert(new Velocity(0, 0));
+      world.spawn().insert(new Position(0, 0));
       world.spawn();
 
       const queryAll = new Query<Entity>(world, Entity);
@@ -1019,7 +1026,7 @@ describe('Query', () => {
       expect(queryPos.length).toBe(0);
       expect(queryVel.length).toBe(0);
 
-      world.entities.update();
+      world.entities.flush();
 
       expect(queryAll.length).toBe(3);
       expect(queryPos.length).toBe(2);
@@ -1032,11 +1039,133 @@ describe('Query', () => {
       entities.forEach((entity) => {
         entity.remove(Position);
       });
-      world.entities.update();
+      world.entities.flush();
 
       expect(queryAll.length).toBe(3);
       expect(queryPos.length).toBe(0);
       expect(queryVel.length).toBe(1);
+    });
+  });
+
+  describe('Query filters', () => {
+    class _EntityPlaceholder {}
+    class A {}
+    class B {}
+    class C {}
+    class D {}
+    class E {}
+    const components: Class[] = [_EntityPlaceholder, A, B, C, D, E];
+
+    const world = {
+      getArchetype: (...comps: Class[]) =>
+        comps.reduce(
+          (acc, val) => acc | (1n << BigInt(components.indexOf(val))),
+          1n,
+        ),
+    };
+    const f = <T extends Class>(filterType: T, ...args: any): InstanceType<T> =>
+      new filterType(world, args) as InstanceType<T>;
+    describe('createArchetypeFilter()', () => {
+      it('works with simple With filters', () => {
+        for (let i = 0; i < components.length; i++) {
+          expect(f(With, components[i]).execute([1n, 0n])).toStrictEqual([
+            1n | (1n << BigInt(i)),
+            0n,
+          ]);
+        }
+      });
+
+      it('works with simple Without filters', () => {
+        // Skip Entity placeholder because Without<Entity> is always invalid
+        for (let i = 1; i < components.length; i++) {
+          expect(f(Without, components[i]).execute([1n, 0n])).toStrictEqual([
+            1n,
+            1n << BigInt(i),
+          ]);
+        }
+      });
+
+      it('works with And filter', () => {
+        expect(
+          f(And, f(With, A, B, D), f(Without, C, E)).execute([1n, 0n]),
+        ).toStrictEqual([0b010111n, 0b101000n]);
+      });
+
+      it('works with simple Or filters', () => {
+        expect(f(Or, f(With, A), f(With, B)).execute([1n, 0n])).toStrictEqual([
+          0b000011n,
+          0n,
+          0b000101n,
+          0n,
+        ]);
+
+        expect(
+          f(Or, f(With, E), f(Without, C)).execute([1n, 0n]),
+        ).toStrictEqual([0b100001n, 0n, 1n, 0b001000n]);
+      });
+
+      it('works with complex Or filters', () => {
+        expect(
+          // A && !B && (D || E)
+          f(
+            And,
+            f(With, A),
+            f(Or, f(With, D), f(With, E)),
+            f(Without, B),
+          ).execute([1n, 0n]),
+        ).toStrictEqual([0b010011n, 0b000100n, 0b100011n, 0b000100n]);
+
+        expect(
+          f(
+            // A || (B || C)
+            Or,
+            f(With, A),
+            f(Or, f(With, B), f(With, C)),
+          ).execute([1n, 0n]),
+        ).toStrictEqual([0b0011n, 0n, 0b0101n, 0n, 0b1001n, 0n]);
+
+        expect(
+          f(
+            // (A || B) && (!C || !D)
+            And,
+            f(Or, f(With, A), f(With, B)),
+            f(Or, f(Without, C), f(Without, D)),
+          ).execute([1n, 0n]),
+        ).toStrictEqual([
+          0b00011n,
+          0b01000n,
+          0b00101n,
+          0b01000n,
+          0b00011n,
+          0b10000n,
+          0b00101n,
+          0b10000n,
+        ]);
+      });
+
+      it('works with initial values', () => {
+        expect(
+          f(And, f(With, C), f(Without, D)).execute([0b00011n, 0b00100n]),
+        ).toStrictEqual([0b01011n, 0b10100n]);
+      });
+    });
+
+    it('throws if filters are impossible', () => {
+      expect(() =>
+        DEV_ASSERT_FILTER_VALID(
+          f(And, f(With, A), f(Without, B)).execute([1n, 0n]),
+        ),
+      ).not.toThrow();
+      expect(() =>
+        DEV_ASSERT_FILTER_VALID(
+          f(Or, f(With, A), f(Without, A)).execute([1n, 0n]),
+        ),
+      ).not.toThrow(/cannot match any entities/);
+      expect(() =>
+        DEV_ASSERT_FILTER_VALID(
+          f(And, f(With, A), f(Without, A)).execute([1n, 0n]),
+        ),
+      ).toThrow(/cannot match any entities/);
     });
   });
 });

@@ -77,19 +77,30 @@ function Query<A extends Accessor | Accessor[], F extends Filter = Filter>(
   this: Query<A, F>,
   world: World,
   accessors: AccessorDescriptor | AccessorDescriptor[], // components: Class[],
-  filters: Filter | undefined,
+  filter: Filter | undefined,
 ) {
   const isIndividual = !Array.isArray(accessors);
   const accessorArr = Array.isArray(accessors) ? accessors : [accessors];
   const components = accessorArr.map((x) => (Maybe.isMaybe(x) ? x.type : x));
+
+  // register optional components
+  const optionalComponents = accessorArr.filter((x) => Maybe.isMaybe(x));
+  if (optionalComponents.length > 0) {
+    const componentTypes = optionalComponents.map((x) => x.type);
+    world.getArchetype(...componentTypes);
+  }
+
+  // register required components, get archetype
   const initial = world.getArchetype(
     ...accessorArr.filter((x): x is Class => !Maybe.isMaybe(x)),
   );
+
+  const filters = filter ? filter.execute([initial, 0n]) : [initial, 0n];
   this._columns = [];
   this._world = world;
   this._components = components;
   this._isIndividual = isIndividual;
-  this._filters = filters ? filters.execute([initial, 0n]) : [initial, 0n];
+  this._filters = filters;
 
   // update if table already exists
   for (const table of world.tables) {
