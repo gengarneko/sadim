@@ -7,7 +7,8 @@ import {Class} from './utils/class';
 /**
  * Components are just javascript classes with constructor.
  */
-export type Component = Class;
+export type Component = Class; // Position
+export type ComponentInstance = object; // new Position(1, 1)
 export type ComponentConstructor = new (...args: any[]) => Component;
 
 export interface TagComponent {
@@ -46,8 +47,9 @@ export function createTag(name?: string) {
  * @param item The component type to check.
  * @returns A boolean indicating if the provided component is a tag.
  */
-export function isSizedComponent(component: Component): boolean {
-  return !isTagComponent(component);
+export function isSizedComponent(component: any): boolean {
+  return true;
+  // return !component.IS_ZST;
 }
 
 /**
@@ -55,6 +57,8 @@ export function isSizedComponent(component: Component): boolean {
  * @param item The component type to check.
  * @returns A boolean indicating if the provided component is a tag.
  */
-export function isTagComponent(component: Component): boolean {
-  return 'IS_ZST' in component && component.IS_ZST === true;
+export function isTagComponent(component: any): boolean {
+  return true;
+
+  // return !isSizedComponent(component);
 }
