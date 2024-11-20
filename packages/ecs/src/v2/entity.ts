@@ -195,6 +195,15 @@ export class Entity {
     return this;
   }
 
+  /** Remove entity from table */
+  despawn(): void {
+    this.entities.despawn(this);
+  }
+
+  get<T extends Component>(componentType: T): InstanceType<T> | undefined {
+    return this.entities.get(this, componentType);
+  }
+
   /** Update table location */
   setLocation(location: Partial<EntityLocation>): void {
     if (location.tableId !== undefined && location.tableId < 0) {
@@ -379,8 +388,13 @@ const COMPONENT_MASKS = new Map<Class, bigint>();
  */
 export class Entities {
   private state = new EntityState();
+  private locationMap = new Map<EntityId, EntityLocation>();
 
   constructor(readonly world: World) {}
+
+  private updateEntityLocation(entityId: EntityId, location: EntityLocation) {
+    this.locationMap.set(entityId, location);
+  }
 
   /**
    * Get archetype from entity's current table
@@ -581,6 +595,7 @@ export class Entities {
     if (this.state.getPending(entity)) {
       this.state.getPending(entity)!.length = 0;
     }
+    this.locationMap.delete(entity.id);
   }
 
   /**
@@ -787,6 +802,7 @@ export class Entities {
         components ?? [],
       );
       entity.setLocation(location);
+      this.locationMap.set(entity.id, location);
     }
     this.state.clear();
   }
@@ -850,11 +866,35 @@ export class Entities {
    * - Found:     [Entity2, Position(5,5), Velocity(6,6)]
    * - Not Found: []
    */
-  entity(entity: Entity): object[] {
-    const {tableId, tableRow} = entity.getLocation();
+  entity(entityId: Entity['id']): object[] {
+    const location = this.locationMap.get(entityId);
+    if (!location) {
+      return [];
+    }
+    const {tableId, tableRow} = location;
     const table = this.world.tables[tableId];
     const components = table?.getRow(tableRow);
     return components ?? [];
+  }
+
+  /**
+   * Get component instance by type for an entity
+   *
+   * Flow:
+   * 1. Get all components for entity
+   * 2. Find component matching the requested type
+   *
+   * Example:
+   * const position = entities.get(entity, Position);
+   * if (position) {
+   *   position.x += 1;
+   * }
+   */
+  get<T>(entity: Entity, componentType: Component): T | undefined {
+    const components = this.entity(entity.id);
+    return components.find((c) => c.constructor === componentType) as
+      | T
+      | undefined;
   }
 }
 

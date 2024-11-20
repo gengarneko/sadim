@@ -51,7 +51,7 @@ describe('Entity', () => {
       const entity = entities.spawn([pos, vel, name]);
       entities.flush();
 
-      const components = entities.entity(entity);
+      const components = entities.entity(entity.id);
       expect(components.find((c) => c === pos)).toBeTruthy();
       expect(components.find((c) => c === vel)).toBeTruthy();
       expect(components.find((c) => c === name)).toBeTruthy();
@@ -88,7 +88,7 @@ describe('Entity', () => {
         entity.insert(pos2);
         entities.flush();
 
-        const components = entities.entity(entity);
+        const components = entities.entity(entity.id);
         expect(components.includes(pos2)).toBeTruthy();
         expect(components.includes(pos1)).toBeFalsy();
       });
@@ -115,7 +115,7 @@ describe('Entity', () => {
         entity.insert(pos);
         entities.flush();
 
-        const components = entities.entity(entity);
+        const components = entities.entity(entity.id);
         const retrievedPos = components.find(
           (c) => c instanceof Position,
         ) as Position;
@@ -193,7 +193,7 @@ describe('Entity', () => {
         entities.flush();
         expect(entity.has(Position)).toBeTruthy();
 
-        const components = entities.entity(entity);
+        const components = entities.entity(entity.id);
         const pos = components.find((c) => c instanceof Position) as Position;
         expect(pos.x).toBe(2);
       });
@@ -253,7 +253,7 @@ describe('Entity', () => {
         expect(entity.has(Velocity)).toBeTruthy();
         expect(entity.has(Name)).toBeTruthy();
 
-        const components = entities.entity(entity);
+        const components = entities.entity(entity.id);
 
         const pos = components.find((c) => c instanceof Position) as Position;
         const name = components.find((c) => c instanceof Name) as Name;
@@ -270,9 +270,80 @@ describe('Entity', () => {
 
         entities.flush();
 
-        const components = entities.entity(entity);
+        const components = entities.entity(entity.id);
         const pos = components.find((c) => c instanceof Position) as Position;
         expect(pos.x).toBe(2);
+      });
+    });
+
+    describe('Get', () => {
+      it('should get component by type', () => {
+        const entity = entities.spawn();
+        const pos = new Position(1, 2);
+        entity.insert(pos);
+        entities.flush();
+
+        const component = entity.get(Position);
+        expect(component).toBe(pos);
+        expect(component?.x).toBe(1);
+        expect(component?.y).toBe(2);
+      });
+
+      it('should return undefined for non-existent component', () => {
+        const entity = entities.spawn();
+        entities.flush();
+
+        const component = entity.get(Position);
+        expect(component).toBeUndefined();
+      });
+
+      it('should get latest component after updates', () => {
+        const entity = entities.spawn();
+        entity.insert(new Position(1, 1));
+        entities.flush();
+
+        const pos2 = new Position(2, 2);
+        entity.insert(pos2);
+        entities.flush();
+
+        const component = entity.get(Position);
+        expect(component).toBe(pos2);
+        expect(component?.x).toBe(2);
+        expect(component?.y).toBe(2);
+      });
+
+      it('should get correct component after mixed operations', () => {
+        const entity = entities.spawn([new Position(1, 1), new Velocity(2, 2)]);
+        entities.flush();
+
+        entity.remove(Position);
+        entities.flush();
+
+        expect(entity.get(Position)).toBeUndefined();
+        expect(entity.get(Velocity)?.vx).toBe(2);
+      });
+
+      it('should get multiple different components', () => {
+        const pos = new Position(1, 1);
+        const vel = new Velocity(2, 2);
+        const name = new Name('test');
+
+        const entity = entities.spawn([pos, vel, name]);
+        entities.flush();
+
+        expect(entity.get(Position)).toBe(pos);
+        expect(entity.get(Velocity)).toBe(vel);
+        expect(entity.get(Name)).toBe(name);
+      });
+
+      it('should return undefined after component removal', () => {
+        const entity = entities.spawn([new Position(1, 1)]);
+        entities.flush();
+
+        entity.remove(Position);
+        entities.flush();
+
+        expect(entity.get(Position)).toBeUndefined();
       });
     });
   });

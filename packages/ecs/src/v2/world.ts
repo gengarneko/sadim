@@ -97,6 +97,11 @@ export function getCompleteConfig(
 // * World
 // * --------------------------------------------------------------------------
 
+export class StartupSchedule extends Schedule {}
+export class PreUpdateSchedule extends Schedule {}
+export class UpdateSchedule extends Schedule {}
+export class PostUpdateSchedule extends Schedule {}
+
 /**
  * Central coordinator for the ECS system.
  *
@@ -178,12 +183,27 @@ export class World {
   };
 
   /**
+   * If the world has started.
+   */
+  _hasStarted = false;
+
+  /**
    * The config used to create this world.
    */
   config: Readonly<WorldConfig>;
 
+  private defaultSchedules: ScheduleType[] = [
+    StartupSchedule,
+    PreUpdateSchedule,
+    UpdateSchedule,
+    PostUpdateSchedule,
+  ];
+
   constructor(config: Partial<WorldConfig> = {}) {
     this.config = getCompleteConfig(config);
+    this.defaultSchedules.forEach((schedule) => {
+      this.schedules.set(schedule, new schedule(this));
+    });
     return this;
   }
 
@@ -253,11 +273,45 @@ export class World {
   }
 
   /**
+   * Runs the world.
+   */
+  async run(): Promise<void> {
+    if (!this._hasStarted) {
+      await this.runSchedule(StartupSchedule);
+      this._hasStarted = true;
+    }
+
+    try {
+      if (this.config.entityUpdateTiming === 'before') {
+        this.entities.flush();
+      }
+      await this.runSchedule(PreUpdateSchedule);
+      await this.runSchedule(UpdateSchedule);
+      await this.runSchedule(PostUpdateSchedule);
+      if (this.config.entityUpdateTiming === 'after') {
+        this.entities.flush();
+      }
+    } catch (error) {
+      console.error('Error during world update:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Spawns a new entity in the world (alias for `world.entities.spawn()`).
    * @returns The newly created `Entity`
    */
   spawn(): Entity {
     return this.entities.spawn();
+  }
+
+  /**
+   * Returns the components for the provided entity.
+   * @param entity The entity to get the components for.
+   * @returns An array of components.
+   */
+  entity(entityId: Entity['id']): object[] {
+    return this.entities.entity(entityId);
   }
 
   /**
