@@ -392,10 +392,6 @@ export class Entities {
 
   constructor(readonly world: World) {}
 
-  private updateEntityLocation(entityId: EntityId, location: EntityLocation) {
-    this.locationMap.set(entityId, location);
-  }
-
   /**
    * Get archetype from entity's current table
    *
