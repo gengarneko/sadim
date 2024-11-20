@@ -1,11 +1,68 @@
+/**
+ * Resource Module for ECS
+ *
+ * Purpose:
+ * --------
+ * 1. Global State Management
+ *    - Manages singleton data that's shared across systems
+ *    - Provides centralized access to game-wide state
+ *
+ * 2. System-Local State
+ *    - Manages state that's unique to each system
+ *    - Prevents state sharing between systems
+ *
+ * Examples:
+ * --------
+ * 1. Global Resources (Res<T>):
+ *    ```typescript
+ *    // Game settings resource
+ *    class GameSettings {
+ *      difficulty: number = 1;
+ *      soundEnabled: boolean = true;
+ *    }
+ *
+ *    // Access in system
+ *    function gameSystem(settings: Res<GameSettings>) {
+ *      if (settings.soundEnabled) {
+ *        // Play sound...
+ *      }
+ *    }
+ *    ```
+ *
+ * 2. Local Resources (Local<T>):
+ *    ```typescript
+ *    // System-specific timer
+ *    class SpawnTimer {
+ *      lastSpawn: number = 0;
+ *
+ *      static async fromWorld(world: World) {
+ *        return new SpawnTimer();
+ *      }
+ *    }
+ *
+ *    // Each system gets its own timer
+ *    function spawnSystem(timer: Local<SpawnTimer>) {
+ *      const now = Date.now();
+ *      if (now - timer.lastSpawn > 1000) {
+ *        // Spawn entity...
+ *        timer.lastSpawn = now;
+ *      }
+ *    }
+ *    ```
+ */
+
 import type {Class} from './utils/class';
 import type {World} from './world';
 
 import {DEV_ASSERT} from './utils/dev';
 
 /**
- * The type for a **Resource**.
- * Resources are world-unique objects that exist for the lifetime of a world.
+ * Global Resource Type
+ *
+ * Used for:
+ * - Game configuration
+ * - Shared state (scores, time)
+ * - Global services (input, audio)
  */
 export type Res<T extends object> = T;
 export const Res = {
@@ -15,7 +72,12 @@ export const Res = {
 };
 
 /**
- * A type for data local (and unique) to a system.
+ * System-Local Resource Type
+ *
+ * Used for:
+ * - System-specific state
+ * - Independent timers/counters
+ * - System initialization data
  */
 export type Local<T extends object> = T;
 export const Local = {
