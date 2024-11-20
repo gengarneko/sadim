@@ -1,7 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {Local, Res} from '../resource';
-import {World} from '../world';
+import {Local, Res, World} from '../src';
 
 describe('Resource', () => {
   let world: World;

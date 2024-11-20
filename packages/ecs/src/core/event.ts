@@ -1,4 +1,4 @@
-import type {Class} from './utils/class';
+import type {Class} from '../utils/class';
 
 import {World} from './world';
 

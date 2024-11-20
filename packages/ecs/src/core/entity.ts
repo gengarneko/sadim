@@ -36,11 +36,11 @@
  *                          Component Bits
  */
 
+import type {Class} from '../utils/class';
 import type {Component} from './component';
-import type {Class} from './utils/class';
 import type {World} from './world';
 
-import {DEV_ASSERT} from './utils/dev';
+import {DEV_ASSERT} from '../utils/dev';
 
 // import type {TagComponent} from './component';
 // import {isSizedComponent, isTagComponent} from './component';

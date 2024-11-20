@@ -1,9 +1,7 @@
 import {describe, expect, it} from 'vitest';
 
-import {Entity} from '../entity';
-import {createTable, Table} from '../table';
 // import {Tag} from '../Tag';
-import {World} from '../world';
+import {createTable, Entity, Table, World} from '../src';
 import {Vec3} from './_helpers';
 
 const addToTable = (table: Table, entity: Entity, ...components: object[]) => {

@@ -1,7 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {Entity} from '../entity';
-import {World} from '../world';
+import {Entity, World} from '../src';
 
 // 模拟组件类
 class Position {

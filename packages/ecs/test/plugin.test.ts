@@ -1,10 +1,6 @@
-import type {Plugin} from '../plugin';
-import type {System} from '../system';
-
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {Schedule} from '../schedule';
-import {World} from '../world';
+import {Plugin, Schedule, System, World} from '../src';
 
 describe('Plugin Module', () => {
   let world: World;

@@ -1,8 +1,6 @@
 import {beforeEach, describe, expect, it} from 'vitest';
 
-import {Entities} from '../entity';
-import {Query} from '../query';
-import {World} from '../world';
+import {Entities, Query, World} from '../src';
 import {Name, Position, Velocity} from './_helpers';
 
 describe('Entity', () => {

@@ -1,9 +1,6 @@
-import type {System} from '../system';
-
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {Schedule} from '../schedule';
-import {World} from '../world';
+import {Schedule, System, World} from '../src';
 
 describe('Schedule', () => {
   let world: World;

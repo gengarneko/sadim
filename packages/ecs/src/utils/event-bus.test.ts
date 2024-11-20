@@ -1,21 +1,21 @@
 import {describe, expect, it} from 'vitest';
 
-import {event} from './event';
+import {eventBus} from './event-bus';
 
 describe('Events', () => {
   it('create event', () => {
-    const test = event();
+    const test = eventBus();
     expect(test).toBeDefined();
   });
 
   it('subscribe handler can increase correctly', () => {
-    const test = event().subscribe(() => {});
+    const test = eventBus().subscribe(() => {});
     expect(test.hasSubscribers).toBeTruthy();
     expect(test.subscriberCount).toEqual(1);
   });
 
   it('repeat subscribe handler only add once', () => {
-    const test = event();
+    const test = eventBus();
     const handler = () => {};
     test.subscribe(handler);
     test.subscribe(handler);
@@ -23,7 +23,7 @@ describe('Events', () => {
   });
 
   it('unsubscribe handler can decrease correctly', () => {
-    const test = event();
+    const test = eventBus();
     const handler = () => {};
     test.subscribe(handler);
     test.unsubscribe(handler);
@@ -31,7 +31,7 @@ describe('Events', () => {
   });
 
   it('unsubscribe handler that not subscribe will not affect the count', () => {
-    const test = event();
+    const test = eventBus();
     const addedHandler = () => {};
     const wrongHandler = () => {};
     test.subscribe(addedHandler);
@@ -40,7 +40,7 @@ describe('Events', () => {
   });
 
   it('clear all subscribers', () => {
-    const test = event()
+    const test = eventBus()
       .subscribe(() => {})
       .subscribe(() => {});
     expect(test.subscriberCount).toEqual(2);

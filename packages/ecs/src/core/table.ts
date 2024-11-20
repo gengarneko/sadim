@@ -1,6 +1,6 @@
+import {Class} from '../utils/class';
 import {isSizedComponent} from './component';
 import {Entity, EntityLocation} from './entity';
-import {Class} from './utils/class';
 
 // * --------------------------------------------------------------------------
 // * Table

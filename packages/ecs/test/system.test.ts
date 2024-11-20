@@ -1,7 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {cloneSystem, createSystem, System} from '../system';
-import {World} from '../world';
+import {cloneSystem, createSystem, System, World} from '../src';
 
 describe('System', () => {
   let world: World;

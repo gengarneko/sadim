@@ -1,7 +1,7 @@
+import {Class} from '../utils/class';
+import {DEV_ASSERT} from '../utils/dev';
 import {Entity} from './entity';
 import {Table} from './table';
-import {Class} from './utils/class';
-import {DEV_ASSERT} from './utils/dev';
 import {World} from './world';
 
 // * --------------------------------------------------------------------------

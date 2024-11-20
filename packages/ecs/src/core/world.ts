@@ -31,15 +31,15 @@
  * - Entity updates can be configured for optimal timing
  */
 
-import type {Class} from './utils/class';
+import type {Class} from '../utils/class';
 
+import {DEV_ASSERT} from '../utils/dev';
+import {EventBus} from '../utils/event-bus';
 import {Entities, Entity} from './entity';
 import {Plugin} from './plugin';
 import {Schedule, ScheduleType} from './schedule';
 import {System} from './system';
 import {createTable, Table} from './table';
-import {DEV_ASSERT} from './utils/dev';
-import {Event} from './utils/event';
 
 // * --------------------------------------------------------------------------
 // * WorldConfig
@@ -132,7 +132,7 @@ export class World {
 
   // onEntityRemoved = new Event();
 
-  onTableUpdated = new Event();
+  onTableUpdated = new EventBus();
 
   /**
    * A list of tables in the world.

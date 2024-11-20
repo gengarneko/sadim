@@ -6,7 +6,7 @@ export type PriorityHandler<T extends Callback = Callback> = {
   priority: Priority;
 };
 
-declare class Event<T extends Callback> {
+declare class EventBus<T extends Callback> {
   /**
    * @internal
    *
@@ -23,9 +23,9 @@ declare class Event<T extends Callback> {
 
   get subscriberCount(): number;
 
-  subscribe(callback: Callback, priority?: number): Event<T>;
+  subscribe(callback: Callback, priority?: number): EventBus<T>;
 
-  unsubscribe(callback: Callback): Event<T>;
+  unsubscribe(callback: Callback): EventBus<T>;
 
   clear(): void;
 
@@ -34,31 +34,31 @@ declare class Event<T extends Callback> {
 
 /** @internal */
 // This enables better control of the transpiled output size.
-function Event<T extends Callback>(this: Event<T>) {
+function EventBus<T extends Callback>(this: EventBus<T>) {
   this._subscribers = [];
 }
 
 /** priority higher, execute later */
-Event.prototype._sort = function () {
+EventBus.prototype._sort = function () {
   this._subscribers.sort((a, b) => a.priority - b.priority);
 };
 
 /** if has subscribers */
-Object.defineProperty(Event.prototype, 'hasSubscribers', {
+Object.defineProperty(EventBus.prototype, 'hasSubscribers', {
   get(): boolean {
     return this._subscribers.length > 0;
   },
 });
 
 /** subscribers count */
-Object.defineProperty(Event.prototype, 'subscriberCount', {
+Object.defineProperty(EventBus.prototype, 'subscriberCount', {
   get(): number {
     return this._subscribers.length;
   },
 });
 
 /** subscribe */
-Event.prototype.subscribe = function (
+EventBus.prototype.subscribe = function (
   callback: Callback,
   priority: number = 0,
 ) {
@@ -84,7 +84,7 @@ Event.prototype.subscribe = function (
 };
 
 /** unsubscribe */
-Event.prototype.unsubscribe = function (callback: Callback) {
+EventBus.prototype.unsubscribe = function (callback: Callback) {
   const existingHandlerIndex = this._subscribers.findIndex(
     (it) => it.callback === callback,
   );
@@ -95,20 +95,20 @@ Event.prototype.unsubscribe = function (callback: Callback) {
 };
 
 /** clear */
-Event.prototype.clear = function () {
+EventBus.prototype.clear = function () {
   this._subscribers.length = 0;
   return this;
 };
 
 /** emit */
-Event.prototype.emit = function (...args: Parameters<Callback>) {
+EventBus.prototype.emit = function (...args: Parameters<Callback>) {
   this._subscribers.forEach((it) => it.callback(...args));
   return this;
 };
 
-/** create plain event */
-function event() {
-  return new Event();
+/** create plain EventBus */
+function eventBus() {
+  return new EventBus();
 }
 
-export {Event, event};
+export {eventBus, EventBus};

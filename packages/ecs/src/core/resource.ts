@@ -51,10 +51,10 @@
  *    ```
  */
 
-import type {Class} from './utils/class';
+import type {Class} from '../utils/class';
 import type {World} from './world';
 
-import {DEV_ASSERT} from './utils/dev';
+import {DEV_ASSERT} from '../utils/dev';
 
 /**
  * Global Resource Type

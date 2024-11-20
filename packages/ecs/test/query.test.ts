@@ -1,18 +1,18 @@
 import {beforeEach, describe, expect, it} from 'vitest';
 
 // import {Tag} from '../component';
-import {Entity} from '../entity';
 import {
   And,
+  Class,
   DEV_ASSERT_FILTER_VALID,
+  Entity,
   Maybe,
   Or,
   Query,
   With,
   Without,
-} from '../query';
-import {Class} from '../utils/class';
-import {World} from '../world';
+  World,
+} from '../src';
 import {Name, Position, Velocity} from './_helpers';
 
 // class ZST extends Tag {}
@@ -332,8 +332,6 @@ describe('Query', () => {
         world.spawn().insert(new Position(2, 2)).insert(new Velocity(2, 2));
 
         world.entities.flush();
-        console.log('world', world.tables[2]);
-
         expect(query.length).toBe(2);
       });
     });
@@ -661,7 +659,6 @@ describe('Query', () => {
 
         // Collect entities first to avoid iterator invalidation
         const entities = [...queryWithPos].map(([entity]) => entity);
-        // console.log('entities', entities);
 
         entities.forEach((entity) => {
           entity.remove(Position);

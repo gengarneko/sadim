@@ -1,4 +1,4 @@
-import {Class} from './utils/class';
+import {Class} from '../utils/class';
 
 // * --------------------------------------------------------------------------
 // * Types

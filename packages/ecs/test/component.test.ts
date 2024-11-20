@@ -1,12 +1,14 @@
-import type {TagComponent} from '../component';
+import {describe, expect, it} from 'vitest';
 
-import {Class} from 'src/v2/utils/class';
-import {describe, expect, it, vi} from 'vitest';
-
-import {createTag, isSizedComponent, isTagComponent} from '../component';
-import {Entity} from '../entity';
-import {Query} from '../query';
-import {World} from '../world';
+import {
+  Class,
+  createTag,
+  Entity,
+  isSizedComponent,
+  isTagComponent,
+  Query,
+  World,
+} from '../src';
 
 class Name {
   name: string = '';
