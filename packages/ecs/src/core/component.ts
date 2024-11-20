@@ -48,8 +48,7 @@ export function createTag(name?: string) {
  * @returns A boolean indicating if the provided component is a tag.
  */
 export function isSizedComponent(component: any): boolean {
-  return true;
-  // return !component.IS_ZST;
+  return !component.IS_ZST;
 }
 
 /**
@@ -58,7 +57,5 @@ export function isSizedComponent(component: any): boolean {
  * @returns A boolean indicating if the provided component is a tag.
  */
 export function isTagComponent(component: any): boolean {
-  return true;
-
-  // return !isSizedComponent(component);
+  return !isSizedComponent(component);
 }

@@ -28,8 +28,7 @@
  * └──────────────────┘
  */
 
-import {DEV_ASSERT} from 'src/utils/dev';
-
+import {DEV_ASSERT} from '../utils/dev';
 import {System} from './system';
 import {World} from './world';
 

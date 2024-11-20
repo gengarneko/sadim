@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "bun run build-fast -- --dts-resolve",
+    "build": "tsup",
     "build-fast": "tsup src/index.ts --format cjs,esm",
     "lint": "eslint . --max-warnings 0",
     "prepublishOnly": "bun run build",
