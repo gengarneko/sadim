@@ -40,6 +40,8 @@ import type {Class} from '../utils/class';
 import type {Component} from './component';
 import type {World} from './world';
 
+import {EventBus} from 'src/utils/event-bus';
+
 import {DEV_ASSERT} from '../utils/dev';
 
 // import type {TagComponent} from './component';
@@ -150,12 +152,13 @@ export class Entity {
     tableRow: 0, // Row within component arrays
   };
 
-  constructor(
-    /** Reference to entity manager */
-    private readonly entities: Entities,
-    /** Unique entity identifier */
-    private readonly entityId: EntityId,
-  ) {}
+  private readonly entityId: EntityId;
+  private readonly entities: Entities;
+
+  constructor(entities: Entities, entityId: EntityId) {
+    this.entityId = entityId;
+    this.entities = entities;
+  }
 
   /** Debug representation */
   [Symbol.for('nodejs.util.inspect.custom')]() {
@@ -196,8 +199,9 @@ export class Entity {
   }
 
   /** Remove entity from table */
-  despawn(): void {
+  despawn(): Entity {
     this.entities.despawn(this);
+    return this;
   }
 
   get<T extends Component>(componentType: T): InstanceType<T> | undefined {
@@ -289,26 +293,30 @@ const ENTITY_STATE = {
  */
 class EntityState {
   /** Entity ID counter for unique identification */
-  private nextId = 0;
+  private _nextId = 0;
 
   /**
    * Staged components for entities
    * Stores component instances before they are committed to tables
    */
-  private pending = new Map<Entity, object[]>();
+  private _pending = new Map<Entity, object[]>();
 
   /**
    * Entity archetype destinations
    * Maps entities to their target component combinations
    */
-  private destinations = new Map<Entity, bigint>();
+  private _destinations = new Map<Entity, bigint>();
+
+  get destinations(): Map<Entity, bigint> {
+    return this._destinations;
+  }
 
   /**
    * Create new entity with unique ID
    * Increments ID counter after each creation
    */
   createEntity(entities: Entities): Entity {
-    return new Entity(entities, this.nextId++);
+    return new Entity(entities, this._nextId++);
   }
 
   /**
@@ -316,7 +324,7 @@ class EntityState {
    * Components are stored temporarily until flush
    */
   setPending(entity: Entity, components: object[]): void {
-    this.pending.set(entity, components);
+    this._pending.set(entity, components);
   }
 
   /**
@@ -324,7 +332,7 @@ class EntityState {
    * Returns undefined if no pending changes
    */
   getPending(entity: Entity): object[] | undefined {
-    return this.pending.get(entity);
+    return this._pending.get(entity);
   }
 
   /**
@@ -332,9 +340,9 @@ class EntityState {
    * Only updates if destination has changed
    */
   setDestination(entity: Entity, destination: bigint): void {
-    const current = this.destinations.get(entity);
+    const current = this._destinations.get(entity);
     if (current === destination) return;
-    this.destinations.set(entity, destination);
+    this._destinations.set(entity, destination);
   }
 
   /**
@@ -342,7 +350,7 @@ class EntityState {
    * Returns undefined if no pending changes
    */
   getDestination(entity: Entity): bigint | undefined {
-    return this.destinations.get(entity);
+    return this._destinations.get(entity);
   }
 
   /**
@@ -350,8 +358,8 @@ class EntityState {
    * Called after changes are flushed to tables
    */
   clear(): void {
-    this.pending.clear();
-    this.destinations.clear();
+    this._pending.clear();
+    this._destinations.clear();
   }
 
   /**
@@ -359,13 +367,21 @@ class EntityState {
    * Used by flush() to process pending changes
    */
   [Symbol.iterator](): IterableIterator<[Entity, bigint]> {
-    return this.destinations.entries();
+    return this._destinations.entries();
   }
 }
 
 // * --------------------------------------------------------------------------
 // * Entities
 // * --------------------------------------------------------------------------
+
+export type EntitiesUpdateEvent = {
+  updates: {
+    entity: Entity;
+    archetype: bigint;
+    components: Class[];
+  }[];
+};
 
 /**
  * Cache of component masks
@@ -418,8 +434,11 @@ export class Entities {
    */
   private getTableArchetype(entity: Entity): bigint {
     const {tableId} = entity.getLocation();
-    DEV_ASSERT(this.world.tables[tableId], `Table ${tableId} does not exist`);
-    return this.world.tables[tableId]!.archetype;
+    DEV_ASSERT(
+      this.world.getTableById(tableId),
+      `Table ${tableId} does not exist`,
+    );
+    return this.world.getTableById(tableId)!.archetype;
   }
 
   /**
@@ -586,57 +605,28 @@ export class Entities {
    * entity.has(Position)  // false
    * entity.getLocation()  // { tableId: 0, tableRow: 0 }
    */
-  despawn(entity: Entity): void {
+  despawn(entity: Entity): Entity {
     this.state.setDestination(entity, ENTITY_STATE.DESPAWNED);
     if (this.state.getPending(entity)) {
       this.state.getPending(entity)!.length = 0;
     }
-    this.locationMap.delete(entity.id);
+    this.world.locations.delete(entity.id);
+    return entity;
   }
 
   /**
    * Add component instance to entity
    *
-   * Flow:
-   * 1. Validate Component
-   *    instance = Position { x: 1, y: 2 }
-   *    - Must be object
-   *    - Must not be null/undefined
+   * Steps:
+   * 1. Validate component object
+   * 2. Update archetype
+   *    - Before: 0b0001 (Entity)
+   *    - After:  0b0011 (Entity + Position)
    *
-   * 2. Register Component Type
-   *    Example:
-   *    Position -> {
-   *      before: archetype = 0b0001 (just SPAWNED)
-   *      after:  archetype = 0b0011 (SPAWNED + Position)
-   *    }
-   *
-   * 3. Handle Pending Components
-   *    Three scenarios:
-   *
-   *    a) No pending components:
-   *       [Entity(0)] -> [Entity(0), Position(x,y)]
-   *
-   *    b) Update existing component:
-   *       [Entity(0), Position(1,1)] -> [Entity(0), Position(2,2)]
-   *
-   *    c) Add new component:
-   *       [Entity(0), Velocity(1,1)] -> [Entity(0), Velocity(1,1), Position(2,2)]
-   *
-   * Example Usage:
-   * 1. First insertion:
-   *    entity.insert(new Position(1, 2))
-   *    -> components = [Entity(0), Position(1,2)]
-   *    -> archetype = 0b0011
-   *
-   * 2. Update existing:
-   *    entity.insert(new Position(3, 4))
-   *    -> components = [Entity(0), Position(3,4)]
-   *    -> archetype = 0b0011 (unchanged)
-   *
-   * 3. Add different component:
-   *    entity.insert(new Velocity(1, 1))
-   *    -> components = [Entity(0), Position(3,4), Velocity(1,1)]
-   *    -> archetype = 0b0111
+   * Scenarios:
+   * 1. First add:     [Entity] -> [Entity, Position]
+   * 2. Update:        [Entity, Position(1,1)] -> [Entity, Position(2,2)]
+   * 3. Add new type:  [Entity, Position] -> [Entity, Position, Velocity]
    */
   insert(entity: Entity, instance: object): Entity {
     if (!instance || typeof instance !== 'object') {
@@ -736,6 +726,8 @@ export class Entities {
     this.state.setDestination(entity, currentType & componentMask);
   }
 
+  onEntitiesChanged = new EventBus();
+
   /**
    * Apply all pending changes to entities
    * Moves entities between tables based on their component changes
@@ -786,20 +778,15 @@ export class Entities {
    * Table2: [E0][P0][V0][ ] // E=Entity, P=Position, V=Velocity
    */
   flush(): void {
-    const world = this.world;
-    for (const [entity, archetype] of this.state) {
-      const components = this.state.getPending(entity);
-      const {tableId, tableRow} = entity.getLocation();
-      const sourceTable = world.tables[tableId]!;
-      const targetTable = world.getTable(archetype);
-      const location = sourceTable.move(
-        tableRow,
-        targetTable,
-        components ?? [],
-      );
-      entity.setLocation(location);
-      this.locationMap.set(entity.id, location);
-    }
+    const updates = Array.from(
+      this.state.destinations,
+      ([entity, archetype]) => ({
+        entity,
+        archetype,
+        components: this.state.getPending(entity) ?? [],
+      }),
+    );
+    this.onEntitiesChanged.emit({updates});
     this.state.clear();
   }
 
@@ -863,12 +850,12 @@ export class Entities {
    * - Not Found: []
    */
   entity(entityId: Entity['id']): object[] {
-    const location = this.locationMap.get(entityId);
+    const location = this.world.locations.get(entityId);
     if (!location) {
       return [];
     }
     const {tableId, tableRow} = location;
-    const table = this.world.tables[tableId];
+    const table = this.world.getTableById(tableId);
     const components = table?.getRow(tableRow);
     return components ?? [];
   }
@@ -891,6 +878,19 @@ export class Entities {
     return components.find((c) => c.constructor === componentType) as
       | T
       | undefined;
+  }
+
+  getEntityById(entityId: Entity['id']): Entity | undefined {
+    const location = this.world.locations.get(entityId);
+    if (!location) {
+      return undefined;
+    }
+    const {tableId, tableRow} = location;
+    const table = this.world.getTableById(tableId);
+    console.log('table', table);
+
+    const entity = table?.getColumn(Entity)[tableRow];
+    return entity;
   }
 }
 

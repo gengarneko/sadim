@@ -32,7 +32,7 @@ describe('Components', () => {
   describe('Constructor', () => {
     it('Should have one table as the storage data structure', () => {
       const world = new World();
-      expect(world.tables.length).toBe(1);
+      expect(world.storage.length).toBe(1);
     });
     it('Should have one `Entity` component as the base component', () => {
       const world = new World();

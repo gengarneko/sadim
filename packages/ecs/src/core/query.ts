@@ -10,319 +10,194 @@ import {World} from './world';
 
 const EMPTY_COLUMN: [] = [];
 
-declare class Query<
-  A extends Accessor | Accessor[],
-  F extends Filter = Filter,
-> {
-  /** ref to the world */
-  _world: World;
+export class Query<A extends Accessor | Accessor[], F extends Filter = Filter> {
+  private _world: World;
 
-  /** column-based storage, good for queries cache & SIMD */
-  _columns: Array<object[]>;
+  private _columns: Array<object[]>;
+  private _components: Class[];
+  private _filters: bigint[];
 
-  /** the components that are being queried */
-  _components: Class[];
-
-  /** the filters that are being applied */
-  _filters: bigint[];
-
-  /** whether the query is for individual elements */
-  _isIndividual: boolean;
+  private _isIndividual: boolean;
 
   constructor(
     world: World,
+    /**  */
     accessors: AccessorDescriptor | AccessorDescriptor[],
-    filters?: Filter,
-  );
+    /**  */
+    filter?: Filter,
+  ) {
+    this._world = world;
+    const isIndividual = !Array.isArray(accessors);
+    const accessorArr = Array.isArray(accessors) ? accessors : [accessors];
+    const components = accessorArr.map((x) => (Maybe.isMaybe(x) ? x.type : x));
 
-  /** test if an archetype matches the query */
-  _testArchetype: (archetype: bigint) => boolean;
+    // register optional components
+    const optionalComponents = accessorArr.filter((x) => Maybe.isMaybe(x));
+    if (optionalComponents.length > 0) {
+      const componentTypes = optionalComponents.map((x) => x.type);
+      world.getArchetype(...componentTypes);
+    }
 
-  /** the number of entities that match this query */
-  get length(): number;
+    // register required components, get archetype
+    const initial = world.getArchetype(
+      ...accessorArr.filter((x): x is Class => !Maybe.isMaybe(x)),
+    );
 
-  /** iterate over the queries */
-  [Symbol.iterator](): IterableIterator<A>;
+    const filters = filter ? filter.execute([initial, 0n]) : [initial, 0n];
+    this._columns = [];
+    this._world = world;
+    this._components = components;
+    this._isIndividual = isIndividual;
+    this._filters = filters;
 
-  /** iterate over the queries */
-  iter(): IterableIterator<A>;
+    this.updateQueryTables();
 
-  /** iterate over the queries */
-  forEach(cb: (args: A, index: number) => void): void;
-
-  /** reduce the queries to a single value */
-  reduce<T>(cb: (acc: T, args: A, i: number) => T, initial: T): T;
-
-  /** get the components of an entity */
-  get(entity: Entity): A | null;
-
-  /** get the single entity of a query */
-  single(): A;
-
-  /** iterate over all unique pairs of queries */
-  pairs(): IterableIterator<[A, A]>;
-
-  /** subscribe to table updates */
-  tableUpdated(table: Table): void;
-
-  /** update _columns when a table is matched */
-  matchTable(table: Table): void;
-}
-
-/**
- * @internal
- * This enables better control of the transpiled output size.
- */
-function Query<A extends Accessor | Accessor[], F extends Filter = Filter>(
-  this: Query<A, F>,
-  world: World,
-  accessors: AccessorDescriptor | AccessorDescriptor[], // components: Class[],
-  filter: Filter | undefined,
-) {
-  const isIndividual = !Array.isArray(accessors);
-  const accessorArr = Array.isArray(accessors) ? accessors : [accessors];
-  const components = accessorArr.map((x) => (Maybe.isMaybe(x) ? x.type : x));
-
-  // register optional components
-  const optionalComponents = accessorArr.filter((x) => Maybe.isMaybe(x));
-  if (optionalComponents.length > 0) {
-    const componentTypes = optionalComponents.map((x) => x.type);
-    world.getArchetype(...componentTypes);
+    this._world.storage.onTableUpdated.subscribe(() => {
+      this.updateQueryTables();
+    });
   }
 
-  // register required components, get archetype
-  const initial = world.getArchetype(
-    ...accessorArr.filter((x): x is Class => !Maybe.isMaybe(x)),
-  );
-
-  const filters = filter ? filter.execute([initial, 0n]) : [initial, 0n];
-  this._columns = [];
-  this._world = world;
-  this._components = components;
-  this._isIndividual = isIndividual;
-  this._filters = filters;
-
-  // update if table already exists
-  for (const table of world.tables) {
-    this.matchTable(table);
-  }
   /**
-   * sync table creates & updates
-   * TODO: execute after table's move, not after entities' update
+   * Test if archetype matches query filters
    */
-  this._world.onTableUpdated.subscribe((table) => this.matchTable(table));
-}
-
-/**
- * @param table - a table that has been updated
- */
-Query.prototype.tableUpdated = function (table: Table) {
-  this.matchTable(table);
-};
-
-/**
- * @param table - target table
- */
-Query.prototype.matchTable = function (table: Table) {
-  if (!this._testArchetype(table.archetype)) {
-    return;
+  private _testArchetype(archetype: bigint): boolean {
+    for (let i = 0; i < this._filters.length; i += 2) {
+      const withFilter = this._filters[i]!;
+      const withoutFilter = this._filters[i + 1]!;
+      if (
+        (withFilter & archetype) === withFilter &&
+        (withoutFilter & archetype) === 0n
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
-  this._columns.push(table.getColumn(Entity));
-  for (const component of this._components) {
-    const column = table.hasColumn(component)
-      ? table.getColumn(component)
-      : EMPTY_COLUMN;
-    this._columns.push(column);
-  }
-};
 
-/**
- * Example:
- * ```ts
- * _columns = [
- *   // Table 1 (span = 3)
- *   [e1, e2, e3],      // i = 0: column of Entity
- *   [p1, p2, p3],      // i = 1: column of Position
- *   [v1, v2, v3],      // i = 2: column of Velocity
- *
- *   // Table 2 (span = 3)
- *   [e4, e5],          // i = 3: column of Entity
- *   [p4, p5],          // i = 4: column of Position
- *   [v4, v5],          // i = 5: column of Velocity
- * ];
- *
- * length calculation
- * 1st group: this._columns[0].length = 3
- * 2nd group: this._columns[3].length = 2
- * total: 3 + 2 = 5
- * ```
- */
-Object.defineProperty(Query.prototype, 'length', {
-  get() {
+  /**
+   * Update columns when table changes
+   */
+  private updateQueryTables(): void {
+    this._columns = [];
+    for (const table of this._world.storage) {
+      if (!this._testArchetype(table.archetype)) continue;
+
+      this._columns.push(table.getColumn(Entity));
+      for (const component of this._components) {
+        this._columns.push(
+          table.hasColumn(component)
+            ? table.getColumn(component)
+            : EMPTY_COLUMN,
+        );
+      }
+    }
+  }
+
+  /**
+   * Match and update columns when table changes
+   */
+  public matchTable(table: Table): void {
+    if (!this._testArchetype(table.archetype)) {
+      return;
+    }
+    this._columns.push(table.getColumn(Entity));
+
+    for (const component of this._components) {
+      const column = table.hasColumn(component)
+        ? table.getColumn(component)
+        : EMPTY_COLUMN;
+      this._columns.push(column);
+    }
+  }
+
+  /**
+   * Get total number of matching entities
+   */
+  get length(): number {
     let result = 0;
     const span = this._components.length + 1;
     for (let i = 0; i < this._columns.length; i += span) {
       result += this._columns[i]!.length;
     }
     return result;
-  },
-});
-
-/**
- * example:
- * ```ts
- * for (const [position, velocity] of query) {
- *   position.x += velocity.x;
- *   position.y += velocity.y;
- * }
- * ```
- */
-Query.prototype[Symbol.iterator] = function* <
-  A extends Accessor | Accessor[],
-  F extends Filter,
->(this: Query<A, F>) {
-  const elements = [];
-  const componentCount = this._components.length;
-  const groupSpan = componentCount + 1;
-
-  for (
-    let columnGroup = 0;
-    columnGroup < this._columns.length;
-    columnGroup += groupSpan
-  ) {
-    const {length} = this._columns[columnGroup]!;
-    for (let iterations = 0; iterations < length; iterations++) {
-      for (let offset = 0; offset < componentCount; offset++) {
-        elements[offset] = this._columns[columnGroup + offset + 1]![iterations];
-      }
-      yield (this._isIndividual ? elements[0] : elements) as A;
-    }
   }
-};
 
-/**
- * equal to `[Symbol.iterator]`
- *
- * example:
- * ```ts
- * for (const column of query.iter()) {
- *   console.log(column);
- * }
- * ```
- */
-Query.prototype.iter = Query.prototype[Symbol.iterator];
+  /**
+   * Iterate over matching entities
+   */
+  *[Symbol.iterator](): IterableIterator<A> {
+    const elements = [];
+    const componentCount = this._components.length;
+    const groupSpan = componentCount + 1;
 
-/**
- * example:
- * ```ts
- * query.forEach((entity, index) => {
- *   console.log(entity.id);
- * });
- * ```
- */
-Query.prototype.forEach = function (
-  callback: (args: Accessor[], index: number) => void,
-) {
-  let index = 0;
-  for (const entity of this) {
-    callback(entity, index++);
-  }
-};
-
-/**
- * example:
- * ```ts
- * query.reduce((entities, entity, index) => {
- *   return entities.concat(entity);
- * }, []);
- * ```
- */
-Query.prototype.reduce = function <T>(
-  callback: (acc: T, entity: Accessor[], index: number) => T,
-  initialValue: T,
-) {
-  let index = 0;
-  for (const result of this) {
-    initialValue = callback(initialValue, result, index++);
-  }
-  return initialValue;
-};
-
-/**
- * example:
- * ```ts
- * query.get(entity);
- * ```
- */
-Query.prototype.get = function (entity: Entity): Accessor[] | null {
-  const {tableId, tableRow} = entity.getLocation();
-  const table = this._world.tables[tableId];
-  if (!this._testArchetype(table!.archetype)) {
-    return null;
-  }
-  const result: Accessor[] = [];
-  for (const component of this._components) {
-    result.push(table!.getColumn(component)[tableRow]);
-  }
-  return result;
-};
-
-/**
- * example:
- * ```ts
- * query.single();
- * ```
- */
-Query.prototype.single = function (): Accessor {
-  const [result] = this;
-  return result as Accessor;
-};
-
-/**
- * Iterates all _unique_ pairs in the query.
- *
- * example:
- * ```ts
- * for (const [entity1, entity2] of query.pairs()) {
- *   console.log(entity1, entity2);
- * }
- * ```
- */
-Query.prototype.pairs = function* (): IterableIterator<[Accessor, Accessor]> {
-  const result: [Accessor, Accessor] = [null, null] as any;
-  let i = 0;
-  for (const iter1 of this) {
-    let j = 0;
-    for (const iter2 of this) {
-      if (i <= j) {
-        continue;
-      }
-      result[0] = iter1;
-      result[1] = iter2;
-      yield result;
-      j++;
-    }
-    i++;
-  }
-};
-
-/**
- * @internal
- * test if an archetype matches the query, return false before update()
- */
-Query.prototype._testArchetype = function (archetype: bigint): boolean {
-  for (let i = 0; i < this._filters.length; i += 2) {
-    const withFilter = this._filters[i]!;
-    const withoutFilter = this._filters[i + 1]!;
-    if (
-      (withFilter & archetype) === withFilter &&
-      (withoutFilter & archetype) === 0n
+    for (
+      let columnGroup = 0;
+      columnGroup < this._columns.length;
+      columnGroup += groupSpan
     ) {
-      return true;
+      const {length} = this._columns[columnGroup]!;
+      for (let iterations = 0; iterations < length; iterations++) {
+        for (let offset = 0; offset < componentCount; offset++) {
+          elements[offset] =
+            this._columns[columnGroup + offset + 1]![iterations];
+        }
+        yield (this._isIndividual ? elements[0] : elements) as A;
+      }
     }
   }
-  return false;
-};
+
+  iter = this[Symbol.iterator];
+
+  forEach(cb: (args: A, index: number) => void): void {
+    let index = 0;
+    for (const entity of this) {
+      cb(entity, index++);
+    }
+  }
+
+  reduce<T>(cb: (acc: T, args: A, i: number) => T, initial: T): T {
+    let index = 0;
+    for (const result of this) {
+      initial = cb(initial, result, index++);
+    }
+    return initial;
+  }
+
+  get(entity: Entity): A | undefined {
+    const {tableId, tableRow} = entity.getLocation();
+    const table = this._world.getTableById(tableId);
+    if (!this._testArchetype(table!.archetype)) {
+      return undefined;
+    }
+
+    const result: Accessor[] = [];
+    for (const component of this._components) {
+      result.push(table!.getColumn(component)[tableRow]);
+    }
+    return (this._isIndividual ? result[0] : result) as A;
+  }
+
+  single(): A | undefined {
+    const [result] = this;
+    return result;
+  }
+
+  *pairs(): IterableIterator<[A, A]> {
+    const result: [A, A] = [null!, null!];
+    let i = 0;
+    for (const iter1 of this) {
+      let j = 0;
+      for (const iter2 of this) {
+        if (i <= j) continue;
+        result[0] = iter1;
+        result[1] = iter2;
+        yield result;
+        j++;
+      }
+      i++;
+    }
+  }
+}
 
 // * --------------------------------------------------------------------------
 // * Filter
@@ -447,4 +322,3 @@ export const Maybe = {
 
 export type AccessorDescriptor = Class | {modifier: string; type: Class};
 export type Accessor = Maybe<object>;
-export {Query};

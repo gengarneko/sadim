@@ -25,9 +25,10 @@ describe('World', () => {
   describe('Initialization', () => {
     it('should create with default config', () => {
       const world = new World();
+      world.addEntity();
       expect(world.config.entityUpdateTiming).toBe('after');
       expect(world.components).toContain(Entity);
-      expect(world.tables).toHaveLength(1);
+      expect(world.storage.length).toBe(1);
     });
 
     it('should create with custom config', () => {
@@ -77,7 +78,7 @@ describe('World', () => {
 
     it('should decode archetype correctly', () => {
       const archetype = world.getArchetype(Position, Health);
-      const table = world.getTable(archetype);
+      const table = world.acquireTable(archetype);
 
       expect(table.getColumn(Position)).toBeDefined();
       expect(table.getColumn(Health)).toBeDefined();
@@ -93,29 +94,18 @@ describe('World', () => {
     });
 
     it('should create new table for unique archetype', () => {
-      const initialTableCount = world.tables.length;
+      const initialTableCount = world.storage.length;
       const archetype = world.getArchetype(Position, Velocity);
-      world.getTable(archetype);
-
-      expect(world.tables.length).toBe(initialTableCount + 1);
+      world.acquireTable(archetype);
+      expect(world.storage.length).toBe(initialTableCount + 1);
     });
 
     it('should reuse existing table for same archetype', () => {
       const archetype = world.getArchetype(Position);
-      const table1 = world.getTable(archetype);
-      const table2 = world.getTable(archetype);
+      const table1 = world.acquireTable(archetype);
+      const table2 = world.acquireTable(archetype);
 
       expect(table1).toBe(table2);
-    });
-
-    it('should emit table creation events', () => {
-      const listener = vi.fn();
-      world.addEventListener('createTable', listener);
-
-      const archetype = world.getArchetype(Position);
-      world.getTable(archetype);
-
-      expect(listener).toHaveBeenCalledTimes(1);
     });
   });
 

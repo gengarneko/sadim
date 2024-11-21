@@ -35,11 +35,11 @@ import type {Class} from '../utils/class';
 
 import {DEV_ASSERT} from '../utils/dev';
 import {EventBus} from '../utils/event-bus';
-import {Entities, Entity} from './entity';
+import {Entities, Entity, EntityLocation} from './entity';
 import {Plugin} from './plugin';
 import {Schedule, ScheduleType} from './schedule';
+import {Storage} from './storage';
 import {System} from './system';
-import {createTable, Table} from './table';
 
 // * --------------------------------------------------------------------------
 // * WorldConfig
@@ -97,6 +97,7 @@ export function getCompleteConfig(
 // * World
 // * --------------------------------------------------------------------------
 
+export type Locations = Map<number, EntityLocation>;
 export class StartupSchedule extends Schedule {}
 export class PreUpdateSchedule extends Schedule {}
 export class UpdateSchedule extends Schedule {}
@@ -128,21 +129,17 @@ export class World {
     return world;
   }
 
-  // onEntityAdded = new Event();
+  onEntityAdded = new EventBus();
 
-  // onEntityRemoved = new Event();
+  onEntityRemoved = new EventBus();
 
   onTableUpdated = new EventBus();
 
   /**
-   * A list of tables in the world.
-   * Tables group entities with the same components together.
-   */
-  tables: Table[] = [createTable()];
-  /**
    * A list of resources in the world.
    */
   resources: object[] = [];
+
   /**
    * The schedules that exist in this world.
    */
@@ -163,15 +160,21 @@ export class World {
    */
   entities: Entities = new Entities(this);
 
+  locations: Locations = new Map();
+
+  /**
+   * A list of tables in the world.
+   * Tables group entities with the same components together.
+   */
+  storage: Storage = new Storage({
+    components: this.components,
+    locations: this.locations,
+  });
+
   /**
    * A list of async plugins that have been started.
    */
   _pendingPlugins: Promise<any>[] = [];
-
-  /**
-   * A lookup for archetypes (`bigint`s) to tables.
-   */
-  _archetypeToTable: Map<bigint, Table> = new Map([[0n, this.tables[0]!]]);
 
   /**
    * The event listeners for this world.
@@ -179,7 +182,6 @@ export class World {
   _listeners: WorldEventListeners = {
     start: [],
     stop: [],
-    createTable: [],
   };
 
   /**
@@ -204,6 +206,8 @@ export class World {
     this.defaultSchedules.forEach((schedule) => {
       this.schedules.set(schedule, new schedule(this));
     });
+    this.storage.init();
+    this.connectStorage(this.storage);
     return this;
   }
 
@@ -298,23 +302,6 @@ export class World {
   }
 
   /**
-   * Spawns a new entity in the world (alias for `world.entities.spawn()`).
-   * @returns The newly created `Entity`
-   */
-  spawn(): Entity {
-    return this.entities.spawn();
-  }
-
-  /**
-   * Returns the components for the provided entity.
-   * @param entity The entity to get the components for.
-   * @returns An array of components.
-   */
-  entity(entityId: Entity['id']): object[] {
-    return this.entities.entity(entityId);
-  }
-
-  /**
    * Returns the resource of the provided type, creating it if it doesn't yet exist.
    * @param resourceType The type of the resource to get
    * @returns The resource instance.
@@ -373,6 +360,68 @@ export class World {
     return this.components.length - 1;
   }
 
+  // * --------------------------------
+  // * Storage
+  // * --------------------------------
+
+  private connectStorage(storage: Storage) {
+    this.entities.onEntitiesChanged.subscribe(storage.handleEntitiesChanged);
+    // this.entities.onEntitiesChanged.subscribe(.handleEntitiesChanged);
+  }
+
+  acquireTable(archetype: bigint) {
+    return this.storage.acquireTable(archetype, this.components);
+  }
+
+  getTableById(tableId: number) {
+    return this.storage.getTable(tableId);
+  }
+
+  // * --------------------------------
+  // * Entities
+  // * --------------------------------
+
+  /** entity interface */
+  entity(id: Entity['id']) {
+    return this.entities.entity(id);
+  }
+
+  getEntityById(id: Entity['id']) {
+    return this.entities.getEntityById(id);
+  }
+
+  spawn(components?: object[]) {
+    return this.entities.spawn(components);
+  }
+
+  despawn(entity: Entity) {
+    this.entities.despawn(entity);
+  }
+
+  addEntity(components?: object[]): Entity {
+    const entity = this.entities.spawn(components);
+    this.onEntityAdded.emit(entity);
+    return entity;
+  }
+
+  removeEntity(entity: Entity): Entity {
+    const removed = this.entities.despawn(entity);
+    this.onEntityRemoved.emit(removed);
+    return removed;
+  }
+
+  // * --------------------------------
+  // * Queries
+  // * --------------------------------
+
+  // * --------------------------------
+  // * Systems
+  // * --------------------------------
+
+  update(dt = 0): void {
+    this.entities.flush();
+  }
+
   /**
    * Computes a unique archetype identifier (bitfield) for a given set of component types.
    *
@@ -406,60 +455,6 @@ export class World {
       result |= 1n << BigInt(this.getComponentId(componentType));
     }
     return result;
-  }
-
-  /**
-   * Gets or creates a table for the specified archetype.
-   *
-   * A table is a data structure that stores entities with the same component types.
-   * Each unique combination of components (archetype) has its own table.
-   *
-   * @param archetype - A bitfield representing the component types.
-   *                   Each bit position corresponds to a component ID.
-   *                   1 means the component is present, 0 means absent.
-   *
-   * @returns The existing table for this archetype, or a newly created one.
-   *
-   * Process:
-   * 1. Check if a table already exists for this archetype
-   * 2. If not, create a new table with:
-   *    - A unique table ID
-   *    - The archetype bitfield
-   *    - The decoded component types
-   * 3. Register the new table in the world's data structures
-   * 4. Notify all listeners about the new table
-   * 5. Emit a table update event
-   *
-   * Memory Consideration:
-   * - Each table allocates memory for its component columns
-   * - Initial capacity is determined by the Table constructor
-   * - Tables grow dynamically as needed
-   */
-  getTable(archetype: bigint): Table {
-    let table = this._archetypeToTable.get(archetype);
-    if (table) {
-      return table;
-    }
-
-    table = new Table(
-      this.tables.length, // Unique table ID
-      archetype, // Component bits
-      decodeArchetype(this.components, archetype), // Component types
-    );
-
-    // Register the new table
-    this.tables.push(table);
-    this._archetypeToTable.set(archetype, table);
-
-    // Notify listeners about new table
-    for (const listener of this._listeners.createTable) {
-      listener(table);
-    }
-
-    // Emit table update event
-    this.onTableUpdated.emit(table);
-
-    return table;
   }
 
   /**
@@ -521,107 +516,6 @@ export class World {
 // * --------------------------------------------------------------------------
 
 type WorldEventListeners = {
-  createTable: Array<(table: Table) => void>;
   start: Array<(world: World) => void>;
   stop: Array<(world: World) => void>;
 };
-
-// * --------------------------------------------------------------------------
-// * Utils
-// * --------------------------------------------------------------------------
-
-/**
- * Decodes an archetype bits into its component types.
- *
- * Algorithm Overview:
- * ------------------
- * 1. Initialize empty result array
- * 2. For each bit in archetype:
- *    - If bit is 1, add corresponding component to result
- *    - Shift archetype right by 1
- * 3. Continue until no bits remain
- *
- * Performance:
- * - Time Complexity: O(n) where n is number of components
- * - Space Complexity: O(k) where k is number of active components
- *
- * Example:
- *
- * ```ts
- * const components = [Entity, Position, Velocity]
- * const archetype = 5n // binary: 101
- * const result = calcArchetype(components, archetype) // [Entity, Velocity]
- * ```
- *
- * Explanation:
- *
- * components = [Entity, Position, Velocity, Health]  // components
- * archetype = 11n                                    // binary: 1011
- *
- * ┌──────────────────────────────────────────────────────────┐
- * │ initial state                                            │
- * ├────────────────┬────────────┬────────────┬───────────────┤
- * │    index       │     0      │     1      │      2        │
- * │    component   │   Entity   │  Position  │   Velocity    │
- * │    archetype   │     1      │     1      │      0        │
- * └────────────────┴────────────┴────────────┴───────────────┘
- *
- * 1️⃣ first loop (i = 0):
- * temp = 1011
- * temp & 1n = 1  ✓ add `Entity` to result
- * temp >>= 1n    → 0101
- *
- * ┌──────────────────┐
- * │ result=[Entity]  │
- * └──────────────────┘
- *
- * 2️⃣ second loop (i = 1):
- * temp = 0101
- * temp & 1n = 1  ✓ add `Position` to result
- * temp >>= 1n    → 0010
- *
- * ┌──────────────────────────┐
- * │ result=[Entity,Position] │
- * └──────────────────────────┘
- *
- * 3️⃣ third loop (i = 2):
- * temp = 0010
- * temp & 1n = 0  ✗ skip `Velocity`
- * temp >>= 1n    → 0001
- *
- * ┌──────────────────────────┐
- * │ result=[Entity,Position] │
- * └──────────────────────────┘
- *
- * 4️⃣ fourth loop (i = 3):
- * temp = 0001
- * temp & 1n = 1  ✓ add `Health` to result
- * temp >>= 1n    → 0000
- *
- * ┌─────────────────────────────────┐
- * │ result=[Entity,Position,Health] │
- * └─────────────────────────────────┘
- *
- * 5️⃣ end loop (temp = 0)
- *
- * Space O(1), Time O(n)
- */
-function decodeArchetype<T extends Class>(
-  components: T[],
-  archetype: bigint,
-): T[] {
-  const presentComponents: T[] = [];
-  let remainingBits = archetype;
-  let componentIndex = 0;
-
-  while (remainingBits !== 0n) {
-    const hasComponent = (remainingBits & 1n) === 1n;
-    if (hasComponent) {
-      const componentType = components[componentIndex];
-      componentType && presentComponents.push(componentType);
-    }
-    remainingBits >>= 1n;
-    componentIndex++;
-  }
-  return presentComponents;
-}

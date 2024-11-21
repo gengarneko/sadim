@@ -507,7 +507,7 @@ describe('Query', () => {
         world.spawn().insert(new Position(42, 42));
         world.entities.flush();
 
-        const pos = query.single();
+        const pos = query.single()!;
         expect(pos).toBeInstanceOf(Position);
         expect(pos.x).toBe(42);
         expect(pos.y).toBe(42);
@@ -682,7 +682,7 @@ describe('Query', () => {
         expect(queryInitial.length).toBe(1);
 
         // Get entity and remove components
-        const [entity] = queryInitial.single();
+        const [entity] = queryInitial.single()!;
         entity.remove(Position);
         entity.remove(Velocity);
         world.entities.flush();
@@ -719,7 +719,7 @@ describe('Query', () => {
         expect(queryVel.length).toBe(1);
 
         // Verify remaining Velocity component
-        const [_, vel] = queryVel.single();
+        const [_, vel] = queryVel.single()!;
         expect(vel.vx).toBe(2);
         expect(vel.vy).toBe(2);
       });
@@ -799,7 +799,9 @@ describe('Query', () => {
         world.spawn().insert(new Position(2, 2));
         world.entities.flush();
 
-        const [entity, pos] = query.single();
+        const result = query.single();
+        expect(result).toBeDefined();
+        const [entity, pos] = result!;
         expect(entity).toBeInstanceOf(Entity);
         expect(pos).toBeInstanceOf(Position);
         expect(pos.x).toBe(1);
@@ -824,7 +826,7 @@ describe('Query', () => {
         world.spawn(); // Entity without Position
         world.entities.flush();
 
-        const [entity, pos] = query.single();
+        const [entity, pos] = query.single()!;
         expect(entity).toBeInstanceOf(Entity);
         expect(pos).toBeUndefined();
       });
@@ -965,7 +967,7 @@ describe('Query', () => {
 
     it('single will return the first matched element', () => {
       setupEntitiesWithPosition(world, 5);
-      const result = query.single();
+      const result = query.single()!;
       expect(result).toBeInstanceOf(Position);
       expect(result.x).toBe(0);
     });
