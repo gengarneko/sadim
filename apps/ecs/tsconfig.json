@@ -14,7 +14,7 @@
     "allowImportingTsExtensions": true,
     "baseUrl": "./",
     "paths": {
-      "@components/*": ["components/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["docs", "theme", "rspress.config.ts"],

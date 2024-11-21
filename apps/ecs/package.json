@@ -10,10 +10,19 @@
     "preview": "rspress preview"
   },
   "dependencies": {
-    "rspress": "^1.37.1"
+    "@deepsignal/react": "^4.0.0",
+    "@preact/signals-react": "^2.2.0",
+    "@react-three/fiber": "^8.17.10",
+    "@sadim/ecs": "workspace:*",
+    "@types/three": "^0.170.0",
+    "rspress": "^1.37.1",
+    "three": "^0.170.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.3",
-    "@types/node": "^18.11.17"
+    "@types/node": "^18.11.17",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15"
   }
 }

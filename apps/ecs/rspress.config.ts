@@ -19,4 +19,5 @@ export default defineConfig({
       },
     ],
   },
+  globalStyles: path.join(__dirname, 'styles/index.css'),
 });
