@@ -238,14 +238,9 @@ export class Entity {
 // * EntityState
 // * --------------------------------------------------------------------------
 
-/**
- * Entity state constants
- */
 const ENTITY_STATE = {
-  /** Entity is destroyed */
-  DESPAWNED: 0n,
-  /** Entity is active */
-  SPAWNED: 1n,
+  DESPAWNED: 0n, // destroyed
+  SPAWNED: 1n, // active
 } as const;
 
 /**
@@ -307,13 +302,15 @@ class EntityState {
    */
   private _destinations = new Map<Entity, bigint>();
 
+  /**
+   * Get destination map
+   */
   get destinations(): Map<Entity, bigint> {
     return this._destinations;
   }
 
   /**
    * Create new entity with unique ID
-   * Increments ID counter after each creation
    */
   createEntity(entities: Entities): Entity {
     return new Entity(entities, this._nextId++);
@@ -384,17 +381,7 @@ export type EntitiesUpdateEvent = {
 };
 
 /**
- * Cache of component masks
- *
- * calculate mask every time when query/update component:
- * - entity.has(Position)  // calculate mask
- * - entity.insert(pos)    // calculate mask
- * - entity.remove(pos)    // calculate mask
- *
- * only calculate once:
- * - entity.has(Position)  // read from Map
- * - entity.insert(pos)    // read from Map
- * - entity.remove(pos)    // read from Map
+ * Cache component masks to avoid recalculation
  */
 const COMPONENT_MASKS = new Map<Class, bigint>();
 
@@ -404,33 +391,13 @@ const COMPONENT_MASKS = new Map<Class, bigint>();
  */
 export class Entities {
   private state = new EntityState();
-  private locationMap = new Map<EntityId, EntityLocation>();
+
+  readonly onEntitiesChanged = new EventBus();
 
   constructor(readonly world: World) {}
 
   /**
    * Get archetype from entity's current table
-   *
-   * Flow:
-   * 1. Entity Location
-   *    entity -> { tableId: 1, tableRow: 0 }
-   *
-   * 2. Table Lookup
-   *    tables[1] -> Table {
-   *      archetype: 0b0011,  // SPAWNED + Position
-   *      columns: [
-   *        [Entity0, Entity1],
-   *        [Pos(1,1), Pos(2,2)]
-   *      ]
-   *    }
-   *
-   * 3. Return Archetype
-   *    0b0011 (current table's component mask)
-   *
-   * Example:
-   * - Table1(0b0011): [Entity, Position]
-   * - Table2(0b0111): [Entity, Position, Velocity]
-   * entity in Table1 -> returns 0b0011
    */
   private getTableArchetype(entity: Entity): bigint {
     const {tableId} = entity.getLocation();
@@ -443,23 +410,6 @@ export class Entities {
 
   /**
    * Get entity's target or current archetype
-   *
-   * Flow:
-   * 1. Check Pending Changes
-   *    state.destinations -> Map {
-   *      Entity0 => 0b0111  // Target: add Velocity
-   *      Entity1 => 0b0001  // Target: remove all but SPAWNED
-   *    }
-   *
-   * 2. Return Value
-   *    a) Has pending: return destination archetype
-   *    b) No pending: return current table archetype
-   *
-   * Example:
-   * entity.insert(new Velocity())
-   * - Current: 0b0011 (SPAWNED + Position)
-   * - Pending: 0b0111 (SPAWNED + Position + Velocity)
-   * - Returns: 0b0111 (pending change)
    */
   private getEntityArchetype(entity: Entity): bigint {
     return this.state.getDestination(entity) ?? this.getTableArchetype(entity);
@@ -726,8 +676,6 @@ export class Entities {
     this.state.setDestination(entity, currentType & componentMask);
   }
 
-  onEntitiesChanged = new EventBus();
-
   /**
    * Apply all pending changes to entities
    * Moves entities between tables based on their component changes
@@ -849,7 +797,7 @@ export class Entities {
    * - Found:     [Entity2, Position(5,5), Velocity(6,6)]
    * - Not Found: []
    */
-  entity(entityId: Entity['id']): object[] {
+  getComponentsById(entityId: Entity['id']): object[] {
     const location = this.world.locations.get(entityId);
     if (!location) {
       return [];
@@ -862,19 +810,9 @@ export class Entities {
 
   /**
    * Get component instance by type for an entity
-   *
-   * Flow:
-   * 1. Get all components for entity
-   * 2. Find component matching the requested type
-   *
-   * Example:
-   * const position = entities.get(entity, Position);
-   * if (position) {
-   *   position.x += 1;
-   * }
    */
   get<T>(entity: Entity, componentType: Component): T | undefined {
-    const components = this.entity(entity.id);
+    const components = this.getComponentsById(entity.id);
     return components.find((c) => c.constructor === componentType) as
       | T
       | undefined;

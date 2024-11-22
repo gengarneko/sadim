@@ -71,7 +71,7 @@ function cloneSystem<T extends System>(system: T): T {
  * @returns New system entity
  */
 function createSystem(world: World) {
-  return world.spawn();
+  return world.addEntity();
 }
 
 export {cloneSystem, createSystem, type System};

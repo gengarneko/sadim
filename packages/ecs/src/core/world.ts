@@ -381,21 +381,12 @@ export class World {
   // * Entities
   // * --------------------------------
 
-  /** entity interface */
-  entity(id: Entity['id']) {
-    return this.entities.entity(id);
+  getComponentsById(id: Entity['id']) {
+    return this.entities.getComponentsById(id);
   }
 
   getEntityById(id: Entity['id']) {
     return this.entities.getEntityById(id);
-  }
-
-  spawn(components?: object[]) {
-    return this.entities.spawn(components);
-  }
-
-  despawn(entity: Entity) {
-    this.entities.despawn(entity);
   }
 
   addEntity(components?: object[]): Entity {
